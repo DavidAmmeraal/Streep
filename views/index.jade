@@ -1,0 +1,64 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/streep3d.css')
+
+block content
+    #streep3d
+        #container.viewer
+            .processes(style='display: none;')
+                .entry
+        #menu.menu
+            h1.title Menu
+            #tree
+    #templates(style='display: none;')
+        #colordialog_template
+            .colordialog(title='Choose Color for Component')
+                p Please choose a color for the component.
+                input(type='color')
+        #engravetextdialog_template
+            .engrave(title='Choose Engraving')
+                p Please choose an option for the engraving.
+                .engravetype
+                    .radio
+                        | Text:
+                    .options
+                        input(type='text', name='engravetext', size='15')
+                button.submit Engrave
+        #engraveobjectdialog_template
+            .engrave(title='Choose Engraving')
+                p Please choose an option for the engraving.
+                .engravetype
+                    .radio
+                        | Object:
+                    .options
+                        .object.template
+                            input(type='radio', value='star', name='engraveobject')
+                            label(for='engravestar') Star
+                button.submit Engrave
+
+
+block js
+    script(src='/javascripts/vendor/jquery-1.10.2.min.js')
+    script(src='javascripts/vendor/pep.jquery.min.js')
+    script(src='http://code.createjs.com/easeljs-0.7.0.min.js')
+    script(src='http://code.createjs.com/tweenjs-0.5.0.min.js')
+    script(src='javascripts/vendor/jquery-ui-1.10.3.custom.min.js')
+    script(src='javascripts/vendor/three/build/three.js')
+    script(src='javascripts/vendor/csg.js')
+    script(src='javascripts/vendor/ThreeBSP.js')
+    script(src='javascripts/vendor/three/exporters/GeometryExporter.js')
+    script(src='javascripts/vendor/three/exporters/BufferGeometryExporter.js')
+    script(src='javascripts/vendor/three/exporters/MaterialExporter.js')
+    script(src='javascripts/vendor/three/exporters/STLExporter.js')
+    script(src='javascripts/vendor/three/exporters/ObjectExporter.js')
+    script(src='javascripts/vendor/three/loaders/STLLoader.js')
+    script(src='javascripts/vendor/helvetiker/helvetiker_regular.typeface.js')
+    script(src='javascripts/vendor/filesaver.js')
+    script(src='javascripts/vendor/promise.min.js')
+
+    //jQuery.jsTree
+    script(src='javascripts/vendor/jstree/_lib/jquery.cookie.js')
+    script(src='javascripts/vendor/jstree/_lib/jquery.hotkeys.js')
+    script(src='javascripts/vendor/jstree/jquery.jstree.js')
+    script(src='javascripts/vendor/require.js', data-main='javascripts/streep3d/main.js')
