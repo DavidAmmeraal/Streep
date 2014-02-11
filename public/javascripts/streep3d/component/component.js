@@ -12,6 +12,7 @@ define(function(){
             this.trigger('request-focus');
         },
         trigger: function(eventname, requester, data){
+            console.log("Component.prototype.trigger()")
             if(this.parent != null){
                 this.parent.trigger(eventname, requester, data);
             }else{

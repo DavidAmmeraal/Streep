@@ -1,9 +1,9 @@
 define([
-    'overlay/viewer-overlay',
-    'menu/overlay-menu/connector-menu/connector-menu',
-    'menu/overlay-menu/color-chooser/color-chooser',
-    'text!overlay/connector-overlay/templates/connector.html',
-    'text!overlay/connector-overlay/templates/switcher.html'
+    'gui/overlay/viewer-overlay',
+    'gui/overlay-menu/connector-menu/connector-menu',
+    'gui/overlay-menu/color-chooser/color-chooser',
+    'text!gui/overlay/connector-overlay/templates/connector.html',
+    'text!gui/overlay/connector-overlay/templates/switcher.html'
 ], function(
     ViewerOverlay,
     ConnectorMenu,
@@ -125,10 +125,6 @@ define([
                         var connector = $(this).data('connector');
                         self.viewer.focusTo(connector.component);
                         new ConnectorMenu({
-                            connector: connector,
-                            overlay: self
-                        }).show();
-                        new ColorChooser({
                             connector: connector,
                             overlay: self
                         }).show();

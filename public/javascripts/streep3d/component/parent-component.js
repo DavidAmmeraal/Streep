@@ -2,6 +2,14 @@ define(['component/component', 'component/json-component'], function(Component, 
 	var ParentComponent = function(){
 		var self = this;
 		$.extend(self, arguments[0]);
+
+        var initialize = function(){
+            for(var i = 0; i < self.children.length; i++){
+                self.children[i].parent = self;
+            }
+        }
+
+        initialize();
 	};
 
 	ParentComponent.prototype = Object.create(Component.prototype);

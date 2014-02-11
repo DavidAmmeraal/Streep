@@ -180,7 +180,6 @@ define(['util/webgl-test'], function(WebGLTest){
 		var listenToComponents = function(){
 			for(var key in self.components){
 				var comp = self.components[key];
-				
 				$(comp).off("request-focus").on("request-focus", function(event, requester){
 					self.focusTo(requester);
 				});

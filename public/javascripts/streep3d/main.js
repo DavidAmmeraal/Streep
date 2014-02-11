@@ -23,8 +23,7 @@ require([
 	'component/transformation/rotate',
 	'component/transformation/scale',
 	'component/transformation/translate', 
-	'menu/menu',
-    'overlay/connector-overlay/connector-overlay',
+    'gui/overlay/connector-overlay/connector-overlay',
     'keyboard-listener/keyboard-listener'
 ], 
 function(
@@ -39,7 +38,6 @@ function(
 	Rotate,
 	Scale,
 	Translate,
-	Menu,
     ConnectorOverlay,
     KeyboardListener
 ){

@@ -9,16 +9,18 @@ define(['component/transformation/transformation', 'component/modification/modif
 	};
 
 	CSGModification.prototype = Object.create(Modification.prototype);
+    CSGModification.prototype.types = ['subtract', 'union'];
+    CSGModification.prototype.type = null;
+    CSGModification.transformations = [];
     CSGModification.prototype.execute = function(){
+
         var self = this;
         if(!this.connector.originalGeo){
             this.connector.originalGeo = self.component.geo;
         }
         self.executeTransformations();
 
-        var targetGeoBSP = new ThreeBSP(self.component.geo);
-        var geoBSP = new ThreeBSP(self.geo);
-        var worker = new Worker('js/streep3d/workers/csg-worker.js');
+        var worker = new Worker('javascripts/streep3d/workers/csg-worker.js');
         var message = {
             'type': self.type,
             'targetGeo': {
@@ -31,7 +33,8 @@ define(['component/transformation/transformation', 'component/modification/modif
                 'faces': self.geo.faces,
                 'faceVertexUvs': self.component.geo.faceVertexUvs
             }
-        }
+        };
+
         worker.onmessage = function(e){
             self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
             self.component.refresh();
@@ -40,21 +43,21 @@ define(['component/transformation/transformation', 'component/modification/modif
                     $('.processes').html('');
                 }
             );
-        }
+        };
         $('.processes').html('<div class="entry"><div class="explanation">Executing CSG Operation</div><div class="progress"></div></div>').hide().fadeIn(1000);
         $('.processes').find('.progress').progressbar({
             'value': false
         });
         worker.postMessage(message);
 
-        /*
-        self.component.geo = targetGeoBSP[self.type](geoBSP).toGeometry();
-        self.component.refresh();
-        var mesh = new THREE.Mesh(self.geo, self.component.material);
-        console.log(mesh);
-        globalviewer.getScene().add(mesh);
-        globalviewer.render();
-        */
+
+        //self.component.geo = targetGeoBSP['union'](geoBSP).toGeometry();
+        ///self.component.refresh();
+       // var mesh = new THREE.Mesh(self.geo, self.component.material);
+        //console.log(mesh);
+        //globalviewer.getScene().add(mesh);
+        //globalviewer.render();
+
     };
 
     CSGModification.prototype.executeTransformations = function(){

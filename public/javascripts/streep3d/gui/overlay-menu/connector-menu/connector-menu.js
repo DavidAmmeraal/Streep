@@ -1,8 +1,8 @@
 define([
-    'menu/overlay-menu/overlay-menu',
-    'text!menu/overlay-menu/connector-menu/templates/connector-menu.html',
-    'menu/dialog/object-engrave-dialog',
-    'menu/dialog/text-engrave-dialog'
+    'gui/overlay-menu/overlay-menu',
+    'text!gui/overlay-menu/connector-menu/templates/connector-menu.html',
+    'gui/dialog/object-engrave-dialog',
+    'gui/dialog/text-engrave-dialog'
 ], function(
     OverlayMenu,
     ConnectorMenuTemplate,
@@ -11,6 +11,8 @@ define([
 ){
    var ConnectorMenu = function(options){
        var self = this;
+       console.log(self);
+
        OverlayMenu.apply(this, arguments);
 
        var initialize = function(){
@@ -23,7 +25,8 @@ define([
                var mod = self.connector.modifications[i];
                var link = $('<a href="#">' + mod.readable + '</a>');
                link.data('modification', mod);
-               link.on('click', function(){
+               link.on('click', function(event){
+                   event.preventDefault()
                    var mod = $(this).data('modification');
                    getDialog(mod);
                });
@@ -40,6 +43,7 @@ define([
 
 
        var getDialog = function(mod){
+           console.log("ConnectorMenu.getDialog()");
            if(mod.objects){
                new ObjectEngraveDialog(mod);
            }else{
@@ -51,5 +55,6 @@ define([
    }
    ConnectorMenu.prototype = Object.create(OverlayMenu.prototype);
    ConnectorMenu.prototype.className = "connector-menu";
+   ConnectorMenu.prototype.closeable = false;
    return ConnectorMenu;
 });

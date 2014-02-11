@@ -1,6 +1,6 @@
 define([
-    'menu/overlay-menu/overlay-menu',
-    'text!menu/overlay-menu/color-chooser/templates/color-chooser.html'
+    'gui/overlay-menu/overlay-menu',
+    'text!gui/overlay-menu/color-chooser/templates/color-chooser.html'
 ], function(
     OverlayMenu,
     ColorChooserTemplate

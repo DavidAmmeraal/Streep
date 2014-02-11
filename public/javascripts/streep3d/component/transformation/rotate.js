@@ -7,6 +7,9 @@ define(['component/transformation/transformation'], function(Transformation){
     Rotate.prototype.axis = null;
     Rotate.prototype.amount = null;
     Rotate.prototype.apply = function(geo){
+        console.log("Rotate.apply()");
+        console.log(this);
+
         if(this.axis == "x"){
             geo.applyMatrix(new THREE.Matrix4().makeRotationX(this.amount * Math.PI / 180));
         }if(this.axis == "y"){

@@ -1,4 +1,4 @@
-define(['overlay/overlay'], function(Overlay){
+define(['gui/overlay/overlay'], function(Overlay){
    var ViewerOverlay = function(options){
        var self = this;
        this.viewer = null;

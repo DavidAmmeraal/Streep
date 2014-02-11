@@ -1,4 +1,14 @@
-define(['component/modification/csg-modification', 'component/transformation/scale', 'component/transformation/translate', 'component/transformation/rotate'], function(CSGModification, Scale, Rotate, Translate){
+define([
+    'component/modification/csg-modification',
+    'component/transformation/scale',
+    'component/transformation/translate',
+    'component/transformation/rotate'
+], function(
+    CSGModification,
+    Scale,
+    Translate,
+    Rotate
+){
 	var CSGTextModification = function(options){
 		CSGModification.apply(this, arguments);
 	};
@@ -14,6 +24,8 @@ define(['component/modification/csg-modification', 'component/transformation/sca
             style: "normal"
         });
     }
+
+    //Static
     CSGTextModification.parseFromDB = function(data){
         for(var i = 0; i < data.transformations.length; i++){
             var transformation = data.transformations[i];

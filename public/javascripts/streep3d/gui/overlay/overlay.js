@@ -1,4 +1,4 @@
-define(['text!overlay/templates/overlay.html'], function(OverlayTemplate){
+define(['text!gui/overlay/templates/overlay.html'], function(OverlayTemplate){
     var Overlay = function(options){
         var self = this;
         this.targetElement = null;

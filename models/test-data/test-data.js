@@ -74,6 +74,27 @@ var pootLinksEngraveTextMod = new CSGTextModification({
     depth: 4
 });
 
+var pootLinksAddTextMod = new CSGTextModification({
+    name: 'poot links add text modification',
+    type: 'union',
+    readable: 'Add Text',
+    transformations: [
+        new Transformation({
+            type: 'Rotate',
+            implementation: new Rotate({axis: 'z', amount: -7})
+        }),
+        new Transformation({
+            type: 'Rotate',
+            implementation: new Rotate({axis: 'y', amount: 90})
+        }),
+        new Transformation({
+            type: 'Translate',
+            implementation: new Translate({x: 71, y: 7, z: -35})
+        })
+    ],
+    depth: 4
+});
+
 var pootLinksCarveTextMod = new CSGTextModification({
     type: 'subtract',
     readable: 'Carve Text',
@@ -108,6 +129,10 @@ var pootLinksSpot = new Connector({
        new Modification({
            type: 'CSGTextModification',
            implementation: pootLinksCarveTextMod
+       }),
+       new Modification({
+           type: 'CSGTextModification',
+           implementation: pootLinksAddTextMod
        })
    ],
    position: {
@@ -148,6 +173,27 @@ var pootRechtsEngraveTextMod = new CSGTextModification({
         new Transformation({
             type: 'Translate',
             implementation: new Translate({x: -72, y: 6, z: -55})
+        })
+    ],
+    depth: 4
+});
+
+//Create pootrechts
+var pootRechtsAddTextMod = new CSGTextModification({
+    type: 'union',
+    readable: 'Add Text',
+    transformations:[
+        new Transformation({
+            type: 'Rotate',
+            implementation: new Rotate({axis: 'z', amount: 7})
+        }),
+        new Transformation({
+            type: 'Rotate',
+            implementation: new Rotate({axis: 'y', amount: -90})
+        }),
+        new Transformation({
+            type: 'Translate',
+            implementation: new Translate({x: -74, y: 6, z: -55})
         })
     ],
     depth: 4
@@ -232,6 +278,10 @@ var pootRechtsSpot = new Connector({
         new Modification({
             type: 'CSGObjectModification',
             implementation: pootRechtsEngraveObjectMod
+        }),
+        new Modification({
+            type: 'CSGTextModification',
+            implementation: pootRechtsAddTextMod
         })
     ],
     position: {
