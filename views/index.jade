@@ -20,11 +20,23 @@ block content
         #engravetextdialog_template
             .engrave(title='Choose Engraving')
                 p Please choose an option for the engraving.
-                .engravetype
-                    .radio
-                        | Text:
-                    .options
-                        input(type='text', name='engravetext', size='15')
+                .options
+                    .option.engravetype
+                        .label
+                            | Text:
+                        .options
+                            input(type='text', name='engravetext', size='15')
+                    .option.font.last
+                        .label
+                            | Font:
+                        .options
+                            select(name='engravefont')
+                                option(value='helvetiker', selected='selected')
+                                    | Helvetiker
+                                option(value='fantasque sans mono')
+                                    | Fantasque Sans Mono
+                                option(value='banana brick')
+                                    | Banana Brick
                 button.submit Engrave
         #engraveobjectdialog_template
             .engrave(title='Choose Engraving')
@@ -54,7 +66,10 @@ block js
     script(src='javascripts/vendor/three/exporters/STLExporter.js')
     script(src='javascripts/vendor/three/exporters/ObjectExporter.js')
     script(src='javascripts/vendor/three/loaders/STLLoader.js')
-    script(src='javascripts/vendor/helvetiker/helvetiker_regular.typeface.js')
+    script(src='fonts/helvetiker/helvetiker_regular.typeface.js')
+    script(src='fonts/gentilis/gentilis_regular.typeface.js')
+    script(src='fonts/banana_brick/banana_brick_regular.typeface.js')
+    script(src='fonts/fantasque-sans-mono/fantasque_sans_mono_regular.typeface.js')
     script(src='javascripts/vendor/filesaver.js')
     script(src='javascripts/vendor/promise.min.js')
 

@@ -21,7 +21,8 @@ define([
             height: this.depth,
             curveSegments: 2,
             weight: "normal",
-            style: "normal"
+            style: "normal",
+            font: font
         });
     }
 

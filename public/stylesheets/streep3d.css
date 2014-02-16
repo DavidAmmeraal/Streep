@@ -68,25 +68,6 @@
     float: left;
 }
 
-.engrave .engravetype{
-	float: left;
-	width: 100%;
-	padding: 5px;
-	margin-bottom: 10px;
-	border: 1px solid #BFBDBE;
-}
-
-.engrave .engravetype .radio{
-	float: left;
-	width: 30%;
-	font-weight: bold;	
-}
-
-.engrave .engravetype .options{
-	float: left;
-	width: 70%;
-}
-
 .overlay{
     position: absolute;
     top: 0;
@@ -211,4 +192,25 @@
 .connector-menu a{
     float: left;
     margin-right: 10px;
+}
+
+.ui-dialog-content .options{
+    float: left;
+}
+
+.ui-dialog-content .option{
+    margin-bottom: 10px;
+    float: left;
+}
+
+.ui-dialog-content .option .label{
+    font-weight: bold;
+    margin-right: 5px;
+    float: left;
+    display: inline-block;
+}
+
+.ui-dialog-content .option .options{
+    float: left;
+    display: inline-block;
 }
