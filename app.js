@@ -11,7 +11,6 @@ var fillTestData = require('./routes/fill-test-data');
 var http = require('http');
 var path = require('path');
 var ParentComponent = require('./models/parent-component');
-var mongoose = require('mongoose');
 
 var app = express();
 
@@ -33,8 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-
-mongoose.connect('localhost', 'streep');
 
 app.get('/', routes.index);
 app.get('/users', user.list);
