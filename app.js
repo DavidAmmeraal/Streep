@@ -12,6 +12,24 @@ var http = require('http');
 var path = require('path');
 var ParentComponent = require('./models/parent-component');
 
+var mongoose = require('mongoose');
+
+var connectDb = function(){
+    mongoose.connect('localhost', 'streep');
+}
+
+mongoose.connection.on('error', function (err) {
+    console.log('Could not connect to mongo server!');
+    setTimeout(connectDb, 1000);
+    console.log(err);
+});
+
+mongoose.connection.on('open', function (ref) {
+    console.log('Connected to mongo server.');
+});
+
+connectDb();
+
 var app = express();
 
 // all environments
