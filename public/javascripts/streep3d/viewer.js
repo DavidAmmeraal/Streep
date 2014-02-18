@@ -1,8 +1,9 @@
 define(['util/webgl-test'], function(WebGLTest){
 	var Viewer = function(target, context, options){
 		var self = this;
-		this.width = $(target).width();
-		this.height = $(target).height();
+        this.target = $(target);
+		this.width = self.target.width();
+		this.height = self.target.height();
 		this.context = context;
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(45, self.width / self.height, 0.1, 1000);
@@ -16,6 +17,10 @@ define(['util/webgl-test'], function(WebGLTest){
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
         this.backgroundColor = 0x363636;
+        this.projector = new THREE.Projector();
+
+        var canRaycast = true;
+        var currentHover = null;
 
         $.extend(this, options);
 
@@ -30,7 +35,7 @@ define(['util/webgl-test'], function(WebGLTest){
 			self.setBackgroundColor(self.backgroundColor);
             console.log("Viewer: finished setting background color!");
 			self.setSize(self.width, self.height);
-			$(target).append(self.renderer.domElement);
+			self.target.append(self.renderer.domElement);
             console.log("Viewer: adding light!");
 			self.scene.add(self.light);
             console.log("Viewer: finished adding light!");
@@ -41,9 +46,45 @@ define(['util/webgl-test'], function(WebGLTest){
 			self.sceneReady = true;
             console.log("Viewer: start rendering!");
 			self.render();
+            listenToClicks();
+            listenToMouseMovement();
             console.log("Viewer: finished rendering!");
             console.log("finish Viewer.initialize()");
 		};
+
+        var listenToMouseMovement = function(event){
+            $(self.target).mousemove(function(event){
+                event.preventDefault();
+                var vector = new THREE.Vector3( ( event.clientX / self.target.width() ) * 2 - 1, - ( event.clientY / self.target.height() ) * 2 + 1, 0.5 );
+
+                self.projector.unprojectVector( vector, self.camera );
+
+                var raycaster = new THREE.Raycaster( self.camera.position, vector.sub( self.camera.position ).normalize() );
+                var intersects = raycaster.intersectObjects( self.scene.children );
+
+                if(intersects.length){
+                    self.hover($(intersects[0].object).data('streep-component'))
+                }else if(currentHover){
+                    self.unhover(currentHover);
+                }
+            });
+        }
+
+        var listenToClicks = function(){
+            $(self.target).on('click', function(event){
+                event.preventDefault();
+
+                var vector = new THREE.Vector3( ( event.clientX / self.target.width() ) * 2 - 1, - ( event.clientY / self.target.height() ) * 2 + 1, 0.5 );
+                self.projector.unprojectVector( vector, self.camera );
+
+                var raycaster = new THREE.Raycaster( self.camera.position, vector.sub( self.camera.position ).normalize() );
+
+                console.time("RAYCASTING ON OBJECTS!");
+                var intersects = raycaster.intersectObjects( self.scene.children );
+                console.timeEnd("RAYCASTING ON OBJECTS!");
+                intersects.length && self.focusTo($(intersects[0].object).data('streep-component'));
+            });
+        }
 		
 		var getRenderer = function(){
             console.log("Viewer.getRenderer()");
@@ -176,7 +217,6 @@ define(['util/webgl-test'], function(WebGLTest){
 			
 		};
 		
-		
 		var listenToComponents = function(){
 			for(var key in self.components){
 				var comp = self.components[key];
@@ -211,7 +251,25 @@ define(['util/webgl-test'], function(WebGLTest){
 			}else if(comp.focusRotation){
 				self.rotate(comp.focusRotation);
 			}
+            $(self).trigger('streep3d.focus', comp);
 		};
+
+        self.hover = function(comp){
+            if(comp != currentHover){
+                if(currentHover)
+                    self.unhover(currentHover);
+
+                currentHover = comp;
+                comp.hover();
+                self.render();
+            }
+        };
+
+        self.unhover = function(comp){
+            comp.unhover();
+            currentHover = null;
+            self.render();
+        }
 		
 		initialize();
 	};

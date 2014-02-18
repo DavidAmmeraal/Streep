@@ -17,6 +17,8 @@ define([
         this.connectorsVisible = true;
         this.switcher = null;
 
+        var currentComp = null;
+
         ViewerOverlay.apply(this, arguments);
 
         var initialize = function(){
@@ -26,6 +28,13 @@ define([
         this.renderStatic = function(){
             self.renderSwitcher();
         };
+
+        this.focus = function(comp){
+            console.log("FOCUSSED ON COMP:");
+            console.log(comp);
+            currentComp = comp;
+            self.renderConnectors();
+        }
 
         this.render = function(){
             self.renderConnectors();
@@ -63,6 +72,7 @@ define([
         }
 
         this.renderConnectors = function(){
+            var comp = currentComp;
             self.element.find('.connector-indicator').remove();
 
             function toScreenXY( position, camera, div ) {
@@ -113,26 +123,23 @@ define([
                 return connectors;
             }
 
-            for(var i = 0; i < self.viewer.components.length; i++){
-                var comp = self.viewer.components[i];
-                var connectors = findConnectors(comp);
-                for(var c = 0; c < connectors.length; c++){
-                    var connector = connectors[c];
-                    var xyPosition = toScreenXY(connector.position, self.viewer.camera, self.viewer.renderer.domElement);
-                    var div = $(ConnectorTemplate);
-                    div.data('connector', connector);
-                    div.on('click', function(){
-                        var connector = $(this).data('connector');
-                        self.viewer.focusTo(connector.component);
-                        new ConnectorMenu({
-                            connector: connector,
-                            overlay: self
-                        }).show();
-                    });
-                    div.css('left', xyPosition.x);
-                    div.css('top', xyPosition.y);
-                    self.element.append(div);
-                }
+            var connectors = findConnectors(comp);
+            for(var c = 0; c < connectors.length; c++){
+                var connector = connectors[c];
+                var xyPosition = toScreenXY(connector.position, self.viewer.camera, self.viewer.renderer.domElement);
+                var div = $(ConnectorTemplate);
+                div.data('connector', connector);
+                div.on('click', function(){
+                    var connector = $(this).data('connector');
+                    self.viewer.focusTo(connector.component);
+                    new ConnectorMenu({
+                        connector: connector,
+                        overlay: self
+                    }).show();
+                });
+                div.css('left', xyPosition.x);
+                div.css('top', xyPosition.y);
+                self.element.append(div);
             }
         };
 

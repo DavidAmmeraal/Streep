@@ -54,7 +54,7 @@ function(
 
     viewer = new Viewer(container, context, {
         backgroundColor: "#363636",
-        startPosition: new THREE.Vector3(0, 0, 400)
+        startPosition: new THREE.Vector3(-100, 20, 400)
     });
 
     $.ajax({

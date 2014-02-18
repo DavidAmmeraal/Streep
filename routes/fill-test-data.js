@@ -1,4 +1,4 @@
-var TestData = require('../models/test-data/test-data');
+var TestData = require('../test-data/test-data');
 /*
  * GET parent components.
  */

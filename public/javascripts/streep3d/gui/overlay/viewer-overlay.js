@@ -8,6 +8,10 @@ define(['gui/overlay/overlay'], function(Overlay){
            $(self.viewer).on('streep3d.render', function(){
                self.render();
            });
+
+           $(self.viewer).on('streep3d.focus', function(event, comp){
+               self.focus(comp);
+           });
        }
 
        initialize();

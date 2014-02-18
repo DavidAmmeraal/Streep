@@ -69,7 +69,14 @@ define(['component/component'], function(Component){
     };
     LeafComponent.prototype.createMesh = function(){
         this.mesh = new THREE.Mesh(this.geo, this.material);
+        $(this.mesh).data('streep-component', this);
         this.mesh.name = this.name;
+    };
+    LeafComponent.prototype.hover = function(){
+        this.mesh.material.color.setHex(0x3333FF);
+    };
+    LeafComponent.prototype.unhover = function(){
+        this.mesh.material.color.setHex(0xFFFFFF);
     };
     LeafComponent.prototype.getMesh = function(){
         return this.mesh;

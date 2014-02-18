@@ -1,14 +1,14 @@
 var mongoose = require('mongoose');
-var Connector = require('../connector');
-var Modification = require('../modification');
-var CSGObjectModification = require('../csg-object-modification');
-var CSGTextModification = require('../csg-text-modification');
-var CSGObject = require('../csg-object');
-var Transformation = require('../transformation');
-var Rotate = require('../rotate');
-var Translate = require('../translate');
-var JSONComponent = require('../json-component');
-var ParentComponent = require('../parent-component');
+var Connector = require('../models/connector');
+var Modification = require('../models/modification');
+var CSGObjectModification = require('../models/csg-object-modification');
+var CSGTextModification = require('../models/csg-text-modification');
+var CSGObject = require('../models/csg-object');
+var Transformation = require('../models/transformation');
+var Rotate = require('../models/rotate');
+var Translate = require('../models/translate');
+var JSONComponent = require('../models/json-component');
+var ParentComponent = require('../models/parent-component');
 
 var voorkantSpot = new Connector({
     name: 'neusbrug',
