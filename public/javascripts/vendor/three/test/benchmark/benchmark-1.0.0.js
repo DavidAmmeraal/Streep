@@ -2320,7 +2320,7 @@
       return abs(zStat) > 1.96 ? (zStat > 0 ? -1 : 1) : 0;
     }
     // ...the U value is less than or equal the critical U value
-    // http://www.geoib.com/mann-whitney-u-test.html
+    // http://www.geoib.com/mann-whitney-u-frame-chooser.html
     critical = maxSize < 5 || minSize < 3 ? 0 : uTable[maxSize][minSize - 3];
     return u <= critical ? (u == u1 ? 1 : -1) : 0;
   }

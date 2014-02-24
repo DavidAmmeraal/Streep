@@ -128,7 +128,7 @@ THREE.TubeGeometry = function( path, segments, radius, radialSegments, closed ) 
 THREE.TubeGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 
-// For computing of Frenet frames, exposing the tangents, normals and binormals the spline
+// For computing of Frenet choose-frame, exposing the tangents, normals and binormals the spline
 THREE.TubeGeometry.FrenetFrames = function(path, segments, closed) {
 
 	var	tangent = new THREE.Vector3(),

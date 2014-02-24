@@ -170,7 +170,7 @@ THREE.AnimationHandler = (function() {
 				data.hierarchy[ h ].usedMorphTargets = usedMorphTargets;
 
 
-				// set all used on all frames
+				// set all used on all choose-frame
 
 				for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
 

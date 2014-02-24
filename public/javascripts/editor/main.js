@@ -1,6 +1,6 @@
 requirejs.config({
     //By default load any module IDs from js/lib
-    baseUrl: 'javascripts/streep3d',
+    baseUrl: 'javascripts/editor',
     //except, if the module ID starts with "app",
     //load it from the js/app directory. paths
     //config is relative to the baseUrl, and
@@ -15,7 +15,7 @@ require([
 	'viewer',
 	'component-context',
 	'component/json-component',
-	'component/parent-component',
+	'component/frame',
 	'component/connector/connector',
 	'component/modification/csg-object/csg-object',
 	'component/modification/csg-text-modification',
@@ -30,7 +30,7 @@ function(
 	Viewer, 
 	ComponentContext,
 	JSONComponent,
-	ParentComponent,
+	Frame,
 	Connector,
 	CSGObject,
 	CSGTextModification,
@@ -53,20 +53,20 @@ function(
 	var context = new ComponentContext();
 
     viewer = new Viewer(container, context, {
-        backgroundColor: "#363636",
+        backgroundColor: "#FFFFFF",
         startPosition: new THREE.Vector3(-100, 20, 400)
     });
 
     $.ajax({
-        url: 'parent-components',
+        url: 'models_api/frame',
         success: function(data){
             var comps = JSON.parse(data);
-            var parentComps = [];
+            var compositions = [];
             for(var i = 0; i < comps.length; i++){
                 var comp = comps[i];
-                parentComps.push(ParentComponent.parseFromDB(comp));
+                compositions.push(Frame.parseFromDB(comp));
             }
-            var bril = parentComps[0];
+            var bril = compositions[0];
             bril.load().then(function(){
                 context.add(bril);
                 viewer.focusTo(bril);

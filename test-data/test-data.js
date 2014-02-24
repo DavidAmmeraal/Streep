@@ -8,7 +8,7 @@ var Transformation = require('../models/transformation');
 var Rotate = require('../models/rotate');
 var Translate = require('../models/translate');
 var JSONComponent = require('../models/json-component');
-var ParentComponent = require('../models/parent-component');
+var Composition = require('../models/frame');
 
 var voorkantSpot = new Connector({
     name: 'neusbrug',
@@ -308,7 +308,7 @@ var pootRechts = new JSONComponent({
 //END create pootrechts
 
 //Create bril
-var bril = new ParentComponent({
+var bril = new Composition({
     name: 'bril',
     focusPosition:{
         x: 0,

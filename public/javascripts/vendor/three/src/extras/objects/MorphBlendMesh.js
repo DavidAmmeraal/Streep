@@ -10,7 +10,7 @@ THREE.MorphBlendMesh = function( geometry, material ) {
 	this.animationsList = [];
 
 	// prepare default animation
-	// (all frames played together in 1 second)
+	// (all choose-frame played together in 1 second)
 
 	var numFrames = this.geometry.morphTargets.length;
 

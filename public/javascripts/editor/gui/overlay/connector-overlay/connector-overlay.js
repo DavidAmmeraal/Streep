@@ -37,7 +37,7 @@ define([
         }
 
         this.render = function(){
-            self.renderConnectors();
+            currentComp && self.renderConnectors();
         };
 
         this.toggleConnectors = function(){

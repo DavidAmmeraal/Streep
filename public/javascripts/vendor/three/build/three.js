@@ -30242,7 +30242,7 @@ THREE.AnimationHandler = (function() {
 				data.hierarchy[ h ].usedMorphTargets = usedMorphTargets;
 
 
-				// set all used on all frames
+				// set all used on all choose-frame
 
 				for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
 
@@ -31799,8 +31799,8 @@ THREE.CylinderGeometry.prototype = Object.create( THREE.Geometry.prototype );
  *  bevelSize: <float>, // how far from shape outline is bevel
  *  bevelSegments: <int>, // number of bevel layers
  *
- *  extrudePath: <THREE.CurvePath> // 3d spline path to extrude shape along. (creates Frames if .frames aren't defined)
- *  frames: <THREE.TubeGeometry.FrenetFrames> // containing arrays of tangents, normals, binormals
+ *  extrudePath: <THREE.CurvePath> // 3d spline path to extrude shape along. (creates Frames if .choose-frame aren't defined)
+ *  choose-frame: <THREE.TubeGeometry.FrenetFrames> // containing arrays of tangents, normals, binormals
  *
  *  material: <int> // material index for front and back faces
  *  extrudeMaterial: <int> // material index for extrusion and beveled faces
@@ -33263,7 +33263,7 @@ THREE.TorusKnotGeometry.prototype = Object.create( THREE.Geometry.prototype );
  *
  * Creates a tube which extrudes along a 3d spline
  *
- * Uses parallel transport frames as described in
+ * Uses parallel transport choose-frame as described in
  * http://www.cs.indiana.edu/pub/techreports/TR425.pdf
  */
 
@@ -33384,7 +33384,7 @@ THREE.TubeGeometry = function( path, segments, radius, radialSegments, closed ) 
 THREE.TubeGeometry.prototype = Object.create( THREE.Geometry.prototype );
 
 
-// For computing of Frenet frames, exposing the tangents, normals and binormals the spline
+// For computing of Frenet choose-frame, exposing the tangents, normals and binormals the spline
 THREE.TubeGeometry.FrenetFrames = function(path, segments, closed) {
 
 	var	tangent = new THREE.Vector3(),
@@ -35070,7 +35070,7 @@ THREE.MorphBlendMesh = function( geometry, material ) {
 	this.animationsList = [];
 
 	// prepare default animation
-	// (all frames played together in 1 second)
+	// (all choose-frame played together in 1 second)
 
 	var numFrames = this.geometry.morphTargets.length;
 

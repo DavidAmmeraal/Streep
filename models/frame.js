@@ -11,4 +11,5 @@ var schema = new mongoose.Schema({
     children: [JSONComponent.schema]
 });
 
-module.exports = mongoose.model("ParentComponent", schema);
+var model = mongoose.model("Frame", schema);
+module.exports = model;

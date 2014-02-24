@@ -20,7 +20,7 @@ define(['component/transformation/transformation', 'component/modification/modif
         }
         self.executeTransformations();
 
-        var worker = new Worker('javascripts/streep3d/workers/csg-worker.js');
+        var worker = new Worker('javascripts/editor/workers/csg-worker.js');
         var message = {
             'type': self.type,
             'targetGeo': {

@@ -1,5 +1,5 @@
 define(['component/component', 'component/json-component'], function(Component, JSONComponent){
-	var ParentComponent = function(){
+	var Frame = function(){
 		var self = this;
 		$.extend(self, arguments[0]);
 
@@ -12,10 +12,10 @@ define(['component/component', 'component/json-component'], function(Component, 
         initialize();
 	};
 
-	ParentComponent.prototype = Object.create(Component.prototype);
-    ParentComponent.prototype.children = [];
-    ParentComponent.prototype.mesh = [];
-    ParentComponent.prototype.load = function(){
+	Frame.prototype = Object.create(Component.prototype);
+    Frame.prototype.children = [];
+    Frame.prototype.mesh = [];
+    Frame.prototype.load = function(){
         var self = this;
 
         var checkLoaded = function(){
@@ -42,33 +42,33 @@ define(['component/component', 'component/json-component'], function(Component, 
         });
     };
 
-    ParentComponent.prototype.translate = function(directions){
+    Frame.prototype.translate = function(directions){
         for(var i = 0; i < this.children; i++){
             var child = this.children[i];
             child.translate(directions);
         }
     };
 
-    ParentComponent.prototype.rotate = function(directions){
+    Frame.prototype.rotate = function(directions){
         for(var i = 0; i < this.children.length; i++){
             var child = this.children[i];
             child.rotate(directions);
         }
     };
 
-    ParentComponent.prototype.scale = function(directions){
+    Frame.prototype.scale = function(directions){
         for(var i = 0; i < this.children.length; i++){
             var child = this.children[i];
             child.scale(directions);
         }
     };
 
-    ParentComponent.prototype.addChild = function(comp){
+    Frame.prototype.addChild = function(comp){
         comp.parent = this;
         this.children.push(comp);
     };
 
-    ParentComponent.prototype.getMesh = function(){
+    Frame.prototype.getMesh = function(){
         var meshes = [];
         for(var i = 0; i < this.children.length; i++){
             var child = this.children[i];
@@ -77,13 +77,13 @@ define(['component/component', 'component/json-component'], function(Component, 
         return meshes;
     };
 
-    ParentComponent.prototype.setColor = function(color){
+    Frame.prototype.setColor = function(color){
         for(var i = 0; i < this.children.length; i++){
             this.children[i].setColor(color);
         }
     };
 
-    ParentComponent.prototype.exportSTL = function(){
+    Frame.prototype.exportSTL = function(){
         var stl = "";
         for(var i = 0; i < this.children.length; i++){
             stl += this.children[i].exportSTL();
@@ -92,14 +92,14 @@ define(['component/component', 'component/json-component'], function(Component, 
         return stl;
     };
 
-    ParentComponent.parseFromDB = function(data){
+    Frame.parseFromDB = function(data){
         for(var i = 0; i < data.children.length; i++){
             var child = data.children[i];
             child = JSONComponent.parseFromDB(child);
             data.children[i] = child;
         }
         data.focusPosition = new THREE.Vector3(data.focusPosition.x, data.focusPosition.y, data.focusPosition.z);
-        return new ParentComponent(data);
+        return new Frame(data);
     };
-	return ParentComponent;
+	return Frame;
 });

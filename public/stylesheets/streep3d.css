@@ -214,3 +214,38 @@
     float: left;
     display: inline-block;
 }
+
+#frames{
+    float: left;
+}
+
+#frames .frame{
+    width: 33%;
+    float: left;
+}
+
+#frames .frame .description{
+    height: 40%;
+    float: left;
+    overflow: hidden;
+    text-align: center;
+    white-space: normal;
+    visibility: hidden;
+}
+
+#frames .frame.focus .description{
+    visibility: visible;
+}
+
+#frames .frame .description h2{
+    width: 100%;
+    float: left;
+}
+
+#frames .frame .img{
+    height: 50%;
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+}

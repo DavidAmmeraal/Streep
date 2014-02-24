@@ -6,11 +6,10 @@
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
-var parentComponents = require('./routes/parent-components');
+var frames = require('./routes/frames');
 var fillTestData = require('./routes/fill-test-data');
 var http = require('http');
 var path = require('path');
-var ParentComponent = require('./models/parent-component');
 
 var mongoose = require('mongoose');
 
@@ -44,8 +43,6 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -53,7 +50,11 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
-app.get('/parent-components', parentComponents.list);
+
+app.get('/choose-frame', frames.chooseFrame);
+app.get('/models_api/frames', frames.all);
+app.get('/models_api/frames/:id', frames.findById);
+
 app.get('/fill-test-data', fillTestData.start);
 
 http.createServer(app).listen(app.get('port'), function(){

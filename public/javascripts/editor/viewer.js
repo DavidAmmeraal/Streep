@@ -25,31 +25,18 @@ define(['util/webgl-test'], function(WebGLTest){
         $.extend(this, options);
 
 		var initialize = function(){
-            console.log("Viewer.initialize()");
 			self.renderer = getRenderer();
-            console.log("Viewer: renderer created!");
-            console.log("Viewer: positioning camera.");
 			self.positionCamera(self.startPosition);
-            console.log("Viewer: finished positioning camera!");
-            console.log("Viewer: setting background color!");
 			self.setBackgroundColor(self.backgroundColor);
-            console.log("Viewer: finished setting background color!");
 			self.setSize(self.width, self.height);
 			self.target.append(self.renderer.domElement);
-            console.log("Viewer: adding light!");
 			self.scene.add(self.light);
-            console.log("Viewer: finished adding light!");
 			$(self.context).on('changed', self.parseContext);
-            console.log("Viewer: parsing context.");
 			self.parseContext();
-            console.log("Viewer: finished parsing context.");
 			self.sceneReady = true;
-            console.log("Viewer: start rendering!");
 			self.render();
             listenToClicks();
             listenToMouseMovement();
-            console.log("Viewer: finished rendering!");
-            console.log("finish Viewer.initialize()");
 		};
 
         var listenToMouseMovement = function(event){
@@ -234,7 +221,7 @@ define(['util/webgl-test'], function(WebGLTest){
 		
 		self.render = function(){
             self.renderer.render(self.scene, self.camera);
-            $(self).trigger('streep3d.render');
+            $(self).trigger('editor.render');
 		};
 		
 		self.remove = function(comp){
@@ -251,7 +238,7 @@ define(['util/webgl-test'], function(WebGLTest){
 			}else if(comp.focusRotation){
 				self.rotate(comp.focusRotation);
 			}
-            $(self).trigger('streep3d.focus', comp);
+            $(self).trigger('editor.focus', comp);
 		};
 
         self.hover = function(comp){
@@ -274,6 +261,8 @@ define(['util/webgl-test'], function(WebGLTest){
 		initialize();
 	};
 
-	Viewer.prototype = {};
+	Viewer.prototype = {
+
+    };
 	return Viewer;
 });

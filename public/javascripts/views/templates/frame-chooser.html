@@ -1,0 +1,14 @@
+<% for(var i = 0; i < frames.length; i++){ %>
+    <% var frame = frames[i]; %>
+    <div class="frame <% if(i == 1){ print('focus') } %>" data-order="<% print(offset + i) %>" title="<%= frame.name %>">
+        <div class="description">
+            <h2><%= frame.name %></h2>
+            <p>
+                <%= frame.description_short %>
+            </p>
+        </div>
+        <div class="img">
+            <img src="<%= frame.img_high %>" title="<%= frame.name %>"/>
+        </div>
+    </div>
+<% } %>
