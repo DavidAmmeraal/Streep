@@ -11,27 +11,73 @@ define([
         collection: new Frames(),
         template: _.template(FrameChooserTemplate),
         events: {
-            "click .frame": "focusFrame"
+            "click .frame": "focusFrame",
         },
-        offset: 0,
+        selected: 0,
+        amountItems: 3,
+        rendered: false,
         initialize: function(){
             this.fetchFrames();
+            var self = this;
+            $(window).on('resize', function(){
+                self.resizeImages.apply(self);
+            });
         },
         render: function(){
-            this.$el.html(this.template({'frames': this.collection.toJSON(), 'offset': this.offset}));
-            console.log(this.el);
+            this.$el.html(this.template({'frames': this.collection.toJSON(), 'offset': this.offset, 'selected': this.selected, 'amountItems': this.amountItems}));
+            this.resizeImages();
         },
         fetchFrames: function(){
             var self = this;
-            this.collection.fetch({data: {limit: 3, skip: this.offset}}).then(function(){
-                self.render();
+            var limit = this.amountItems;
+            var skip = 0;
+            if(this.selected < (this.amountItems - 1)){
+                limit = Math.ceil(this.amountItems / 2) + this.selected;
+            }else{
+                skip = this.selected - Math.floor(this.amountItems / 2);
+            }
+            this.collection.fetch({data: {limit: limit, skip: skip}}).then(function(){
+                self.$el.fadeOut(100, function(){
+                    self.render();
+                    self.$el.fadeIn(100);
+                });
+            })
+        },
+        resizeImages: function(){
+            function resize(){
+                var element = $(this);
+                var parentWidth = element.parent().width();
+                var parentHeight = element.parent().height();
+
+                var ratio = this.naturalWidth / this.naturalHeight;
+
+                if(ratio > 1){
+                    element.width(parentWidth);
+                    if(element.height() > parentHeight){
+                        var height = element.height();
+                        height -= height - parentHeight;
+                        element.width(height * ratio);
+                        element.height(height);
+                    }else{
+                        element.css('margin-top', (parentHeight - element.height()));
+                    }
+                }else{
+                    element.height(parentHeight);
+                }
+            }
+            this.$el.find('.img img').each(function(){
+                var element = this;
+                if(this.naturalWidth){
+                    resize.apply(element);
+                }else{
+                    $(this).on('load', resize);
+                }
             })
         },
         focusFrame: function(event, target){
-            console.log("FrameChooser.focusFrame()");
             var clicked = this.$(event.currentTarget);
-            this.offset = parseInt(clicked.attr('data-order'));
-            console.log(this.offset);
+            this.selected = parseInt(clicked.attr('data-order'));
+            this.fetchFrames();
         }
     });
     return FrameChooser;

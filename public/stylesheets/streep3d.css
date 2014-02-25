@@ -217,11 +217,14 @@
 
 #frames{
     float: left;
+    height: 350px;
 }
 
 #frames .frame{
+    height: 100%;
     width: 33%;
     float: left;
+    cursor: pointer;
 }
 
 #frames .frame .description{
