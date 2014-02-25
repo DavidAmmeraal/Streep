@@ -76,8 +76,10 @@ define([
         },
         focusFrame: function(event, target){
             var clicked = this.$(event.currentTarget);
-            this.selected = parseInt(clicked.attr('data-order'));
-            this.fetchFrames();
+            if(!clicked.hasClass('filler')){
+                this.selected = parseInt(clicked.attr('data-order'));
+                this.fetchFrames();
+            }
         }
     });
     return FrameChooser;
