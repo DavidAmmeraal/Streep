@@ -23,3 +23,7 @@ exports.findById = function(req, res){
 exports.chooseFrame = function(req, res){
     res.render('choose-frame', { title: 'Please choose your frame!' });
 }
+
+exports.editFrame = function(req, res){
+    res.render('edit-frame', { title: 'Edit your frame'});
+}

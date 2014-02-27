@@ -12,19 +12,19 @@ requirejs.config({
 });
 
 require([
-	'viewer',
-	'component-context',
-	'component/json-component',
-	'component/frame',
-	'component/connector/connector',
-	'component/modification/csg-object/csg-object',
-	'component/modification/csg-text-modification',
-	'component/modification/csg-object-modification',
-	'component/transformation/rotate',
-	'component/transformation/scale',
-	'component/transformation/translate', 
-    'gui/overlay/connector-overlay/connector-overlay',
-    'keyboard-listener/keyboard-listener'
+	'../edit-frame/viewer',
+	'../edit-frame/component-context',
+	'./json-component',
+	'./frame',
+	'./connector/connector',
+	'./modification/csg-object/csg-object',
+	'./modification/csg-text-modification',
+	'./modification/csg-object-modification',
+	'./transformation/rotate',
+	'./transformation/scale',
+	'./transformation/translate',
+    './overlay/connector-overlay/connector-overlay',
+    './keyboard-listener'
 ], 
 function(
 	Viewer, 
@@ -58,7 +58,7 @@ function(
     });
 
     $.ajax({
-        url: 'models_api/frame',
+        url: 'models_api/frames',
         success: function(data){
             var comps = JSON.parse(data);
             var compositions = [];
