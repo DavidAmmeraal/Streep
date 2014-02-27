@@ -72,7 +72,7 @@ function(
                 var cOverlay = new ConnectorOverlay({
                     targetElement: $('#container'),
                     viewer: viewer,
-                    className: 'connectors',
+                    className: 'connectors'
                 });
 
                 cOverlay.render();

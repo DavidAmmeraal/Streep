@@ -48,7 +48,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+app.get('/', frames.chooseFrame);
 app.get('/users', user.list);
 
 app.get('/choose-frame', frames.chooseFrame);
