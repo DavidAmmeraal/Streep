@@ -50,7 +50,7 @@ define([
                     var id = $(this).attr('data-frameId');
                     window.location = 'edit-frame/' + id;
                 });
-            }, 50);
+            }, 1000);
 
             this.$el.find('.rsGCaption').each(function(){
                 var element = $(this);
