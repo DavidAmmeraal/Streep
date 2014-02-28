@@ -50,14 +50,12 @@ define(['component/transformation/transformation', 'component/modification/modif
         });
         worker.postMessage(message);
 
-
-        //self.component.geo = targetGeoBSP['union'](geoBSP).toGeometry();
-        ///self.component.refresh();
-       // var mesh = new THREE.Mesh(self.geo, self.component.material);
-        //console.log(mesh);
-        //globalviewer.getScene().add(mesh);
-        //globalviewer.render();
-
+        /*
+        var mesh = new THREE.Mesh(self.geo, self.component.material);
+        console.log(mesh);
+        globalviewer.getScene().add(mesh);
+        globalviewer.render();
+        */
     };
 
     CSGModification.prototype.executeTransformations = function(){
