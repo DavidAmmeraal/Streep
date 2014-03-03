@@ -1,0 +1,40 @@
+#frames{
+    float: left;
+    height: 500px;
+    width: 100%;
+}
+
+#frames .rsVisibleNearbyWrap{
+    position: absolute;
+}
+
+#frames .rsCaption{
+    margin: 20px auto;
+    height: 60px;
+    width: 30%;
+}
+
+#frames .buy-frame{
+    text-align: center;
+    height: 500px;
+    display: none;
+}
+
+#frames .buy-frame button.buy{
+    background-color:#60e5a5;
+    height: 30px;
+    width: 90px;
+    border: none;
+    font-weight: bold;
+    z-index: 9999;
+}
+
+#frames .buy-frame .price{
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#frames .buy-frame .shipping{
+    text-align: center;
+}

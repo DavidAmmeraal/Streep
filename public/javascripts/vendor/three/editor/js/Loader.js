@@ -226,7 +226,7 @@ var Loader = function ( editor ) {
 
 					var mesh = new THREE.Mesh( geometry, material );
 
-					editor.addObject( mesh );
+					renderer.addObject( mesh );
 
 				}, false );
 				reader.readAsBinaryString( file );

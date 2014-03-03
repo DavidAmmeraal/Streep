@@ -1,0 +1,21 @@
+<div class="contents">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <%
+            for(var i = 0; i < pages.length; i++){
+            var page = pages[i];
+        %>
+        <li <% if(!i){ %> class="active" <% } %>><a href="#<%= page.id %>"  data-toggle="tab"><%= page.tabTitle %></a></li>
+        <% }; %>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <%
+            for(var i = 0; i < pages.length; i++){
+            var page = pages[i];
+        %>
+        <div class="tab-pane <% if(!i){ print('active') } %>" id="<%= page.id %>">PLACEHOLDER TEXT</div>
+        <% }; %>
+    </div>
+</div>

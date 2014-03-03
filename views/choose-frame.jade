@@ -1,6 +1,7 @@
 extends layout
 block head
     link(rel='stylesheet', href='/stylesheets/streep3d.css')
+    link(rel='stylesheet', href='/stylesheets/choose-frame.css')
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/royalslider.css')
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/skins/minimal-white/rs-minimal-white.css')
 
@@ -8,5 +9,5 @@ block content
     #frames
 
 block js
-    script(src='/javascripts/vendor/require.js' data-main='/javascripts/choose-frame/main')
+    script(src='/javascripts/vendor/require.js' data-main='/javascripts/pages/choose-frame/main')
     script(src='/javascripts/vendor/royalslider/jquery.royalslider.min.js')

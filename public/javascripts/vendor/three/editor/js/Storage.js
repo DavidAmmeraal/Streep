@@ -2,7 +2,7 @@ var Storage = function () {
 
 	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
-	var name = 'threejs-editor';
+	var name = 'threejs-renderer';
 	var version = 1;
 
 	var database;

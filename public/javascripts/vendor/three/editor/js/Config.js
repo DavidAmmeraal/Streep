@@ -1,6 +1,6 @@
 var Config = function () {
 
-	var name = 'threejs-editor';
+	var name = 'threejs-renderer';
 
 	var storage = {
 		theme: 'css/light.css',

@@ -1,7 +1,7 @@
-define(['domain/models/frame'], function(Frame){
+define(['../models/frame'], function(Frame){
     var Frames = Backbone.Collection.extend({
         model: Frame,
-        url: 'models_api/frames'
+        url: '/models_api/frames'
     });
 
     return Frames;

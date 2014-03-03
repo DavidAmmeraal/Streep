@@ -20,7 +20,7 @@ Menubar.Help = function ( editor ) {
 	var option = new UI.Panel();
 	option.setClass( 'option' );
 	option.setTextContent( 'Source code' );
-	option.onClick( function () { window.open( 'https://github.com/mrdoob/three.js/tree/master/editor', '_blank' ) } );
+	option.onClick( function () { window.open( 'https://github.com/mrdoob/three.js/tree/master/renderer', '_blank' ) } );
 	options.add( option );
 
 	// about

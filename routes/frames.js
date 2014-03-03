@@ -27,3 +27,7 @@ exports.chooseFrame = function(req, res){
 exports.editFrame = function(req, res){
     res.render('edit-frame', { title: 'Edit your frame'});
 }
+
+exports.editMenu = function(req, res){
+
+}

@@ -1,54 +1,21 @@
 extends layout
 block head
+    link(rel='stylesheet', href='/javascripts/vendor/bootstrap-3.1.1-dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/javascripts/vendor/royalslider/royalslider.css')
+    link(rel='stylesheet', href='/javascripts/vendor/royalslider/skins/minimal-white/rs-minimal-white.css')
     link(rel='stylesheet', href='/stylesheets/streep3d.css')
-    link(rel='stylesheet', href='/stylesheets/ui-lightness/jquery-ui-1.10.3.custom.css')
+    link(rel='stylesheet', href='/stylesheets/edit-frame.css')
+
 block content
-    #streep3d
-        #container.viewer
-            .processes(style='display: none;')
-                .entrys
-    #templates(style='display: none;')
-        #colordialog_template
-            .colordialog(title='Choose Color for Component')
-                p Please choose a color for the component.
-                input(type='color')
-        #engravetextdialog_template
-            .engrave(title='Choose Engraving')
-                p Please choose an option for the engraving.
-                .options
-                    .option.engravetype
-                        .label
-                            | Text:
-                        .options
-                            input(type='text', name='engravetext', size='15')
-                    .option.font.last
-                        .label
-                            | Font:
-                        .options
-                            select(name='engravefont')
-                                option(value='helvetiker', selected='selected')
-                                    | Helvetiker
-                                option(value='fantasque sans mono')
-                                    | Fantasque Sans Mono
-                                option(value='banana brick')
-                                    | Banana Brick
-                button.submit Engrave
-        #engraveobjectdialog_template
-            .engrave(title='Choose Engraving')
-                p Please choose an option for the engraving.
-                .engravetype
-                    .radio
-                        | Object:
-                    .options
-                        .object.template
-                            input(type='radio', value='star', name='engraveobject')
-                            label(for='engravestar') Star
-                button.submit Engrave
+    .column-right
+        #preview
+    .column-left
+        #renderer
+        #menu
+
 block js
-    script(src='/javascripts/vendor/pep.jquery.min.js')
     script(src='http://code.createjs.com/easeljs-0.7.0.min.js')
     script(src='http://code.createjs.com/tweenjs-0.5.0.min.js')
-    script(src='/javascripts/vendor/jquery-ui-1.10.3.custom.min.js')
     script(src='/javascripts/vendor/three/build/three.js')
     script(src='/javascripts/vendor/csg.js')
     script(src='/javascripts/vendor/ThreeBSP.js')
@@ -63,8 +30,16 @@ block js
     script(src='/fonts/banana_brick/banana_brick_regular.typeface.js')
     script(src='/fonts/fantasque-sans-mono/fantasque_sans_mono_regular.typeface.js')
     script(src='/javascripts/vendor/filesaver.js')
+
     //jQuery.jsTree
     script(src='/javascripts/vendor/jstree/_lib/jquery.cookie.js')
     script(src='/javascripts/vendor/jstree/_lib/jquery.hotkeys.js')
     script(src='/javascripts/vendor/jstree/jquery.jstree.js')
-    script(src='/javascripts/vendor/require.js', data-main='/javascripts/edit-frame/main.js')
+    script(src='/javascripts/vendor/require.js', data-main='/javascripts/pages/edit-frame/main.js')
+
+    //Bootstrap
+    script(src='/javascripts/vendor/bootstrap-3.1.1-dist/js/bootstrap.min.js')
+
+    //Royal Slider
+    script(src='/javascripts/vendor/royalslider/jquery.royalslider.min.js')
+

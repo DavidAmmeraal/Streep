@@ -1,6 +1,6 @@
 define([
-    'domain/collections/frames',
-    'text!views/templates/frame-chooser.html'
+    '../domain/collections/frames',
+    'text!/javascripts/views/templates/frame-chooser.html'
 ], function(
     Frames,
     FrameChooserTemplate
