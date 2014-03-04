@@ -44,21 +44,37 @@ function(
             container: renderTarget,
             backgroundColor: '#FFFFFF'
         });
-    });
 
-    var menu = new Menu({
-        element: $('#menu'),
-        pages: [
-            new LegPage(),
-            new TabPage({
-                id: "patterns",
-                tabTitle: 'Patronen'
-            }),
-            new TabPage({
-                id: "engrave",
-                tabTitle: 'Graveren'
-            })
-        ]
+        var legPage = new LegPage({
+            frame: frame
+        });
+
+        var menu = new Menu({
+            element: $('#menu'),
+            pages: [
+                legPage,
+                new TabPage({
+                    id: "patterns",
+                    tabTitle: 'Patronen',
+                    frame: frame
+                }),
+                new TabPage({
+                    id: "engrave",
+                    tabTitle: 'Graveren',
+                    frame: frame
+                })
+            ]
+        });
+
+        $(legPage).on('color-changed', function(event, color){
+            color.replace("#", "0x");
+            renderer.setFrameColor(color);
+        });
+
+        $(legPage).on('legs-changed', function(event, replacementLeg){
+            renderer.changeLegs(replacementLeg);
+        });
+
     });
 
     $(window).resize(resizeElements);

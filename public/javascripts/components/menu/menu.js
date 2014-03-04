@@ -1,8 +1,6 @@
 define(['text!./templates/menu.html'], function(MenuTemplate){
    var Menu = function(options){
        var self = this;
-       this.element = null;
-       this.pages = [];
 
        $.extend(self, options);
 
@@ -17,12 +15,15 @@ define(['text!./templates/menu.html'], function(MenuTemplate){
            for(var i = 0; i < self.pages.length; i++){
                var page = self.pages[i];
                var pageElement = self.element.find('#' + page.id);
-               pageElement.html(page.render());
+               page.render(pageElement);
            }
        };
 
        initialize();
    };
+
+    Menu.prototype.element = null;
+    Menu.prototype.pages = [];
 
     return Menu;
 });

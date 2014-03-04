@@ -1,27 +1,37 @@
 define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPageTemplate){
     var LegPage = function(options){
-        TabPage.apply(this, options);
+        var self = this;
+        TabPage.apply(this, [options]);
+
+        var initialize = function(){
+            self.colors = self.frame.get('availableColors');
+            self.legs = self.frame.get('legs');
+        };
+
+        initialize();
     };
 
     LegPage.prototype = Object.create(TabPage.prototype);
     LegPage.prototype.id = "color";
     LegPage.prototype.tabTitle = "Poot en kleur";
     LegPage.prototype.legs = [];
-    LegPage.prototype.colors = [
-        '#282828',
-        '#28affc',
-        '#a8a8a8',
-        '#e1fc28',
-        '#fc2828'
-    ];
+    LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
-    LegPage.prototype.render = function(){
-        var self = $(this);
-        this.html = $(this.template({colors: this.colors}));
+    LegPage.prototype.render = function(target){
+        var self = this;
+        var html = $(this.template({colors: this.colors, legs: this.legs}));
+        this.html = html;
         this.html.find('.colors > .color').on('click', function(){
-            self.colorChanged(color);
+            html.find('.colors > .color.active').removeClass('active');
+            $(this).addClass('active');
+            $(self).trigger('color-changed', $(this).attr('data-color'));
         });
-        return this.html;
+        this.html.find('.legs img.leg').on('click', function(){
+            html.find('.legs img.leg.active').removeClass('active');
+            $(this).addClass('active');
+            $(self).trigger('legs-changed', self.legs[$(this).attr('data-number')]);
+        });
+        target.html(this.html);
     };
 
     return LegPage;

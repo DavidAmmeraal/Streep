@@ -1,10 +1,15 @@
 <div class="leg-page">
-    <div class="leg-chooser">
-        Poten hier
+    <div class="legs">
+        <div class="slider">
+            <% for(var i = 0; i < legs.length; i++){ %>
+            <% var leg = legs[i]; %>
+            <img src="<%= leg.img %>" class="leg<% if(leg.default) print(' active'); %>" data-number="<%= i %>"/>
+            <% }; %>
+        </div>
     </div>
     <div class="colors">
         <% _.each(colors, function(color){ %>
-        <div class="color" data-color="<%= color %>" style="background-color: <%= color %>;">&nbsp;</div>
+        <div class="color<% if(color.default){ print(' active'); } %>" data-color="<%= color.hex %>" style="background-color: <%= color.hex %>;">&nbsp;</div>
         <% }); %>
     </div>
 </div>

@@ -183,7 +183,6 @@ define(['./util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.addComponent = function(comp){
-			var comps = [];
 			if(!comp.loaded){
 				$(comp).on('loaded', function(){
 					self.addComponent(comp);
@@ -216,11 +215,16 @@ define(['./util/webgl-test'], function(WebGLTest){
 					self.focusTo(requester);
 				});
 				$(comp).off("request-render").on("request-render", function(event, requester){
-					self.scene.remove(requester.mesh);
-					requester.redraw();
-					self.scene.add(requester.mesh);
-					self.render();
+                    self.scene.remove(requester.mesh);
+                    requester.redraw();
+                    self.scene.add(requester.mesh);
+                    self.render();
 				});
+                $(comp).off("request-removal").on("request-removal", function(event, requester){
+                    self.scene.remove(requester.mesh);
+                    delete comp;
+                    self.render();
+                });
 			}
 		};
 		

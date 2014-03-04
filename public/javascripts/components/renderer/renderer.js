@@ -28,32 +28,22 @@ define([
     var Renderer = function(options){
         var self = this;
 
-        this.backgroundColor = null;
-        this.frame = null;
-        this.container = null;
-        this.context = null;
-
         $.extend(self, options);
 
-        var viewer = null;
-
-        this.resize = function(){
-            viewer.resize();
-        };
-
         var initialize = function(){
+            console.log("Renderer.initialize()");
             self.context = new ComponentContext();
-            viewer = new Viewer(self.container, self.context, {
+            self.viewer = new Viewer(self.container, self.context, {
                 backgroundColor: self.backgroundColor,
                 startPosition: new THREE.Vector3(-100, 20, 400)
             });
-            var frameRenderObj = Frame.parseFromDB(self.frame.toJSON());
+            self.renderedFrame = Frame.parseFromDB(self.frame.toJSON());
 
-            frameRenderObj.load().then(function(){
-                self.context.add(frameRenderObj);
-                viewer.focusTo(frameRenderObj);
+            self.renderedFrame.load().then(function(){
+                self.context.add(self.renderedFrame);
+                self.viewer.focusTo(self.renderedFrame);
 
-                window['globalviewer'] = viewer;
+                window['globalviewer'] = self.viewer;
             });
 
             /*
@@ -79,10 +69,27 @@ define([
                 }
             });
             */
-            new KeyboardListener({viewer: viewer});
+            new KeyboardListener({viewer: self.viewer});
         };
 
         initialize();
     };
+
+    Renderer.prototype.backgroundColor = "#FFFFFF";
+    Renderer.prototype.frame = null;
+    Renderer.prototype.renderedFrame = null;
+    Renderer.prototype.container = null;
+    Renderer.prototype.context = null;
+    Renderer.prototype.viewer = null;
+    Renderer.prototype.resize = function(){
+        this.viewer.resize();
+    }
+    Renderer.prototype.setFrameColor = function(color){
+        this.renderedFrame.setColor(color);
+    }
+    Renderer.prototype.changeLegs = function(leg){
+        console.log("Renderer.changeLegs(" + leg + ")");
+        this.renderedFrame.changeLegs(leg);
+    }
     return Renderer;
 })

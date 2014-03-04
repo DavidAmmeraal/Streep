@@ -17,6 +17,8 @@ define(['./component'], function(Component){
 	LeafComponent.prototype = Object.create(Component.prototype);
     LeafComponent.prototype.geo = null;
     LeafComponent.prototype.mesh = null;
+    LeafComponent.prototype.hoverColor = "0x3333FF";
+    LeafComponent.prototype.color = "0x28affc";
     LeafComponent.prototype.material = null;
     LeafComponent.prototype.loaded = false;
     LeafComponent.prototype.connectors = {};
@@ -73,18 +75,29 @@ define(['./component'], function(Component){
         this.mesh.name = this.name;
     };
     LeafComponent.prototype.hover = function(){
-        this.mesh.material.color.setHex(0x3333FF);
+        this.mesh.material.color.setHex(this.hoverColor);
     };
     LeafComponent.prototype.unhover = function(){
-        this.mesh.material.color.setHex(0xFFFFFF);
+        this.mesh.material.color.setHex(this.color);
     };
     LeafComponent.prototype.getMesh = function(){
         return this.mesh;
     };
-
+    LeafComponent.prototype.remove = function(){
+        this.trigger('request-removal', this);
+    };
     LeafComponent.prototype.setColor = function(color){
-        this.material = new THREE.MeshLambertMaterial({ color: color });
-        this.refresh();
+        if(color.indexOf("#") != -1){
+            color = color.replace("#", "0x");
+        }
+        this.color = color;
+
+        if(this.mesh){
+            this.mesh.material.color.setHex(this.color);
+            this.refresh();
+        }else{
+            this.material.color.setHex(this.color);
+        }
     };
 
     LeafComponent.prototype.refresh = function(){

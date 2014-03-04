@@ -37,7 +37,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
             case "MeshLambertMaterial":
                 data.material = new THREE.MeshLambertMaterial();
         }
-        console.log(data);
         return new JSONComponent(data);
     }
 	return JSONComponent;
