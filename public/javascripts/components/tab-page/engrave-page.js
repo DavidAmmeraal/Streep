@@ -45,7 +45,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html'], function(TabPage, E
         this.html.find('button.reset').on('click', function(){
             self.leg.reset(apply, self.leg);
         });
-        this.
 
         this.element.html(this.html);
     };
