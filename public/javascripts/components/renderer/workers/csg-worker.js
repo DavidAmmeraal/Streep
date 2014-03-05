@@ -1,5 +1,5 @@
 var window = {};
-importScripts('../util/geometry-helper.js', '../../vendor/three/build/three.js', '../../vendor/csg.js', '../../vendor/ThreeBSP.js');
+importScripts('../util/geometry-helper.js', '../../../vendor/three/build/three.js', '../../../vendor/csg.js', '../../../vendor/ThreeBSP.js');
 var ThreeBSP = window.ThreeBSP;
 self.addEventListener('message', function(msg) {
     doOperation(msg.data.type, msg.data.targetGeo, msg.data.modGeo);

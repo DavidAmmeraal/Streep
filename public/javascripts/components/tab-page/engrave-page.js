@@ -1,4 +1,4 @@
-define(['./tab-page', 'text!./templates/engrave-page.html'], function(TabPage, EngravePageTemplate){
+define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/component/modification/csg-text-modification'], function(TabPage, EngravePageTemplate, CSGTextModification){
     var EngravePage = function(options){
         var self = this;
         TabPage.apply(this, [options]);
@@ -36,18 +36,38 @@ define(['./tab-page', 'text!./templates/engrave-page.html'], function(TabPage, E
         this.html = html;
 
 
-        this.html.find('button.engrave').on('click', function(){
-
+        this.html.find('button.engrave').on('click', function(event){
+            self.engraveClicked.apply(self, [event]);
         });
         this.html.find('button.carve').on('click', function(){
-
+            self.carveClicked.apply(self, [event]);
         });
         this.html.find('button.reset').on('click', function(){
-            self.leg.reset(apply, self.leg);
+            self.leg.reset.apply(self);
         });
 
         this.element.html(this.html);
     };
+    EngravePage.prototype.engraveClicked = function(event){
+        var connector = _.find(this.leg.connectors, function(connector){
+            return connector.selected;
+        });
+        console.log(connector);
+        console.log("Engrave Clicked!");
+    };
+    EngravePage.prototype.carveClicked = function(event){
+        var connector = _.find(this.leg.connectors, function(connector){
+            return connector.selected;
+        });
+        var mod = _.find(connector.modifications, function(mod){
+            return mod.setText;
+        });
+        mod.setText("TEST", "helvetiker", 8);
+        mod.execute().then(function(){
+            console.log("MODIFICATION EXECUTED!");
+        });
+        console.log("Carve Clicked!");
+    }
 
     return EngravePage;
 })

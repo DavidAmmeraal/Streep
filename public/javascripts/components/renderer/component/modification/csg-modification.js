@@ -13,14 +13,13 @@ define(['../transformation/transformation', './modification', '../../util/geomet
     CSGModification.prototype.type = null;
     CSGModification.transformations = [];
     CSGModification.prototype.execute = function(){
-
         var self = this;
         if(!this.connector.originalGeo){
             this.connector.originalGeo = self.component.geo;
         }
         self.executeTransformations();
 
-        var worker = new Worker('/javascripts/edit-frame/workers/csg-worker.js');
+        var worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
         var message = {
             'type': self.type,
             'targetGeo': {
@@ -34,21 +33,15 @@ define(['../transformation/transformation', './modification', '../../util/geomet
                 'faceVertexUvs': self.component.geo.faceVertexUvs
             }
         };
+        return new Promise(function(resolve, reject){
+            worker.onmessage = function(e){
+                self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
+                self.component.refresh();
+                resolve();
+            };
 
-        worker.onmessage = function(e){
-            self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
-            self.component.refresh();
-            $('.processes').fadeOut(1000,
-                function(){
-                    $('.processes').html('');
-                }
-            );
-        };
-        $('.processes').html('<div class="entry"><div class="explanation">Executing CSG Operation</div><div class="progress"></div></div>').hide().fadeIn(1000);
-        $('.processes').find('.progress').progressbar({
-            'value': false
+            worker.postMessage(message);
         });
-        worker.postMessage(message);
 
         /*
         var mesh = new THREE.Mesh(self.geo, self.component.material);
