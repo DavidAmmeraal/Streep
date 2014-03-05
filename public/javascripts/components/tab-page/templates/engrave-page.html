@@ -1,0 +1,26 @@
+<div class="engrave-page">
+    <%
+        var displayCSS = null;
+        display ? displayCSS = "none" : displayCSS = "block";
+    %>
+
+    <div class="disabled" style="display: <%= displayCSS %>;">Kies a.u.b. eerst een location!</div>
+    <div class="fields">
+        <input type="text" class="text">
+        <select>
+            <% _.each(fonts, function(font){ %>
+            <option value="<%= font %>"><%= font %></option>
+            <% }); %>
+        </select>
+        <select>
+            <% _.each(sizes, function(size){ %>
+            <option value="<%= size %>"><%= size %></option>
+            <% }); %>
+        </select>
+    </div>
+    <div class="buttons">
+        <button class="reset">Reset</button>
+        <button class="engrave">Halverwege</button>
+        <button class="carve">Doorheen</button>
+    </div>
+</div>

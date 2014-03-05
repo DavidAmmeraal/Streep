@@ -15,14 +15,16 @@ require([
     '../../domain/models/frame',
     '../../components/menu/menu',
     '../../components/tab-page/tab-page',
-    '../../components/tab-page/leg-page'
+    '../../components/tab-page/leg-page',
+    '../../components/tab-page/engrave-page'
 ],
 function(
     Renderer,
     Frame,
     Menu,
     TabPage,
-    LegPage
+    LegPage,
+    EngravePage
 ){
 
     var renderer = null;
@@ -45,8 +47,44 @@ function(
             backgroundColor: '#FFFFFF'
         });
 
+        $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+
+    });
+
+    $(window).resize(resizeElements);
+    resizeElements();
+
+    function handleFocusChanged(event, comp){
+        if(comp.parent && !comp.children){
+            var parent = comp.parent;
+            if(comp == parent.currentFront){
+                focusedOnFront(comp);
+            }else if(comp == parent.currentLeftLeg || comp == parent.currentRightLeg){
+                focusedOnLeg(comp);
+            }
+        }else{
+            $('#menu').hide();
+        }
+    };
+
+    function focusedOnFront(comp){
+        $('#menu').html('');
+        var zoomoutButton = $('<button>Zoom out</button>');
+        zoomoutButton.on('click', function(){
+            renderer.viewer.focusTo(comp.parent);
+        });
+        $('#menu').append(zoomoutButton);
+        $('#menu').show();
+    }
+
+    function focusedOnLeg(comp){
+        $('#menu').html('');
         var legPage = new LegPage({
             frame: frame
+        });
+
+        var engravePage = new EngravePage({
+            leg: comp
         });
 
         var menu = new Menu({
@@ -58,11 +96,7 @@ function(
                     tabTitle: 'Patronen',
                     frame: frame
                 }),
-                new TabPage({
-                    id: "engrave",
-                    tabTitle: 'Graveren',
-                    frame: frame
-                })
+                engravePage
             ]
         });
 
@@ -74,11 +108,13 @@ function(
         $(legPage).on('legs-changed', function(event, replacementLeg){
             renderer.changeLegs(replacementLeg);
         });
-
-    });
-
-    $(window).resize(resizeElements);
-    resizeElements();
+        var zoomoutButton = $('<button>Zoom out</button>');
+        zoomoutButton.on('click', function(){
+            renderer.viewer.focusTo(comp.parent);
+        });
+        $('#menu').append(zoomoutButton);
+        $('#menu').show();
+    }
 
     function resizeElements(){
         var menuHeight = $('#menu').height();

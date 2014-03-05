@@ -10,7 +10,9 @@ define([
     './component/transformation/rotate',
     './component/transformation/scale',
     './component/transformation/translate',
-    './keyboard-listener/keyboard-listener'
+    './keyboard-listener/keyboard-listener',
+    './gui/overlay/connector-overlay/connector-overlay',
+    './gui/overlay/indicator-overlay/indicator-overlay'
 ], function(
     Viewer,
     ComponentContext,
@@ -23,7 +25,9 @@ define([
     Rotate,
     Scale,
     Translate,
-    KeyboardListener
+    KeyboardListener,
+    ConnectorOverlay,
+    IndicatorOverlay
 ){
     var Renderer = function(options){
         var self = this;
@@ -40,37 +44,40 @@ define([
             self.renderedFrame = Frame.parseFromDB(self.frame.toJSON());
 
             self.renderedFrame.load().then(function(){
+                self.indicators = new IndicatorOverlay({
+                    targetElement: self.container,
+                    viewer: self.viewer,
+                    className: 'indicators'
+                });
+
+                self.connectors = new ConnectorOverlay({
+                   targetElement: self.container,
+                   viewer: self.viewer,
+                   className: 'connectors'
+                });
+
+                self.connectors.hide();
+
                 self.context.add(self.renderedFrame);
                 self.viewer.focusTo(self.renderedFrame);
 
                 window['globalviewer'] = self.viewer;
             });
 
-            /*
-            $.ajax({
-                url: '/models_api/frames/' + self.frameId,
-                success: function(data){
-                    console.log(data);
-                    var bril = Frame.parseFromDB(JSON.parse(data));
-                    bril.load().then(function(){
-                        context.add(bril);
-                        viewer.focusTo(bril);
+            $(self.viewer).on('viewer.focus', handleFocusChanged);
 
-                        var cOverlay = new ConnectorOverlay({
-                            targetElement: $('#container'),
-                            viewer: viewer,
-                            className: 'connectors'
-                        });
-
-                        cOverlay.render();
-
-                        window['globalviewer'] = viewer;
-                    });
-                }
-            });
-            */
             new KeyboardListener({viewer: self.viewer});
         };
+
+        var handleFocusChanged = function(event, comp){
+            if(comp.parent && !comp.children){
+                self.connectors.show();
+                self.indicators.hide();
+            }else{
+                self.connectors.hide();
+                self.indicators.show();
+            }
+        }
 
         initialize();
     };
@@ -81,6 +88,8 @@ define([
     Renderer.prototype.container = null;
     Renderer.prototype.context = null;
     Renderer.prototype.viewer = null;
+    Renderer.prototype.indicators = null;
+    Renderer.prototype.connectors = null;
     Renderer.prototype.resize = function(){
         this.viewer.resize();
     }

@@ -1,3 +1,21 @@
+button{
+    border: none;
+    background-color:#60e5a5;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    height: 50px;
+}
+
+input[type="text"], select{
+    background-color: white;
+    border: none;
+    height: 50px;
+    font-size: 25px;
+    font-weight: bold;
+    padding-left: 5px;
+}
+
 #streep3d .menu{
 	float: left;
 	width: 0px;

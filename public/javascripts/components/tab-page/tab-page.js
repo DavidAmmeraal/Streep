@@ -8,8 +8,9 @@ define([], function(){
     TabPage.prototype.tabTitle = "Unnamed Tab";
     TabPage.prototype.template = _.template("This tab doesn't have any content yet");
     TabPage.prototype.html = "<div>This tab doesn't have any content yet!</div>";
-    TabPage.prototype.render = function(target){
-        target.html = $(this.html);
+    TabPage.prototype.element = null;
+    TabPage.prototype.render = function(){
+        this.element.html($(this.html));
     }
 
     return TabPage;

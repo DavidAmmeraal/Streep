@@ -32,6 +32,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
         }
 
         data.focusPosition = new THREE.Vector3(data.focusPosition.x, data.focusPosition.y, data.focusPosition.z);
+        data.indicator = new THREE.Vector3(data.indicator.x, data.indicator.y, data.indicator.z);
 
         switch(data.material){
             case "MeshLambertMaterial":

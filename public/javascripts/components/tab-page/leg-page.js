@@ -17,8 +17,9 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.legs = [];
     LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
-    LegPage.prototype.render = function(target){
+    LegPage.prototype.render = function(){
         var self = this;
+        console.log(this);
         var html = $(this.template({colors: this.colors, legs: this.legs}));
         this.html = html;
         this.html.find('.colors > .color').on('click', function(){
@@ -31,7 +32,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             $(this).addClass('active');
             $(self).trigger('legs-changed', self.legs[$(this).attr('data-number')]);
         });
-        target.html(this.html);
+        this.element.html(this.html);
     };
 
     return LegPage;

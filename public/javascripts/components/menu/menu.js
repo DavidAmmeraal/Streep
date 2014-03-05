@@ -15,7 +15,8 @@ define(['text!./templates/menu.html'], function(MenuTemplate){
            for(var i = 0; i < self.pages.length; i++){
                var page = self.pages[i];
                var pageElement = self.element.find('#' + page.id);
-               page.render(pageElement);
+               page.element = pageElement;
+               page.render();
            }
        };
 

@@ -33,8 +33,8 @@ define(['./util/webgl-test'], function(WebGLTest){
 			self.parseContext();
 			self.sceneReady = true;
 			self.render();
-            listenToClicks();
-            listenToMouseMovement();
+            //listenToClicks();
+            //listenToMouseMovement();
 		};
 
         self.resize = function(){
@@ -230,7 +230,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 		
 		self.render = function(){
             self.renderer.render(self.scene, self.camera);
-            $(self).trigger('editor.render');
+            $(self).trigger('viewer.render');
 		};
 		
 		self.remove = function(comp){
@@ -247,7 +247,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 			}else if(comp.focusRotation){
 				self.rotate(comp.focusRotation);
 			}
-            $(self).trigger('editor.focus', comp);
+            $(self).trigger('viewer.focus', comp);
 		};
 
         self.hover = function(comp){
@@ -271,7 +271,41 @@ define(['./util/webgl-test'], function(WebGLTest){
 	};
 
 	Viewer.prototype = {
+        getComponents: function(){
+            var findCompsIn = function(comp){
+                var comps = [];
+                for(var i = 0; i < comp.children.length; i++){
+                    var child = comp.children[i];
+                    if(child.children){
+                        comps.push.apply(comps, findCompsIn(child));
+                    }else{
+                        comps.push(child);
+                    }
+                }
+                return comps;
+            }
 
+            var comps = [];
+
+            for(var i = 0; i < this.context.properties.components.length; i++){
+                var comp = this.context.properties.components[i];
+                if(comp.children){
+                    comps.push.apply(comps, findCompsIn(comp));
+                }else{
+                    comps.push(comp);
+                }
+
+                /*
+
+                if(comp.children){
+                    comps.push.apply(comps, findCompsIn(comp));
+                }else{
+                    comps.push(comp);
+                }*/
+            }
+
+            return comps;
+        }
     };
 	return Viewer;
 });
