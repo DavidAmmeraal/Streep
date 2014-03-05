@@ -3,7 +3,7 @@
         <div class="slider">
             <% for(var i = 0; i < legs.length; i++){ %>
             <% var leg = legs[i]; %>
-            <img src="<%= leg.img %>" class="leg<% if(leg.default) print(' active'); %>" data-number="<%= i %>"/>
+            <img src="<%= leg.img %>" class="leg<% if(leg.default || leg.active) print(' active'); %>" data-number="<%= i %>"/>
             <% }; %>
         </div>
     </div>

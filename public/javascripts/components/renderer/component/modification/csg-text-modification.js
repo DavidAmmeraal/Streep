@@ -43,6 +43,7 @@ define([
             }
             data.transformations[i] = transformation;
         }
+        console.log(data);
         return new CSGTextModification(data);
     }
 	return CSGTextModification;

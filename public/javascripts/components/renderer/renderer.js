@@ -97,8 +97,20 @@ define([
         this.renderedFrame.setColor(color);
     }
     Renderer.prototype.changeLegs = function(leg){
-        console.log("Renderer.changeLegs(" + leg + ")");
-        this.renderedFrame.changeLegs(leg);
+        var self = this;
+        console.log("changeLegs");
+        return new Promise(function(resolve, reject){
+            self.renderedFrame.changeLegs(leg).then(function(newLegs){
+                _.each(newLegs, function(leg){
+                    if(leg.focused){
+                        self.connectors.currentComp = leg;
+                        self.connectors.render();
+                    }
+                });
+                resolve(newLegs);
+            });
+        });
+
     }
     return Renderer;
 })

@@ -17,6 +17,7 @@ define(['../transformation/transformation', './modification', '../../util/geomet
         if(!this.connector.originalGeo){
             this.connector.originalGeo = self.component.geo;
         }
+        this.connector.used = true;
         self.executeTransformations();
 
         var worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
@@ -33,6 +34,12 @@ define(['../transformation/transformation', './modification', '../../util/geomet
                 'faceVertexUvs': self.component.geo.faceVertexUvs
             }
         };
+
+       /* var mesh = new THREE.Mesh(self.geo, self.component.material);
+        console.log(mesh);
+        globalviewer.getScene().add(mesh);
+        globalviewer.render(); */
+
         return new Promise(function(resolve, reject){
             worker.onmessage = function(e){
                 self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
@@ -43,12 +50,6 @@ define(['../transformation/transformation', './modification', '../../util/geomet
             worker.postMessage(message);
         });
 
-        /*
-        var mesh = new THREE.Mesh(self.geo, self.component.material);
-        console.log(mesh);
-        globalviewer.getScene().add(mesh);
-        globalviewer.render();
-        */
     };
 
     CSGModification.prototype.executeTransformations = function(){

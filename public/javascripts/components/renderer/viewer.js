@@ -222,7 +222,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
                     self.scene.remove(requester.mesh);
-                    delete comp;
+                    delete requester;
                     self.render();
                 });
 			}
@@ -240,6 +240,10 @@ define(['./util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.focusTo = function(comp){
+            if(self.lookingAt)
+                self.lookingAt.focus = false;
+
+            comp.focused = true
 			self.lookingAt = comp;
 			//self.resetCamera();
 			if(comp.focusPosition){

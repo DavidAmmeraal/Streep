@@ -6,6 +6,7 @@ var schema = new mongoose.Schema({
     type: String,
     readable: String,
     transformations: [Transformation.schema],
-    depth: Number
+    depth: Number,
+    action_name: String
 });
 module.exports = mongoose.model('CSGTextModification', schema);

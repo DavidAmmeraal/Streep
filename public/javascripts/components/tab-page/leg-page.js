@@ -2,13 +2,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     var LegPage = function(options){
         var self = this;
         TabPage.apply(this, [options]);
-
-        var initialize = function(){
-            self.colors = self.frame.get('availableColors');
-            self.legs = self.frame.get('legs');
-        };
-
-        initialize();
     };
 
     LegPage.prototype = Object.create(TabPage.prototype);
@@ -19,8 +12,9 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.template = _.template(LegPageTemplate);
     LegPage.prototype.render = function(){
         var self = this;
-        console.log(this);
-        var html = $(this.template({colors: this.colors, legs: this.legs}));
+        self.colors = self.frame.get('availableColors');
+        self.legs = self.frame.get('legs');
+        var html = $(this.template({colors: self.colors, legs: self.legs}));
         this.html = html;
         this.html.find('.colors > .color').on('click', function(){
             html.find('.colors > .color.active').removeClass('active');

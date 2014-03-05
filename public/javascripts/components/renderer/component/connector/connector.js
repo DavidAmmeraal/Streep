@@ -47,6 +47,9 @@ define(['../modification/modification', '../modification/csg-text-modification',
             this.component.geo = this.originalGeo;
             this.component.refresh();
         }
+        if(this.used){
+            this.used = false;
+        }
     };
 
     Connector.prototype.load = function(){

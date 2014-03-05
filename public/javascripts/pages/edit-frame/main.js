@@ -83,9 +83,8 @@ function(
             frame: frame
         });
 
-        var engravePage = new EngravePage({
-            leg: comp
-        });
+        var engravePage = new EngravePage();
+        engravePage.setLeg(comp);
 
         var menu = new Menu({
             element: $('#menu'),
@@ -106,7 +105,16 @@ function(
         });
 
         $(legPage).on('legs-changed', function(event, replacementLeg){
-            renderer.changeLegs(replacementLeg);
+            try{
+                renderer.changeLegs(replacementLeg).then(function(newLegs){
+                    console.log(newLegs);
+                    newLegs.right.focused ? engravePage.setLeg(newLegs.right) : engravePage.setLeg(newLegs.left);
+                    engravePage.render();
+                    legPage.render();
+                });
+            }catch(err){
+                console.log(err.stack);
+            }
         });
         var zoomoutButton = $('<button>Zoom out</button>');
         zoomoutButton.on('click', function(){

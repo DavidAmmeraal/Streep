@@ -2,20 +2,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     var EngravePage = function(options){
         var self = this;
         TabPage.apply(this, [options]);
-
-        var initialize = function(){
-            listenToConnectors();
-        };
-
-        var listenToConnectors = function(){
-            _.each(self.leg.connectors, function(connector){
-                $(connector).on('selected', function(){
-                    self.render.apply(self);
-                });
-            });
-        }
-
-        initialize();
     };
 
     EngravePage.prototype = Object.create(TabPage.prototype);
@@ -25,16 +11,26 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.fonts = ['Helvetiker', 'Banana Brick', 'Fantasque', 'Gentilis'];
     EngravePage.prototype.sizes = [7, 8, 9, 10];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
+    EngravePage.prototype.setLeg = function(leg){
+        var self = this;
+        var listenToConnectors = function(){
+            _.each(leg.connectors, function(connector){
+                $(connector).on('selected', function(){
+                    self.render.apply(self);
+                });
+            });
+        }
+        listenToConnectors(leg);
+        this.leg = leg;
+    };
     EngravePage.prototype.render = function(){
         var self = this;
         var display = _.find(this.leg.connectors, function(connector){
             return connector.selected;
         });
 
-
         var html = $(this.template({fonts: this.fonts, sizes: this.sizes, display: display}));
         this.html = html;
-
 
         this.html.find('button.engrave').on('click', function(event){
             self.engraveClicked.apply(self, [event]);
@@ -43,7 +39,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             self.carveClicked.apply(self, [event]);
         });
         this.html.find('button.reset').on('click', function(){
-            self.leg.reset.apply(self);
+            _.invoke(self.leg.connectors, 'reset');
         });
 
         this.element.html(this.html);
@@ -52,19 +48,35 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         var connector = _.find(this.leg.connectors, function(connector){
             return connector.selected;
         });
-        console.log(connector);
-        console.log("Engrave Clicked!");
+
+        var mod = _.find(connector.modifications, function(mod){
+            console.log(mod);
+            return mod.setText && mod.action_name == "engrave";
+        });
+
+        var loading = this.element.find('.loading');
+        loading.show();
+        mod.setText(this.element.find('input.text').val(), "helvetiker", 8);
+        mod.execute().then(function(){
+            loading.hide();
+        });
+        console.log("Carve Clicked!");
     };
     EngravePage.prototype.carveClicked = function(event){
         var connector = _.find(this.leg.connectors, function(connector){
             return connector.selected;
         });
+
         var mod = _.find(connector.modifications, function(mod){
-            return mod.setText;
+            console.log(mod);
+            return mod.setText && mod.action_name == "carve";
         });
-        mod.setText("TEST", "helvetiker", 8);
+
+        var loading = this.element.find('.loading');
+        loading.show();
+        mod.setText(this.element.find('input.text').val(), "helvetiker", 8);
         mod.execute().then(function(){
-            console.log("MODIFICATION EXECUTED!");
+            loading.hide();
         });
         console.log("Carve Clicked!");
     }

@@ -44,8 +44,7 @@ define([
             pos.left = pos.top = 0;
             if (element.offsetParent)
             {
-                do
-                {
+                do{
                     pos.left += element.offsetLeft;
                     pos.top += element.offsetTop;
                 } while (element = element.offsetParent);
@@ -58,7 +57,8 @@ define([
             if(comp.connectors){
                 for(var c = 0; c < comp.connectors.length; c++){
                     var connector = comp.connectors[c];
-                    connectors.push(connector);
+                    if(!connector.used)
+                        connectors.push(connector);
                 }
             }
             if(comp.children){
@@ -66,7 +66,9 @@ define([
                     var child = comp.children[c];
                     var childConnectors = findConnectors(child);
                     for(var s = 0; s < childConnectors.length; s++){
-                        connectors.push(childConnectors[s]);
+                        var connector = childConnectors[s];
+                        if(!connector.used)
+                            connectors.push(connector);
                     }
                 }
             }

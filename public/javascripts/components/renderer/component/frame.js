@@ -32,22 +32,42 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     },
     Frame.prototype.changeLegs = function(newLegs){
         console.log("Frame.changeLegs()");
+        _.each(this.legs, function(legs){
+            if(legs.active)
+                legs.active = false;
+            if(legs.default)
+                legs.default = false;
+        });
+        newLegs.active = true;
         var self = this;
         return new Promise(function(resolve, reject){
             var leftLeg = JSONComponent.parseFromDB(newLegs['left']);
             var rightLeg = JSONComponent.parseFromDB(newLegs['right']);
             Promise.all([leftLeg.load(), rightLeg.load()]).then(function(){
-                self.removeChild(self.currentRightLeg);
-                self.removeChild(self.currentLeftLeg);
-                self.currentLeftLeg = leftLeg;
-                self.currentRightLeg = rightLeg;
-                self.addChild(leftLeg);
-                self.addChild(rightLeg);
-                leftLeg.setColor(self.color);
-                rightLeg.setColor(self.color);
-                leftLeg.trigger('request-render', leftLeg);
-                rightLeg.trigger('request-render', rightLeg);
-                resolve();
+                console.log("LEGS LOADED!");
+                try{
+                    self.removeChild(self.currentRightLeg);
+                    self.removeChild(self.currentLeftLeg);
+
+                    if(self.currentRightLeg && self.currentRightLeg.focused){
+                        rightLeg.focused = true;
+                    }else if(self.currentLeftLeg && self.currentLeftLeg.focused){
+                        leftLeg.focused = true;
+                    }
+
+                    self.currentLeftLeg = leftLeg;
+                    self.currentRightLeg = rightLeg;
+                    self.addChild(leftLeg);
+                    self.addChild(rightLeg);
+                    leftLeg.setColor(self.color);
+                    rightLeg.setColor(self.color);
+                    leftLeg.trigger('request-render', leftLeg);
+                    rightLeg.trigger('request-render', rightLeg);
+                    console.log("HOI!");
+                }catch(err){
+                    console.log(err.stack);
+                }
+                resolve({"right": rightLeg, "left": leftLeg});
             });
         });
     };
