@@ -16,6 +16,7 @@ define([
 	CSGTextModification.prototype = Object.create(CSGModification.prototype);
     CSGTextModification.prototype.depth = null;
     CSGTextModification.prototype.setText = function(text, font, size){
+        console.log("SIZE: " + size)
         this.geo = new THREE.TextGeometry(text, {
             size: size,
             height: this.depth,

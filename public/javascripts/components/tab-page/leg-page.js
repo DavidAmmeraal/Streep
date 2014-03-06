@@ -7,9 +7,14 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype = Object.create(TabPage.prototype);
     LegPage.prototype.id = "color";
     LegPage.prototype.tabTitle = "Poot en kleur";
+    LegPage.prototype.leg = null;
     LegPage.prototype.legs = [];
     LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
+    LegPage.prototype.setLeg = function(leg){
+        console.log("SET LEG!");
+        this.leg = leg;
+    };
     LegPage.prototype.render = function(){
         var self = this;
         self.colors = self.frame.get('availableColors');
@@ -19,7 +24,8 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
         this.html.find('.colors > .color').on('click', function(){
             html.find('.colors > .color.active').removeClass('active');
             $(this).addClass('active');
-            $(self).trigger('color-changed', $(this).attr('data-color'));
+            self.leg.setColor($(this).attr('data-color'));
+           // $(self).trigger('color-changed', $(this).attr('data-color'));
         });
         this.html.find('.legs img.leg').on('click', function(){
             html.find('.legs img.leg.active').removeClass('active');

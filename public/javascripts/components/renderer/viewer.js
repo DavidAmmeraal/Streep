@@ -241,7 +241,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 		
 		self.focusTo = function(comp){
             if(self.lookingAt)
-                self.lookingAt.focus = false;
+                self.lookingAt.focused = false;
 
             comp.focused = true
 			self.lookingAt = comp;

@@ -8,15 +8,17 @@
     <div class="loading"><img src="/images/ajax-loader.gif"></div>
     <div class="fields">
         <input type="text" class="text">
-        <select>
+        <select class="font">
             <% _.each(fonts, function(font){ %>
             <option value="<%= font %>"><%= font %></option>
             <% }); %>
         </select>
-        <select>
-            <% _.each(sizes, function(size){ %>
-            <option value="<%= size %>"><%= size %></option>
-            <% }); %>
+        <select class="size">
+            <% var selected = Math.floor(sizes.length / 2); %>
+            <% for(var i = 0; i < sizes.length; i++){%>
+            <% var size = sizes[i]; %>
+            <option value="<%= size %>" <% if(i == selected){ print('selected="selected"') } %>><%= size %></option>
+            <% }; %>
         </select>
     </div>
     <div class="buttons">

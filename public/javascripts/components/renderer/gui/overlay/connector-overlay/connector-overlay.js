@@ -79,7 +79,7 @@ define([
         for(var c = 0; c < connectors.length; c++){
             var connector = connectors[c];
             var xyPosition = toScreenXY(connector.position, self.viewer.camera, self.viewer.renderer.domElement);
-            var div = $('<div class="indicator">+</div>');
+            var div = $('<div class="indicator">&nbsp;</div>');
 
             if(connector.selected)
                 div.addClass('selected');

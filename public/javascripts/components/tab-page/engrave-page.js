@@ -9,7 +9,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.currentTarget = null;
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.fonts = ['Helvetiker', 'Banana Brick', 'Fantasque', 'Gentilis'];
-    EngravePage.prototype.sizes = [7, 8, 9, 10];
+    EngravePage.prototype.sizes = [2, 3, 4, 5, 6, 7, 8, 9, 10];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.setLeg = function(leg){
         var self = this;
@@ -35,7 +35,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         this.html.find('button.engrave').on('click', function(event){
             self.engraveClicked.apply(self, [event]);
         });
-        this.html.find('button.carve').on('click', function(){
+        this.html.find('button.carve').on('click', function(event){
             self.carveClicked.apply(self, [event]);
         });
         this.html.find('button.reset').on('click', function(){
@@ -56,7 +56,8 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         var loading = this.element.find('.loading');
         loading.show();
-        mod.setText(this.element.find('input.text').val(), "helvetiker", 8);
+        var size = this.element.find('select.size > :selected').val();
+        mod.setText(this.element.find('input.text').val(), "helvetiker", size);
         mod.execute().then(function(){
             loading.hide();
         });
@@ -74,7 +75,8 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         var loading = this.element.find('.loading');
         loading.show();
-        mod.setText(this.element.find('input.text').val(), "helvetiker", 8);
+        var size = this.element.find('select.size > :selected').val();
+        mod.setText(this.element.find('input.text').val(), "helvetiker", size);
         mod.execute().then(function(){
             loading.hide();
         });

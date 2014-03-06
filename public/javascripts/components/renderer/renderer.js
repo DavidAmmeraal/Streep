@@ -96,9 +96,16 @@ define([
     Renderer.prototype.setFrameColor = function(color){
         this.renderedFrame.setColor(color);
     }
+    Renderer.prototype.changeFront = function(front){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.renderedFrame.changeFront(front).then(function(newFrontObj){
+                resolve(newFrontObj);
+            });
+        });
+    };
     Renderer.prototype.changeLegs = function(leg){
         var self = this;
-        console.log("changeLegs");
         return new Promise(function(resolve, reject){
             self.renderedFrame.changeLegs(leg).then(function(newLegs){
                 _.each(newLegs, function(leg){

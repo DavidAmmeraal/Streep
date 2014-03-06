@@ -56,7 +56,7 @@ define([
             var comp = comps[c];
             var xyPosition = toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement);
 
-            var div = $("<div class='indicator'>+</div>");
+            var div = $("<div class='indicator'>&nbsp;</div>");
             div.css('left', xyPosition.x);
             div.css('top', xyPosition.y);
             div.data('component', comp);

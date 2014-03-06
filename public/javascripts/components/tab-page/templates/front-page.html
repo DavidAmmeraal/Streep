@@ -1,0 +1,13 @@
+<div class="front-page">
+    <div class="fronts slider">
+        <% for(var i = 0; i < fronts.length; i++){ %>
+        <% var front = fronts[i]; %>
+        <img src="<%= front.img %>" class="front<% if(front.default || front.active) print(' active'); %>" data-number="<%= i %>"/>
+        <% }; %>
+    </div>
+    <div class="colors slider">
+        <% _.each(colors, function(color){ %>
+        <div class="color<% if(color.default){ print(' active'); } %>" data-color="<%= color.hex %>" style="background-color: <%= color.hex %>;">&nbsp;</div>
+        <% }); %>
+    </div>
+</div>

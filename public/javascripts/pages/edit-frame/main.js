@@ -16,6 +16,7 @@ require([
     '../../components/menu/menu',
     '../../components/tab-page/tab-page',
     '../../components/tab-page/leg-page',
+    '../../components/tab-page/front-page',
     '../../components/tab-page/engrave-page'
 ],
 function(
@@ -24,6 +25,7 @@ function(
     Menu,
     TabPage,
     LegPage,
+    FrontPage,
     EngravePage
 ){
 
@@ -69,6 +71,29 @@ function(
 
     function focusedOnFront(comp){
         $('#menu').html('');
+
+        var frontPage = new FrontPage({
+            frame: frame,
+            front: comp
+        });
+
+        var menu = new Menu({
+            element: $('#menu'),
+            pages: [
+                frontPage
+            ]
+        });
+
+        $(frontPage).on('front-changed', function(event, replacementFront){
+            try{
+                renderer.changeFront(replacementFront).then(function(newFrontObj){
+                    frontPage.front = newFrontObj;
+                });
+            }catch(err){
+                console.log(err.stack);
+            }
+        });
+
         var zoomoutButton = $('<button>Zoom out</button>');
         zoomoutButton.on('click', function(){
             renderer.viewer.focusTo(comp.parent);
@@ -80,7 +105,8 @@ function(
     function focusedOnLeg(comp){
         $('#menu').html('');
         var legPage = new LegPage({
-            frame: frame
+            frame: frame,
+            leg: comp
         });
 
         var engravePage = new EngravePage();
@@ -107,8 +133,15 @@ function(
         $(legPage).on('legs-changed', function(event, replacementLeg){
             try{
                 renderer.changeLegs(replacementLeg).then(function(newLegs){
-                    console.log(newLegs);
-                    newLegs.right.focused ? engravePage.setLeg(newLegs.right) : engravePage.setLeg(newLegs.left);
+                    var focusedLeg = null;
+                    if(newLegs.right.focused){
+                        console.log("RIGHT FOCUSED!");
+                        focusedLeg = newLegs.right;
+                    }else{
+                        focusedLeg = newLegs.left;
+                    }
+                    engravePage.setLeg(focusedLeg);
+                    legPage.setLeg(focusedLeg);
                     engravePage.render();
                     legPage.render();
                 });

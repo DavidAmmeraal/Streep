@@ -35,10 +35,12 @@ define(['../transformation/transformation', './modification', '../../util/geomet
             }
         };
 
-       /* var mesh = new THREE.Mesh(self.geo, self.component.material);
+        /*
+        var mesh = new THREE.Mesh(self.geo, self.component.material);
         console.log(mesh);
         globalviewer.getScene().add(mesh);
-        globalviewer.render(); */
+        globalviewer.render();
+        */
 
         return new Promise(function(resolve, reject){
             worker.onmessage = function(e){
