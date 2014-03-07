@@ -11,6 +11,9 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
     FrontPage.prototype.front = null;
     FrontPage.prototype.colors = [];
     FrontPage.prototype.template = _.template(FrontPageTemplate);
+    FrontPage.prototype.newFrontLoaded = function(){
+        this.element.find('.loading').hide();
+    };
     FrontPage.prototype.render = function(){
         var self = this;
         self.colors = self.frame.get('availableColors');
@@ -23,8 +26,9 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             self.front.setColor($(this).attr('data-color'));
         });
 
-        this.html.find('.fronts img.front').on('click', function(){
-            self.html.find('.fronts img.front.active').removeClass('active');
+        this.html.find('.fronts .front>img').on('click', function(){
+            self.element.find('.loading').show();
+            self.html.find('.fronts .front>img.active').removeClass('active');
             $(this).addClass('active');
             $(self).trigger('front-changed', self.fronts[$(this).attr('data-number')]);
         });

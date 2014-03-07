@@ -13,6 +13,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.template = _.template(LegPageTemplate);
     LegPage.prototype.setLeg = function(leg){
         console.log("SET LEG!");
+        this.html.find('.loading').hide();
         this.leg = leg;
     };
     LegPage.prototype.render = function(){
@@ -27,9 +28,10 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             self.leg.setColor($(this).attr('data-color'));
            // $(self).trigger('color-changed', $(this).attr('data-color'));
         });
-        this.html.find('.legs img.leg').on('click', function(){
-            html.find('.legs img.leg.active').removeClass('active');
+        this.html.find('.legs .leg>img').on('click', function(){
+            html.find('.legs img.active').removeClass('active');
             $(this).addClass('active');
+            self.html.find('.loading').show();
             $(self).trigger('legs-changed', self.legs[$(this).attr('data-number')]);
         });
         this.element.html(this.html);

@@ -93,6 +93,9 @@ define([
     Renderer.prototype.resize = function(){
         this.viewer.resize();
     }
+    Renderer.prototype.getPrice = function(){
+        return this.renderedFrame.getPrice();
+    }
     Renderer.prototype.setFrameColor = function(color){
         this.renderedFrame.setColor(color);
     }

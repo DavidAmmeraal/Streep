@@ -8,7 +8,15 @@ block head
 
 block content
     .column-right
-        #preview
+        #overview
+            .preview
+                img(src='/images/preview.png', width="100%", height="100%")
+            div(style='float: left; height: 80px; width: 100%')
+                |   &nbsp;
+            .price
+            .order
+                button
+                    |   BESTEL
     .column-left
         #renderer
         #menu

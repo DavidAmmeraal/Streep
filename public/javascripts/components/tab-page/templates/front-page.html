@@ -1,8 +1,12 @@
 <div class="front-page">
+    <div class="loading"><img src="/images/ajax-loader.gif"></div>
     <div class="fronts slider">
         <% for(var i = 0; i < fronts.length; i++){ %>
         <% var front = fronts[i]; %>
-        <img src="<%= front.img %>" class="front<% if(front.default || front.active) print(' active'); %>" data-number="<%= i %>"/>
+        <div class="front">
+            <img src="<%= front.img %>" class="<% if(front.default || front.active) print('active'); %>" data-number="<%= i %>"/>
+            <% if(front.priceExtra){ %><div class="price">&#43;&euro;<%= front.priceExtra %></div><% } %>
+        </div>
         <% }; %>
     </div>
     <div class="colors slider">

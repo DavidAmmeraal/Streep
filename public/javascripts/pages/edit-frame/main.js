@@ -50,7 +50,7 @@ function(
         });
 
         $(renderer.viewer).on('viewer.focus', handleFocusChanged);
-
+        $('#overview > .price').html('&euro;' + frame.get('basePrice'));
     });
 
     $(window).resize(resizeElements);
@@ -88,7 +88,9 @@ function(
             try{
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
                     frontPage.front = newFrontObj;
+                    frontPage.newFrontLoaded();
                 });
+                $('#overview > .price').html('&euro;' + renderer.getPrice());
             }catch(err){
                 console.log(err.stack);
             }
@@ -144,6 +146,7 @@ function(
                     legPage.setLeg(focusedLeg);
                     engravePage.render();
                     legPage.render();
+                    $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
             }catch(err){
                 console.log(err.stack);

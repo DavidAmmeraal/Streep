@@ -30,6 +30,21 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             });
         });
     },
+    Frame.prototype.getPrice = function(){
+        var price = parseFloat(this.basePrice);
+
+        var activeFront = _.find(this.fronts, function(front){
+            return front.active;
+        });
+
+        var activeLegs = _.find(this.legs, function(legs){
+            return legs.active;
+        });
+
+        price += parseFloat(activeFront.priceExtra);
+        price += parseFloat(activeLegs.priceExtra);
+        return price;
+    };
     Frame.prototype.changeFront = function(newFront){
         var self = this;
         console.log("Frame.changeFront()");
