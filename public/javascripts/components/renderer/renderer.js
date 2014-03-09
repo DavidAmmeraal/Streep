@@ -41,28 +41,9 @@ define([
                 backgroundColor: self.backgroundColor,
                 startPosition: new THREE.Vector3(-100, 20, 400)
             });
-            self.renderedFrame = Frame.parseFromDB(self.frame.toJSON());
 
-            self.renderedFrame.load().then(function(){
-                self.indicators = new IndicatorOverlay({
-                    targetElement: self.container,
-                    viewer: self.viewer,
-                    className: 'indicators'
-                });
+            console.log("LOAD RENDERED FRAME!");
 
-                self.connectors = new ConnectorOverlay({
-                   targetElement: self.container,
-                   viewer: self.viewer,
-                   className: 'connectors'
-                });
-
-                self.connectors.hide();
-
-                self.context.add(self.renderedFrame);
-                self.viewer.focusTo(self.renderedFrame);
-
-                window['globalviewer'] = self.viewer;
-            });
 
             $(self.viewer).on('viewer.focus', handleFocusChanged);
 
@@ -90,14 +71,42 @@ define([
     Renderer.prototype.viewer = null;
     Renderer.prototype.indicators = null;
     Renderer.prototype.connectors = null;
+    Renderer.prototype.loadFrame = function(frame){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.renderedFrame = Frame.parseFromDB(frame.toJSON());
+            self.renderedFrame.load().then(function(){
+                try{
+                    self.indicators = new IndicatorOverlay({
+                        targetElement: self.container,
+                        viewer: self.viewer,
+                        className: 'indicators'
+                    });
+
+                    self.connectors = new ConnectorOverlay({
+                        targetElement: self.container,
+                        viewer: self.viewer,
+                        className: 'connectors'
+                    });
+
+                    self.connectors.hide();
+
+                    self.context.add(self.renderedFrame);
+                    self.viewer.focusTo(self.renderedFrame);
+
+                    window['globalviewer'] = self.viewer;
+                }catch(err){
+                    console.log(err);
+                }
+                resolve();
+            });
+        });
+    }
     Renderer.prototype.resize = function(){
         this.viewer.resize();
     }
     Renderer.prototype.getPrice = function(){
         return this.renderedFrame.getPrice();
-    }
-    Renderer.prototype.setFrameColor = function(color){
-        this.renderedFrame.setColor(color);
     }
     Renderer.prototype.changeFront = function(front){
         var self = this;
@@ -106,6 +115,9 @@ define([
                 resolve(newFrontObj);
             });
         });
+    };
+    Renderer.prototype.getRenderedFrameObj = function(){
+        return this.renderedFrame;
     };
     Renderer.prototype.changeLegs = function(leg){
         var self = this;

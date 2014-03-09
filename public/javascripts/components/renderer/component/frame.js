@@ -16,20 +16,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     Frame.currentLeftLeg = null;
     Frame.currentRightLeg = null;
     Frame.loaded = false;
-    Frame.prototype.changeFront = function(newFront){
-        var self = this;
-        return new Promise(function(resolve, reject){
-            var front = JSONComponent.parseFromDB(newFront);
-            front.load().then(function(){
-                self.removeChild(self.currentFront);
-                self.currentFront = front;
-                self.addChild(front);
-                front.setColor(self.color);
-                front.trigger('request-render', front);
-                resolve();
-            });
-        });
-    },
     Frame.prototype.getPrice = function(){
         var price = parseFloat(this.basePrice);
 
@@ -48,6 +34,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     Frame.prototype.changeFront = function(newFront){
         var self = this;
         console.log("Frame.changeFront()");
+        var currentColor = self.currentFront.color;
         _.each(this.fronts, function(front){
             if(front.active)
                 front.active = false;
@@ -58,14 +45,24 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         return new Promise(function(resolve, reject){
             var frontObj = JSONComponent.parseFromDB(newFront);
             frontObj.load().then(function(){
-                console.log("NEW FRONT LOADED");
+                var isCurrentColorAvailableInNewFrame = _.find(frontObj.availableColors, function(color){
+                    return color.hex.replace("#", "0x") == currentColor;
+                });
+                if(isCurrentColorAvailableInNewFrame){
+                    frontObj.setColor(currentColor);
+                }else{
+                    var defaultColor = _.find(frontObj.availableColors, function(color){
+                        return color.default;
+                    });
+                    frontObj.setColor(defaultColor.hex);
+                }
+
                 self.removeChild(self.currentFront);
                 if(self.currentFront.focused)
                     frontObj.focused = true;
 
                 self.currentFront = frontObj;
                 self.addChild(self.currentFront);
-                self.currentFront.setColor(self.color);
                 self.currentFront.trigger('request-render', self.currentFront);
                 resolve(self.currentFront);
             });
@@ -79,6 +76,18 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             if(legs.default)
                 legs.default = false;
         });
+
+        var currentColor = null;
+
+        if(this.currentLeftLeg){
+            currentColor = this.currentLeftLeg.color;
+        }else{
+            console.log(newLegs);
+            currentColor = _.find(newLegs.availableColors, function(color){
+                return color.active || color.default;
+            }).hex;
+        }
+
         newLegs.active = true;
         var self = this;
         return new Promise(function(resolve, reject){
@@ -97,15 +106,18 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
 
                     self.currentLeftLeg = leftLeg;
                     self.currentRightLeg = rightLeg;
+                    if(currentColor){
+                        self.currentLeftLeg.setColor(currentColor);
+                        self.currentRightLeg.setColor(currentColor);
+                    }
                     self.addChild(leftLeg);
                     self.addChild(rightLeg);
-                    leftLeg.setColor(self.color);
-                    rightLeg.setColor(self.color);
                     leftLeg.trigger('request-render', leftLeg);
                     rightLeg.trigger('request-render', rightLeg);
                 }catch(err){
                     console.log(err.stack);
                 }
+                console.log("RESOLVING LEGS NOW!");
                 resolve({"right": rightLeg, "left": leftLeg});
             });
         });
@@ -114,27 +126,25 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         console.log("Frame.load()");
         var self = this;
         return new Promise(function(resolve, reject){
-            if(self.loaded){
-                resolve();
-            }else{
-                Promise.all([
-                    self.changeFront(self.currentFront),
-                    self.changeLegs(self.currentLegs)
-                ]).then(function(){
-                    self.loaded = true;
+            try{
+                if(self.loaded){
                     resolve();
-                });
+                }else{
+                    Promise.all([
+                        self.changeFront(self.currentFront),
+                        self.changeLegs(self.currentLegs)
+                    ]).then(function(){
+                        self.loaded = true;
+                        resolve();
+                    });
+                }
+            }catch(err){
+                console.log("ERROR!");
+                reject(err);
             }
         });
     };
     Frame.parseFromDB = function(data){
-        var defaultColor = _.find(data.availableColors, function(element){
-            return element.default;
-        });
-
-        defaultColor.hex.replace("#", "0x");
-        data.color = defaultColor.hex;
-
         var front = _.find(data.fronts, function(front){
             return front.default;
         });
@@ -146,7 +156,8 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         data.currentFront = front;
         data.currentLegs = legs;
 
-        data.focusPosition = new THREE.Vector3(data.focusPosition.x, data.focusPosition.y, data.focusPosition.z);
+        data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);
+        data.focusPerspective.lookAt = new THREE.Vector3(data.focusPerspective.lookAt.x, data.focusPerspective.lookAt.y, data.focusPerspective.lookAt.z);
         return new Frame(data);
     };
 

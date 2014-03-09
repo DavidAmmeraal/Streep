@@ -44,13 +44,15 @@ function(
 
     frame.fetch().then(function(){
         renderer = new Renderer({
-            frame: frame,
             container: renderTarget,
             backgroundColor: '#FFFFFF'
         });
+        renderer.loadFrame(frame).then(function(){
+            $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+            $('#overview > .price').html('&euro;' + frame.get('basePrice'));
+            $('.column-left > .loading').hide();
+        });
 
-        $(renderer.viewer).on('viewer.focus', handleFocusChanged);
-        $('#overview > .price').html('&euro;' + frame.get('basePrice'));
     });
 
     $(window).resize(resizeElements);
@@ -73,7 +75,7 @@ function(
         $('#menu').html('');
 
         var frontPage = new FrontPage({
-            frame: frame,
+            frame: renderer.getRenderedFrameObj(),
             front: comp
         });
 
@@ -107,7 +109,7 @@ function(
     function focusedOnLeg(comp){
         $('#menu').html('');
         var legPage = new LegPage({
-            frame: frame,
+            frame: renderer.getRenderedFrameObj(),
             leg: comp
         });
 
@@ -121,15 +123,10 @@ function(
                 new TabPage({
                     id: "patterns",
                     tabTitle: 'Patronen',
-                    frame: frame
+                    frame: renderer.getRenderedFrameObj()
                 }),
                 engravePage
             ]
-        });
-
-        $(legPage).on('color-changed', function(event, color){
-            color.replace("#", "0x");
-            renderer.setFrameColor(color);
         });
 
         $(legPage).on('legs-changed', function(event, replacementLeg){
@@ -137,7 +134,6 @@ function(
                 renderer.changeLegs(replacementLeg).then(function(newLegs){
                     var focusedLeg = null;
                     if(newLegs.right.focused){
-                        console.log("RIGHT FOCUSED!");
                         focusedLeg = newLegs.right;
                     }else{
                         focusedLeg = newLegs.left;

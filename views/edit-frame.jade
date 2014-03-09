@@ -3,6 +3,7 @@ block head
     link(rel='stylesheet', href='/javascripts/vendor/bootstrap-3.1.1-dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/royalslider.css')
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/skins/minimal-white/rs-minimal-white.css')
+    link(rel='stylesheet', href='/javascripts/vendor/jscrollpane/jquery.jscrollpane.css')
     link(rel='stylesheet', href='/stylesheets/streep3d.css')
     link(rel='stylesheet', href='/stylesheets/edit-frame.css')
 
@@ -18,6 +19,7 @@ block content
                 button
                     |   BESTEL
     .column-left
+        .loading
         #renderer
         #menu
 
@@ -43,7 +45,6 @@ block js
     script(src='/javascripts/vendor/jstree/_lib/jquery.cookie.js')
     script(src='/javascripts/vendor/jstree/_lib/jquery.hotkeys.js')
     script(src='/javascripts/vendor/jstree/jquery.jstree.js')
-    script(src='/javascripts/vendor/require.js', data-main='/javascripts/pages/edit-frame/main.js')
 
     //Bootstrap
     script(src='/javascripts/vendor/bootstrap-3.1.1-dist/js/bootstrap.min.js')
@@ -51,3 +52,7 @@ block js
     //Royal Slider
     script(src='/javascripts/vendor/royalslider/jquery.royalslider.min.js')
 
+    //Sly
+    script(src='/javascripts/vendor/sly.min.js')
+
+    script(src='/javascripts/vendor/require.js', data-main='/javascripts/pages/edit-frame/main.js')

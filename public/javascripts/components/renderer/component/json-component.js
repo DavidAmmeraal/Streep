@@ -17,6 +17,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
             if(self.src){
                 var loader = new THREE.JSONLoader();
                 loader.load(self.src, function(object){
+                    console.log(object);
                     self.geo = object;
                     self.redraw();
                     self.loaded = true;
@@ -27,18 +28,25 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
     };
 
     JSONComponent.parseFromDB = function(data){
-        for(var i = 0; i < data.connectors.length; i++){
-            data.connectors[i] = Connector.parseFromDB(data.connectors[i]);
+        console.log("JSONComponent.parseFromDB");
+        try{
+            for(var i = 0; i < data.connectors.length; i++){
+                data.connectors[i] = Connector.parseFromDB(data.connectors[i]);
+            }
+            console.log(data);
+            data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);
+            data.focusPerspective.lookAt = new THREE.Vector3(data.focusPerspective.lookAt.x, data.focusPerspective.lookAt.y, data.focusPerspective.lookAt.z);
+            data.indicator = new THREE.Vector3(data.indicator.x, data.indicator.y, data.indicator.z);
+
+            switch(data.material){
+                case "MeshLambertMaterial":
+                    data.material = new THREE.MeshLambertMaterial();
+            }
+            return new JSONComponent(data);
+        }catch(err){
+            console.log(err);
         }
 
-        data.focusPosition = new THREE.Vector3(data.focusPosition.x, data.focusPosition.y, data.focusPosition.z);
-        data.indicator = new THREE.Vector3(data.indicator.x, data.indicator.y, data.indicator.z);
-
-        switch(data.material){
-            case "MeshLambertMaterial":
-                data.material = new THREE.MeshLambertMaterial();
-        }
-        return new JSONComponent(data);
     }
 	return JSONComponent;
 });

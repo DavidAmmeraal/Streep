@@ -10,7 +10,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 		// create a point light
 		this.light = new THREE.PointLight(0xFFFFFF);
 		this.components = [];
-		this.distance = 400;
+		this.distance = 200;
 		this.startPosition = new THREE.Vector3(0, 0, this.distance);
 		this.lookingAt = null;
         this.renderer = null;
@@ -40,6 +40,9 @@ define(['./util/webgl-test'], function(WebGLTest){
         self.resize = function(){
             self.width = self.target.width();
             self.height = self.target.height();
+            var aspect = self.width / self.height;
+            self.camera.aspect = aspect;
+            self.camera.updateProjectionMatrix();
             self.setSize(self.width, self.height);
             self.render()
         }
@@ -85,7 +88,7 @@ define(['./util/webgl-test'], function(WebGLTest){
                 console.log("Viewer.getRenderer(): browser has webgl!");
 		   		return new THREE.WebGLRenderer({
 		   			preserveDrawingBuffer: true ,
-                    antialiasing: true
+                    antialias: true
 		   		});
 		   	}else{
                 console.log("Viewer.getRenderer(): browser does not have webgl!");
@@ -120,14 +123,16 @@ define(['./util/webgl-test'], function(WebGLTest){
 			
 			var tick = function(){
 				self.camera.position.x = curPosition.x;
-				self.light.position.x = curPosition.x - 50;
+				self.light.position.x = curPosition.x + 20;
 				self.camera.position.y = curPosition.y;
-				self.light.position.y = curPosition.y + 200;
+				self.light.position.y = curPosition.y + 100;
 				self.camera.position.z = curPosition.z;
 				self.light.position.z = curPosition.z;
 
 				if(self.sceneReady){
-					if(self.lookingAt.mesh.position){
+                    if(self.lookingAt.focusPerspective){
+                        self.camera.lookAt(self.lookingAt.focusPerspective.lookAt)
+                    }else if(self.lookingAt.mesh.position){
 						self.camera.lookAt(self.lookingAt.mesh.position);
 					}else{
 						self.camera.lookAt({x: 0, y: 0, z: 0});
@@ -246,10 +251,8 @@ define(['./util/webgl-test'], function(WebGLTest){
             comp.focused = true
 			self.lookingAt = comp;
 			//self.resetCamera();
-			if(comp.focusPosition){
-				self.positionCamera(comp.focusPosition, 500);	
-			}else if(comp.focusRotation){
-				self.rotate(comp.focusRotation);
+			if(comp.focusPerspective){
+				self.positionCamera(comp.focusPerspective.cameraPosition, 500);
 			}
             $(self).trigger('viewer.focus', comp);
 		};

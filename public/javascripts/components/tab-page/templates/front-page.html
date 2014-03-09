@@ -1,17 +1,36 @@
 <div class="front-page">
     <div class="loading"><img src="/images/ajax-loader.gif"></div>
-    <div class="fronts slider">
-        <% for(var i = 0; i < fronts.length; i++){ %>
-        <% var front = fronts[i]; %>
-        <div class="front">
-            <img src="<%= front.img %>" class="<% if(front.default || front.active) print('active'); %>" data-number="<%= i %>"/>
-            <% if(front.priceExtra){ %><div class="price">&#43;&euro;<%= front.priceExtra %></div><% } %>
+    <div class="slider fronts">
+        <div class="frame">
+            <ul>
+                <% for(var i = 0; i < fronts.length; i++){ %>
+                <% var front = fronts[i]; %>
+                <li class="front">
+                    <div class="activated"></div>
+                    <img src="<%= front.img %>" data-number="<%= i %>"/>
+                    <% if(front.priceExtra){ %><div class="price">&#43;&euro;<%= front.priceExtra %></div><% } %>
+                </li>
+                <% }; %>
+            </ul>
         </div>
-        <% }; %>
+        <div class="scrollbar">
+            <div class="handle">
+                <div class="mousearea"></div>
+            </div>
+        </div>
     </div>
-    <div class="colors slider">
-        <% _.each(colors, function(color){ %>
-        <div class="color<% if(color.default){ print(' active'); } %>" data-color="<%= color.hex %>" style="background-color: <%= color.hex %>;">&nbsp;</div>
-        <% }); %>
+    <div class="slider colors">
+        <div class="frame">
+            <ul>
+                <% _.each(colors, function(color){ %>
+                <li class="color" data-color="<%= color.hex %>" style="background-color: <%= color.hex %>"><div class="activated"></li>
+                <% }); %>
+            </ul>
+        </div>
+        <div class="scrollbar">
+            <div class="handle">
+                <div class="mousearea"></div>
+            </div>
+        </div>
     </div>
 </div>
