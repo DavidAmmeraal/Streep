@@ -4,6 +4,32 @@
     width: 100%;
 }
 
+#frames .prev{
+    z-index: 9999;
+    position: absolute;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+
+
+#frames .next{
+    z-index: 9999;
+    position: absolute;
+    height: 100%;
+    right: 0;
+    top: 0;
+}
+
+#frames .carousel{
+    width: 100%;
+    float: left;
+    height: 500px;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
 #frames .rsVisibleNearbyWrap{
     position: absolute;
 }
@@ -20,10 +46,18 @@
     display: none;
 }
 
-#frames .buy-frame button.buy{
+#frames .buy-frame .buy-buttons{
+    margin: auto;
+    height: 40px;
+    width: 330px;
+}
+
+#frames .buy-frame .buy-buttons button.buy{
+    float: left;
     background-color:#60e5a5;
     height: 30px;
     width: 90px;
+    margin: 5px 10px 5px 10px;
     border: none;
     font-weight: bold;
     z-index: 9999;

@@ -21,7 +21,9 @@ define([
 
             this.$el.html(this.template({'frames': this.collection.toJSON()}));
 
-            this.$el.royalSlider({
+            var carousel = this.$el.find('.carousel');
+
+            carousel.royalSlider({
                 keyboardNavEnabled: true,
                 globalCaption: true,
                 loop: true,
@@ -35,7 +37,7 @@ define([
                 }
             });
 
-            var slider = this.$el.data('royalSlider');
+            var slider = carousel.data('royalSlider');
             slider.currSlide.holder.find('.buy-frame').show();
             slider.ev.on('rsAfterSlideChange', function(){
                 self.$el.find('.buy-frame').hide();
@@ -55,6 +57,17 @@ define([
             this.$el.find('.rsGCaption').each(function(){
                 var element = $(this);
                 element.insertBefore(element.parent().find('.rsVisibleNearbyWrap'));
+            });
+
+            var prev = this.$el.find('.prev');
+            var next = this.$el.find('.next');
+
+            prev.on('click', function(){
+               console.log("PREVIOUS");
+            });
+
+            next.on('click', function(){
+               console.log("NEXT");
             });
         }
     });

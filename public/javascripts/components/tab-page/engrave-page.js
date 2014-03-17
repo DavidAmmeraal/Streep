@@ -55,10 +55,12 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         });
 
         var loading = this.element.find('.loading');
+        loading.append('<div class="message">Bezig met graveren</div>');
         loading.show();
         var size = this.element.find('select.size > :selected').val();
         mod.setText(this.element.find('input.text').val(), "helvetiker", size);
         mod.execute().then(function(){
+            loading.find('message').remove();
             loading.hide();
         });
         console.log("Carve Clicked!");

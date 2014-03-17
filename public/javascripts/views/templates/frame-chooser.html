@@ -1,15 +1,23 @@
-<% _.each(frames, function(frame){ %>
-<div>
-    <figure class="rsCaption">
-        <h3><%= frame.name %></h3>
-        <%= frame.description_short %>
-    </figure>
-    <img class="rsImg" src="<%= frame.img_high %>" />
-    <div class="buy-frame">
-        <button class="buy" data-frameId="<%= frame._id %>">Kies</button>
-        <div class="buy-text">vanaf</div>
-        <div class="price">&euro;<%= frame.basePrice %></div>
-        <div class="shipping">&euro;5 verzendkosten</div>
+<div class="prev">Vorige</div>
+<div class="carousel">
+    <% _.each(frames, function(frame){ %>
+    <div>
+        <figure class="rsCaption">
+            <h3><%= frame.name %></h3>
+            <%= frame.description_short %>
+        </figure>
+        <img class="rsImg" src="<%= frame.img_high %>" />
+        <div class="buy-frame">
+            <div class="buy-buttons">
+                <button class="buy" data-frameId="<%= frame._id %>">S</button>
+                <button class="buy" data-frameId="<%= frame._id %>">M</button>
+                <button class="buy" data-frameId="<%= frame._id %>">L</button>
+            </div>
+            <div class="buy-text">vanaf</div>
+            <div class="price">&euro;<%= frame.basePrice %></div>
+            <div class="shipping">&euro;5 verzendkosten</div>
+        </div>
     </div>
+    <% }); %>
 </div>
-<% }); %>
+<div class="next">Volgende</div>

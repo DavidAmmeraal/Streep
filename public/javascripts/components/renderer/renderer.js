@@ -42,9 +42,6 @@ define([
                 startPosition: new THREE.Vector3(-100, 20, 400)
             });
 
-            console.log("LOAD RENDERED FRAME!");
-
-
             $(self.viewer).on('viewer.focus', handleFocusChanged);
 
             new KeyboardListener({viewer: self.viewer});

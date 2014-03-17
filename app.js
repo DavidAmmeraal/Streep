@@ -7,6 +7,7 @@ var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var frames = require('./routes/frames');
+var fronts = require('./routes/fronts');
 var fillTestData = require('./routes/fill-test-data');
 var http = require('http');
 var path = require('path');
@@ -56,6 +57,8 @@ app.get('/edit-frame/:id', frames.editFrame);
 
 app.get('/models_api/frames', frames.all);
 app.get('/models_api/frames/:id', frames.findById);
+app.get('/models_api/fronts', fronts.all);
+app.get('/models_api/fronts/:id', frames.findById);
 
 app.get('/fill-test-data', fillTestData.start);
 

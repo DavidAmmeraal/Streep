@@ -39,6 +39,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             legChooser.on('active', function(event, itemIndex){
                 if(self.frame.currentLeftLeg && self.frame.currentLeftLeg.src != self.legs[itemIndex].left.src){
                     $(self).trigger('legs-changed', self.legs[itemIndex]);
+                    self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
                     self.element.find('.loading').show();
                 }
             });
@@ -82,7 +83,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             self.colorChooser = new Sly(colorSliderFrame, colorOptions);
             self.colorChooser.on('active', function(event, itemIndex){
                 var color = $($('.colors .color').get(itemIndex)).attr('data-color').replace('#', '0x');
-                console.log(self.frame);
                 self.frame.currentLeftLeg.setColor(color);
                 self.frame.currentRightLeg.setColor(color);
             });
@@ -95,11 +95,10 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
 
         this.render = function(){
             var self = this;
-            self.legs = self.frame.legs;
+            self.legs = self.frame.currentFront.legs;
             self.colors = _.find(self.legs, function(legs){
-                return legs.active == true;
+                return legs.active;
             }).availableColors;
-            console.log(self.colors);
             var html = $(this.template({colors: self.colors, legs: self.legs}));
             this.element.html(html);
             setTimeout(function(){
@@ -111,12 +110,13 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
 
     LegPage.prototype = Object.create(TabPage.prototype);
     LegPage.prototype.id = "color";
-    LegPage.prototype.tabTitle = "Poot en kleur";
+    LegPage.prototype.tabTitle = "Patronen en kleur";
     LegPage.prototype.leg = null;
     LegPage.prototype.legs = [];
     LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
     LegPage.prototype.setLeg = function(leg){
+        this.element.find('.loading > .message').remove();
         this.element.find('.loading').hide();
         this.leg = leg;
     };

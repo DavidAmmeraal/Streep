@@ -39,6 +39,7 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             frontChooser.on('active', function(event, itemIndex){
                 if(self.front.src != self.fronts[itemIndex].src){
                     $(self).trigger('front-changed', self.fronts[itemIndex]);
+                    self.element.find('.loading').append('<div class="message">Montuur dikte wordt ingeladen</div>')
                     self.element.find('.loading').show();
                 }
             });
@@ -105,13 +106,14 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
         };
 
         this.newFrontLoaded = function(){
+            self.element.find('.loading > .message').remove();
             self.element.find('.loading').hide();
         };
     };
 
     FrontPage.prototype = Object.create(TabPage.prototype);
     FrontPage.prototype.id = "front_color";
-    FrontPage.prototype.tabTitle = "Kleur en type";
+    FrontPage.prototype.tabTitle = "Montuur dikte en kleur";
     FrontPage.prototype.fronts = [];
     FrontPage.prototype.front = null;
     FrontPage.prototype.colors = [];

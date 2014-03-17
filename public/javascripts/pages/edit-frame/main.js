@@ -42,7 +42,7 @@ function(
 
     var renderTarget = $('#renderer')[0];
 
-    frame.fetch().then(function(){
+    frame.fetch({data: {depth: 2}}).then(function(){
         renderer = new Renderer({
             container: renderTarget,
             backgroundColor: '#FFFFFF'
@@ -91,14 +91,15 @@ function(
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
                     frontPage.front = newFrontObj;
                     frontPage.newFrontLoaded();
+                    $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
-                $('#overview > .price').html('&euro;' + renderer.getPrice());
+
             }catch(err){
                 console.log(err.stack);
             }
         });
 
-        var zoomoutButton = $('<button>Zoom out</button>');
+        var zoomoutButton = $('<button>Terug</button>');
         zoomoutButton.on('click', function(){
             renderer.viewer.focusTo(comp.parent);
         });
@@ -120,11 +121,6 @@ function(
             element: $('#menu'),
             pages: [
                 legPage,
-                new TabPage({
-                    id: "patterns",
-                    tabTitle: 'Patronen',
-                    frame: renderer.getRenderedFrameObj()
-                }),
                 engravePage
             ]
         });
@@ -148,7 +144,7 @@ function(
                 console.log(err.stack);
             }
         });
-        var zoomoutButton = $('<button>Zoom out</button>');
+        var zoomoutButton = $('<button>Terug</button>');
         zoomoutButton.on('click', function(){
             renderer.viewer.focusTo(comp.parent);
         });

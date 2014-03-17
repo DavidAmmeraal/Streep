@@ -23,7 +23,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             return front.active;
         });
 
-        var activeLegs = _.find(this.legs, function(legs){
+        var activeLegs = _.find(activeFront.legs, function(legs){
             return legs.active;
         });
 
@@ -45,6 +45,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         return new Promise(function(resolve, reject){
             var frontObj = JSONComponent.parseFromDB(newFront);
             frontObj.load().then(function(){
+
                 var isCurrentColorAvailableInNewFrame = _.find(frontObj.availableColors, function(color){
                     return color.hex.replace("#", "0x") == currentColor;
                 });
@@ -58,19 +59,22 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }
 
                 self.removeChild(self.currentFront);
+
                 if(self.currentFront.focused)
                     frontObj.focused = true;
+
 
                 self.currentFront = frontObj;
                 self.addChild(self.currentFront);
                 self.currentFront.trigger('request-render', self.currentFront);
-                resolve(self.currentFront);
+                self.changeLegs(self.currentFront.legs[0]).then(function(){
+                    resolve(self.currentFront);
+                });
             });
         });
     };
     Frame.prototype.changeLegs = function(newLegs){
-        console.log("Frame.changeLegs()");
-        _.each(this.legs, function(legs){
+        _.each(this.currentFront.legs, function(legs){
             if(legs.active)
                 legs.active = false;
             if(legs.default)
@@ -82,7 +86,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         if(this.currentLeftLeg){
             currentColor = this.currentLeftLeg.color;
         }else{
-            console.log(newLegs);
             currentColor = _.find(newLegs.availableColors, function(color){
                 return color.active || color.default;
             }).hex;
@@ -117,7 +120,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }catch(err){
                     console.log(err.stack);
                 }
-                console.log("RESOLVING LEGS NOW!");
                 resolve({"right": rightLeg, "left": leftLeg});
             });
         });
@@ -131,8 +133,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     resolve();
                 }else{
                     Promise.all([
-                        self.changeFront(self.currentFront),
-                        self.changeLegs(self.currentLegs)
+                        self.changeFront(self.currentFront)
                     ]).then(function(){
                         self.loaded = true;
                         resolve();
@@ -145,16 +146,9 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.parseFromDB = function(data){
-        var front = _.find(data.fronts, function(front){
-            return front.default;
-        });
-
-        var legs = _.find(data.legs, function(leg){
-            return leg.default;
-        });
+        var front = data.fronts[0];
 
         data.currentFront = front;
-        data.currentLegs = legs;
 
         data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);
         data.focusPerspective.lookAt = new THREE.Vector3(data.focusPerspective.lookAt.x, data.focusPerspective.lookAt.y, data.focusPerspective.lookAt.z);
