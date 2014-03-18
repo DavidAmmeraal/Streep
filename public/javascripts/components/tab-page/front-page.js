@@ -5,6 +5,7 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
 
         var colorChooser = null;
         var frontChooser = null;
+        var activated = false;
 
         var createFrontChooser = function(){
             var html = self.element;
@@ -37,7 +38,9 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             });
             frontChooser = new Sly(frontsSliderFrame, frontsOptions);
             frontChooser.on('active', function(event, itemIndex){
-                if(self.front.src != self.fronts[itemIndex].src){
+                console.log("FRONT CHOSEN!");
+                if(self.front != self.fronts[itemIndex]){
+                    console.log("")
                     $(self).trigger('front-changed', self.fronts[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Montuur dikte wordt ingeladen</div>')
                     self.element.find('.loading').show();
@@ -83,7 +86,7 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             colorChooser = new Sly(colorSliderFrame, colorOptions);
             colorChooser.on('active', function(event, itemIndex){
                 var color = $($('.colors .color').get(itemIndex)).attr('data-color');
-                self.front.setColor(color);
+                self.front.currentNose.setColor(color);
             });
             colorChooser.init();
             var colorsSlidee = self.element.find('.colors ul');
@@ -98,12 +101,15 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             self.fronts = self.frame.fronts;
             var html = $(this.template({colors: self.colors, fronts: self.fronts}));
             this.element.html(html);
+        };
 
-            setTimeout(function(){
+        this.activate = function(){
+            if(!activated){
+                activated = true;
                 createFrontChooser();
                 createColorChooser();
-            }, 1);
-        };
+            }
+        }
 
         this.newFrontLoaded = function(){
             self.element.find('.loading > .message').remove();

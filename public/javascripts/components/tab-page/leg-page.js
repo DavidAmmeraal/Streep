@@ -3,21 +3,21 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
         var self = this;
         TabPage.apply(this, [options]);
 
-        var legChooser = null;
+        var patternChooser = null;
         var colorChooser = null;
 
-        var createLegChooser = function(){
+        var createPatternChooser = function(){
             var html = self.element;
-            if(legChooser)
-                legChooser.destroy();
+            if(patternChooser)
+                patternChooser.destroy();
 
-            var activeLegIndex = _.indexOf(self.legs, _.find(self.legs, function(legs){
-                return legs.active;
+            var activePatternIndex = _.indexOf(self.legs.patterns, _.find(self.legs.patterns, function(pattern){
+                return pattern.active;
             }));
 
-            var legsSliderFrame = html.find('.legs > .frame');
-            var legsScrollbar = html.find('.legs > .scrollbar');
-            var legsOptions = $.extend(Sly.defaults, {
+            var patternSliderFrame = html.find('.legs > .frame');
+            var patternScrollbar = html.find('.legs > .scrollbar');
+            var patternOptions = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
                 smart: 1,
@@ -25,8 +25,8 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
                 mouseDragging: 1,
                 touchDragging: 1,
                 releaseSwing: 1,
-                startAt: activeLegIndex,
-                scrollBar: legsScrollbar,
+                startAt: activePatternIndex,
+                scrollBar: patternScrollbar,
                 scrollBy: 1,
                 activatePageOn: 'click',
                 speed: 300,
@@ -35,18 +35,18 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
                 dynamicHandle: 1,
                 clickBar: 1
             });
-            legChooser = new Sly(legsSliderFrame, legsOptions);
-            legChooser.on('active', function(event, itemIndex){
-                if(self.frame.currentLeftLeg && self.frame.currentLeftLeg.src != self.legs[itemIndex].left.src){
-                    $(self).trigger('legs-changed', self.legs[itemIndex]);
+            patternChooser = new Sly(patternSliderFrame, patternOptions);
+            patternChooser.on('active', function(event, itemIndex){
+                if(self.frame.currentLeftLeg && self.frame.currentLeftLeg.src != self.legs.patterns[itemIndex].left.src){
+                    $(self).trigger('pattern-changed', self.legs.patterns[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
                     self.element.find('.loading').show();
                 }
             });
 
-            legChooser.init();
-            var legSlidee = self.element.find('.legs ul');
-            if(legSlidee.width() < legSlidee.parent().width()){
+            patternChooser.init();
+            var patternSlidee = self.element.find('.legs ul');
+            if(patternSlidee.width() < patternSlidee.parent().width()){
                 self.element.find('.legs .scrollbar').hide();
             }
         };
@@ -93,18 +93,24 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             }
         };
 
+        this.activate = function(){
+            createPatternChooser();
+            createColorChooser();
+        }
+
         this.render = function(){
-            var self = this;
-            self.legs = self.frame.currentFront.legs;
-            self.colors = _.find(self.legs, function(legs){
-                return legs.active;
-            }).availableColors;
-            var html = $(this.template({colors: self.colors, legs: self.legs}));
-            this.element.html(html);
-            setTimeout(function(){
-                createLegChooser();
-                createColorChooser();
-            }, 1)
+            try{
+                var self = this;
+                self.legs = _.find(self.frame.currentFront.legs, function(legs){
+                    return legs.active;
+                });
+                self.colors = self.legs.availableColors;
+                var html = $(this.template({colors: self.colors, patterns: self.legs.patterns}));
+                this.element.html(html);
+            }catch(err){
+                console.log(err.stack);
+            }
+
         };
     };
 

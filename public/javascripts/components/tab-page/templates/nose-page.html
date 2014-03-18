@@ -1,0 +1,22 @@
+<div class="nose-page">
+    <div class="loading"><img src="/images/ajax-loader.gif"></div>
+    <div class="slider noses">
+        <div class="frame">
+            <ul>
+                <% for(var i = 0; i < noses.length; i++){ %>
+                <% var nose = noses[i]; %>
+                <li class="nose">
+                    <div class="activated"></div>
+                    <img src="<%= nose.img %>" data-number="<%= i %>"/>
+                    <% if(nose.priceExtra){ %><div class="price">&#43;&euro;<%= nose.priceExtra %></div><% } %>
+                </li>
+                <% }; %>
+            </ul>
+        </div>
+        <div class="scrollbar">
+            <div class="handle">
+                <div class="mousearea"></div>
+            </div>
+        </div>
+    </div>
+</div>

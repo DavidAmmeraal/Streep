@@ -113,8 +113,31 @@ define([
             });
         });
     };
+    Renderer.prototype.changeNose = function(nose){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.renderedFrame.changeNose(nose).then(function(newNoseObj){
+                resolve(newNoseObj);
+            });
+        });
+    };
     Renderer.prototype.getRenderedFrameObj = function(){
         return this.renderedFrame;
+    };
+    Renderer.prototype.changePattern = function(pattern){
+        console.log("Renderer.prototype.changePattern()");
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.renderedFrame.changePattern(pattern).then(function(newLegs){
+                _.each(newLegs, function(leg){
+                    if(leg.focused){
+                        self.connectors.currentComp = leg;
+                        self.connectors.render();
+                    }
+                });
+                resolve(newLegs);
+            });
+        });
     };
     Renderer.prototype.changeLegs = function(leg){
         var self = this;

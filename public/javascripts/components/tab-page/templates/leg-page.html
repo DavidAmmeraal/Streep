@@ -3,8 +3,8 @@
     <div class="slider legs">
         <div class="frame">
             <ul>
-                <% for(var i = 0; i < legs.length; i++){ %>
-                <% var leg = legs[i]; %>
+                <% for(var i = 0; i < patterns.length; i++){ %>
+                <% var leg = patterns[i]; %>
                 <li class="leg">
                     <img src="<%= leg.img %>" class="<% if(leg.default || leg.active) print(' active'); %>" data-number="<%= i %>"/>
                     <% if(leg.priceExtra){ %><div class="price">&#43;&euro;<%= leg.priceExtra %></div><% } %>

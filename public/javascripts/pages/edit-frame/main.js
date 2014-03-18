@@ -17,7 +17,8 @@ require([
     '../../components/tab-page/tab-page',
     '../../components/tab-page/leg-page',
     '../../components/tab-page/front-page',
-    '../../components/tab-page/engrave-page'
+    '../../components/tab-page/engrave-page',
+    '../../components/tab-page/nose-page'
 ],
 function(
     Renderer,
@@ -26,7 +27,8 @@ function(
     TabPage,
     LegPage,
     FrontPage,
-    EngravePage
+    EngravePage,
+    NosePage
 ){
 
     var renderer = null;
@@ -42,7 +44,7 @@ function(
 
     var renderTarget = $('#renderer')[0];
 
-    frame.fetch({data: {depth: 2}}).then(function(){
+    frame.fetch({data: {depth: 3}}).then(function(){
         renderer = new Renderer({
             container: renderTarget,
             backgroundColor: '#FFFFFF'
@@ -59,10 +61,11 @@ function(
     resizeElements();
 
     function handleFocusChanged(event, comp){
+        console.log(comp);
         if(comp.parent && !comp.children){
             var parent = comp.parent;
-            if(comp == parent.currentFront){
-                focusedOnFront(comp);
+            if(comp == parent.currentFront.currentNose){
+                focusedOnFront(parent.currentFront);
             }else if(comp == parent.currentLeftLeg || comp == parent.currentRightLeg){
                 focusedOnLeg(comp);
             }
@@ -79,18 +82,39 @@ function(
             front: comp
         });
 
+        var nosePage = new NosePage({
+           front: comp
+        });
+
         var menu = new Menu({
             element: $('#menu'),
             pages: [
-                frontPage
+                frontPage,
+                nosePage
             ]
         });
+
+        frontPage.activate();
 
         $(frontPage).on('front-changed', function(event, replacementFront){
             try{
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
                     frontPage.front = newFrontObj;
                     frontPage.newFrontLoaded();
+                    nosePage.front = newFrontObj;
+                    nosePage.newFrontLoaded();
+                    $('#overview > .price').html('&euro;' + renderer.getPrice());
+                });
+
+            }catch(err){
+                console.log(err.stack);
+            }
+        });
+
+        $(nosePage).on('nose-changed', function(event, replacementNose){
+            try{
+                renderer.changeNose(replacementNose).then(function(newNoseObj){
+                    nosePage.newNoseLoaded();
                     $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
 
@@ -101,7 +125,7 @@ function(
 
         var zoomoutButton = $('<button>Terug</button>');
         zoomoutButton.on('click', function(){
-            renderer.viewer.focusTo(comp.parent);
+            renderer.viewer.focusTo(comp.currentNose.parent);
         });
         $('#menu').append(zoomoutButton);
         $('#menu').show();
@@ -124,10 +148,14 @@ function(
                 engravePage
             ]
         });
+        setTimeout(function(){
+            legPage.activate();
+        }, 1);
 
-        $(legPage).on('legs-changed', function(event, replacementLeg){
+
+        $(legPage).on('pattern-changed', function(event, newPattern){
             try{
-                renderer.changeLegs(replacementLeg).then(function(newLegs){
+                renderer.changePattern(newPattern).then(function(newLegs){
                     var focusedLeg = null;
                     if(newLegs.right.focused){
                         focusedLeg = newLegs.right;
@@ -136,8 +164,6 @@ function(
                     }
                     engravePage.setLeg(focusedLeg);
                     legPage.setLeg(focusedLeg);
-                    engravePage.render();
-                    legPage.render();
                     $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
             }catch(err){
