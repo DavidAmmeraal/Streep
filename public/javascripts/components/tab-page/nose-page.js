@@ -11,9 +11,10 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
             if(noseChooser)
                 noseChooser.destroy();
 
-            var activeNoseIndex = _.indexOf(self.front.currentNose, _.find(self.front.noses, function(nose){
-                return nose.active;
-            }));
+            var activeNoseIndex = self.front.noses.indexOf(self.front.currentNose);
+            if(activeNoseIndex == -1){
+                activeNoseIndex = 0;
+            }
 
             var noseSliderFrame = html.find('.noses > .frame');
             var noseScrollbar = html.find('.fronts > .scrollbar');

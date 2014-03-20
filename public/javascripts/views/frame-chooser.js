@@ -63,11 +63,13 @@ define([
             var next = this.$el.find('.next');
 
             prev.on('click', function(){
-               console.log("PREVIOUS");
+                var carousel = self.$el.find('.carousel').data('royalSlider');
+                carousel.prev();
             });
 
             next.on('click', function(){
-               console.log("NEXT");
+                var carousel = self.$el.find('.carousel').data('royalSlider');
+                carousel.next();
             });
         }
     });

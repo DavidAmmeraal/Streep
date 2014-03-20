@@ -27,15 +27,23 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             return legs.active;
         });
 
+        var activeNose = _.find(activeFront.noses, function(nose){
+            return nose.active;
+        });
+
         price += parseFloat(activeFront.priceExtra);
         price += parseFloat(activeLegs.priceExtra);
+        price += parseFloat(activeNose.priceExtra);
+        price += parseFloat(activeLegs.currentPattern.priceExtra);
+
         return price;
     };
     Frame.prototype.changeNose = function(newNose){
-        console.log("Frame.prototype.changeNose()");
         var self = this;
         var currentColor = self.currentFront.currentNose.color;
-        this.currentFront.currentNose.active = false;
+        _.find(this.currentFront.noses, function(nose){
+            return nose.active;
+        }).active = false;
         newNose.active = true;
         return new Promise(function(resolve, reject){
             var noseObj = JSONComponent.parseFromDB(newNose);
@@ -60,6 +68,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
         newFront.active = true;
         newFront.currentNose = newFront.noses[0];
+        newFront.currentNose.active = true;
         return new Promise(function(resolve, reject){
             var noseObj = JSONComponent.parseFromDB(newFront.currentNose);
             noseObj.load().then(function(){
@@ -105,7 +114,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         activeLegs.currentPattern = newPattern;
         var self = this;
         return new Promise(function(resolve, reject){
-            console.log("INSIDE PROMISE!");
             var leftLeg = JSONComponent.parseFromDB(activeLegs.currentPattern['left']);
             var rightLeg = JSONComponent.parseFromDB(activeLegs.currentPattern['right']);
             Promise.all([leftLeg.load(), rightLeg.load()]).then(function(){
@@ -132,7 +140,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }catch(err){
                     console.log(err.stack);
                 }
-                console.log("RESOLVED!");
                 resolve({"right": rightLeg, "left": leftLeg});
             });
         });

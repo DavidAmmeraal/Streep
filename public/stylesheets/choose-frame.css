@@ -4,21 +4,31 @@
     width: 100%;
 }
 
-#frames .prev{
+#frames:hover .prev{
     z-index: 9999;
     position: absolute;
-    height: 100%;
     left: 0;
-    top: 0;
+    top: 200px;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 50px 50px 50px 0;
+    border-color: transparent #60e5a5 transparent transparent;
+    cursor: pointer;
 }
 
 
-#frames .next{
+#frames:hover .next{
     z-index: 9999;
     position: absolute;
-    height: 100%;
+    top: 200px;
     right: 0;
-    top: 0;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 50px 0 50px 50px;
+    border-color: transparent transparent transparent #60e5a5;
+    cursor: pointer;
 }
 
 #frames .carousel{

@@ -61,7 +61,6 @@ function(
     resizeElements();
 
     function handleFocusChanged(event, comp){
-        console.log(comp);
         if(comp.parent && !comp.children){
             var parent = comp.parent;
             if(comp == parent.currentFront.currentNose){
