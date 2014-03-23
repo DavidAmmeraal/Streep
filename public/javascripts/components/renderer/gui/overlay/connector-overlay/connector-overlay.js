@@ -22,6 +22,7 @@ define([
         this.element.is(':visible') && this.renderConnectors();
     };
     ConnectorOverlay.prototype.renderConnectors = function(){
+        console.log("renderConnectors()");
         var self = this;
         var comp = this.currentComp;
         self.element.find('.indicator').remove();
@@ -53,7 +54,12 @@ define([
         }
 
         var findConnectors = function(comp){
-            var connectors = [];
+
+            var connectors = _.filter(comp.connectors, function(connector){
+                return !connector.used;
+            })
+
+            /*
             if(comp.connectors){
                 for(var c = 0; c < comp.connectors.length; c++){
                     var connector = comp.connectors[c];
@@ -71,7 +77,7 @@ define([
                             connectors.push(connector);
                     }
                 }
-            }
+            }*/
             return connectors;
         }
 

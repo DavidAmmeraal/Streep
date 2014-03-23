@@ -43,13 +43,16 @@ define(['../modification/modification', '../modification/csg-text-modification',
 	};
 
     Connector.prototype.reset = function(){
-        if(this.originalGeo){
-            this.component.geo = this.originalGeo;
-            this.component.refresh();
+        var self = this;
+        console.log("CONNECTOR.RESET()");
+        if(self.originalGeo){
+            self.component.geo = self.originalGeo;
+
         }
-        if(this.used){
-            this.used = false;
+        if(self.used){
+            self.used = false;
         }
+        self.component.refresh();
     };
 
     Connector.prototype.load = function(){

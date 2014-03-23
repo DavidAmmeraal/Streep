@@ -57,7 +57,22 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             });
         });
     };
+    Frame.prototype.cancelModifications = function(){
+        if(this.currentLeftLeg && this.currentRightLeg){
+            _.each(this.currentLeftLeg.connectors, function(connector){
+                _.each(connector.modifications, function(mod){
+                    mod.terminate();
+                });
+            });
+            _.each(this.currentRightLeg.connectors, function(connector){
+                _.each(connector.modifications, function(mod){
+                    mod.terminate();
+                });
+            });
+        }
+    };
     Frame.prototype.changeFront = function(newFront){
+        this.cancelModifications();
         var self = this;
         var currentColor = self.currentFront.color;
         _.each(this.fronts, function(front){

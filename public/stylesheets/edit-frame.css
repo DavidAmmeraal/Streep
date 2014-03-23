@@ -262,6 +262,11 @@
     float: left;
 }
 
+#menu .contents .tab-content #engrave .engrave-page .fields{
+    width: 100%;
+    position: relative;
+}
+
 #menu .contents .tab-content #engrave .engrave-page .disabled, .loading{
     font-weight: bold;
     position: absolute;
@@ -271,8 +276,12 @@
     color: #2a2a2a;
     font-size: 25px;
     text-align: center;
-    padding: 20px;
     display: none;
+    padding: 10px 20px;
+}
+
+#menu .contents .tab-content #engrave .engrave-page .disabled, .loading img{
+    float: left;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .fields{

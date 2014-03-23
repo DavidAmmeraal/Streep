@@ -7,10 +7,12 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype = Object.create(TabPage.prototype);
     EngravePage.prototype.id = "engrave";
     EngravePage.currentTarget = null;
+    EngravePage.prototype.side = null;
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.fonts = ['Helvetiker', 'Banana Brick', 'Fantasque', 'Gentilis'];
-    EngravePage.prototype.sizes = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+    EngravePage.prototype.sizes = ["S", "M", "L"];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
+    EngravePage.prototype.activate = function(){};
     EngravePage.prototype.setLeg = function(leg){
         var self = this;
         var listenToConnectors = function(){
@@ -20,8 +22,15 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
                 });
             });
         }
+
         listenToConnectors(leg);
         this.leg = leg;
+
+        if(this.leg.parent.currentLeftLeg == this.leg){
+            this.side = "left";
+        }else if(this.leg.parent.currentRightLeg == this.leg){
+            this.side = "right";
+        }
     };
     EngravePage.prototype.render = function(){
         var self = this;
@@ -38,13 +47,23 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         this.html.find('button.carve').on('click', function(event){
             self.carveClicked.apply(self, [event]);
         });
-        this.html.find('button.reset').on('click', function(){
-            _.invoke(self.leg.connectors, 'reset');
+        this.html.find('button.reset').on('click', function(event){
+            self.resetClicked.apply(self, [event])
         });
 
         this.element.html(this.html);
     };
+    EngravePage.prototype.resetClicked = function(event){
+        var self = this;
+        self.leg.connectors.map(function(connector){
+            return connector.reset();
+        });
+        $(self).trigger('leg-reset', this.side);
+
+    };
     EngravePage.prototype.engraveClicked = function(event){
+        var self = this;
+
         var connector = _.find(this.leg.connectors, function(connector){
             return connector.selected;
         });
@@ -54,18 +73,44 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             return mod.setText && mod.action_name == "engrave";
         });
 
-        var loading = this.element.find('.loading');
-        loading.append('<div class="message">Bezig met graveren</div>');
-        loading.show();
-        var size = this.element.find('select.size > :selected').val();
-        mod.setText(this.element.find('input.text').val(), "helvetiker", size);
+        this.loading(true);
+        var size = this.element.find('select.size > :selected').val().toLowerCase();
+        var text = this.element.find('input.text').val();
+        var font = "helvetiker";
+        var type = 'engrave';
+        mod.setText(text, font, size);
         mod.execute().then(function(){
-            loading.find('message').remove();
-            loading.hide();
+            $(self).trigger('engraving-applied', {'side': self.side, 'connector': connector.name, 'text': text, 'font': font, 'size': size, 'type': type});
+            self.loading(false);
         });
-        console.log("Carve Clicked!");
+        console.log("Engrave Clicked!");
+
+    };
+    EngravePage.prototype.enableButtons = function(){
+        this.html.find('button.engrave').removeAttr('disabled');
+        this.html.find('button.carve').removeAttr('disabled');
+        this.html.find('button.reset').removeAttr('disabled');
+    };
+    EngravePage.prototype.disableButtons = function(){
+        this.html.find('button.engrave').attr('disabled', 'disabled');
+        this.html.find('button.carve').attr('disabled', 'disabled');
+        this.html.find('button.reset').attr('disabled', 'disabled');
+    };
+    EngravePage.prototype.loading = function(loading){
+        var loadingEl = this.element.find('.loading');
+        if(loading){
+            loadingEl.append('<div class="message">Bezig met graveren</div>');
+            loadingEl.show();
+            this.disableButtons();
+        }else{
+            loadingEl.find('.message').remove();
+            loadingEl.hide();
+            this.enableButtons();
+        }
     };
     EngravePage.prototype.carveClicked = function(event){
+        var self = this;
+
         var connector = _.find(this.leg.connectors, function(connector){
             return connector.selected;
         });
@@ -75,12 +120,15 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             return mod.setText && mod.action_name == "carve";
         });
 
-        var loading = this.element.find('.loading');
-        loading.show();
-        var size = this.element.find('select.size > :selected').val();
-        mod.setText(this.element.find('input.text').val(), "helvetiker", size);
+        this.loading(true);
+        var size = this.element.find('select.size > :selected').val().toLowerCase();
+        var text = this.element.find('input.text').val();
+        var font = "helvetiker";
+        var type = 'carve';
+        mod.setText(text, font, size);
         mod.execute().then(function(){
-            loading.hide();
+            $(self).trigger('engraving-applied', {'side': self.side, 'connector': connector.name, 'text': text, 'font': font, 'size': size, 'type': type});
+            self.loading(false);
         });
         console.log("Carve Clicked!");
     }

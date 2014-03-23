@@ -28,6 +28,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 
     JSONComponent.parseFromDB = function(data){
         console.log("JSONComponent.parseFromDB");
+        console.log(data);
         try{
             for(var i = 0; i < data.connectors.length; i++){
                 data.connectors[i] = Connector.parseFromDB(data.connectors[i]);

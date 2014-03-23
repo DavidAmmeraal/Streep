@@ -10,9 +10,20 @@ define(['../transformation/transformation', './modification', '../../util/geomet
 
 	CSGModification.prototype = Object.create(Modification.prototype);
     CSGModification.prototype.types = ['subtract', 'union'];
+    CSGModification.prototype.worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
     CSGModification.prototype.type = null;
     CSGModification.transformations = [];
+    CSGModification.prototype.busy = false;
+    CSGModification.prototype.terminate = function(){
+        console.log("CSGModification.terminate()");
+        if(this.busy){
+            this.busy = false;
+            this.worker.terminate();
+            $(this).trigger('worker-terminated');
+        }
+    };
     CSGModification.prototype.execute = function(){
+        console.log("EXECUTE!");
         var self = this;
         if(!this.connector.originalGeo){
             this.connector.originalGeo = self.component.geo;
@@ -20,7 +31,6 @@ define(['../transformation/transformation', './modification', '../../util/geomet
         this.connector.used = true;
         self.executeTransformations();
 
-        var worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
         var message = {
             'type': self.type,
             'targetGeo': {
@@ -41,17 +51,28 @@ define(['../transformation/transformation', './modification', '../../util/geomet
         console.log(mesh);
         globalviewer.getScene().add(mesh);
         globalviewer.render();
-        */
+*/
 
 
         return new Promise(function(resolve, reject){
-            worker.onmessage = function(e){
-                self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
-                self.component.refresh();
-                resolve();
-            };
+            try{
+                self.worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
+                self.busy = true;
+                $(self).on('worker-terminated', function(){
+                    reject();
+                });
+                self.worker.onmessage = function(e){
+                    console.log("RESPONSE FROM WORKER!");
+                    self.component.geo = GeometryHelper.createGeoFromJSON(JSON.parse(e.data))
+                    self.component.refresh();
+                    self.busy = false;
+                    resolve();
+                };
 
-            worker.postMessage(message);
+                self.worker.postMessage(message);
+            }catch(err){
+                console.log(err);
+            }
         });
 
 

@@ -16,9 +16,17 @@ define([
 	CSGTextModification.prototype = Object.create(CSGModification.prototype);
     CSGTextModification.prototype.depth = null;
     CSGTextModification.prototype.setText = function(text, font, size){
+        console.log("CSGTextModification.prototype.setText(" + text + ", " + font + ", " + size + ")");
+        var self = this;
+        var actualSize = self.sizes[size].fontSize;
+        var actualDepth = self.sizes[size].depth;
+        self.transformations = self.sizes[size].transformations;
+        console.log("TRANSFORMATIONS");
+        console.log(self.transformations);
+        console.log("END TRANSFORMATIONS");
         this.geo = new THREE.TextGeometry(text, {
-            size: size,
-            height: this.depth,
+            height: actualDepth,
+            size: actualSize,
             curveSegments: 2,
             weight: "normal",
             style: "normal",
@@ -28,20 +36,24 @@ define([
 
     //Static
     CSGTextModification.parseFromDB = function(data){
-        for(var i = 0; i < data.transformations.length; i++){
-            var transformation = data.transformations[i];
-            switch(transformation.type){
-                case "Translate":
-                    transformation = Translate.parseFromDB(transformation.implementation);
-                    break;
-                case "Rotate":
-                    transformation = Rotate.parseFromDB(transformation.implementation);
-                    break;
-                case "Scale":
-                    transformation = Scale.parseFromDB(transformation.implementation);
-                    break;
+        for(var sizeKey in data.sizes){
+            var size = data.sizes[sizeKey];
+            for(var c = 0; c < size.transformations.length; c++){
+                var transformation = size.transformations[c];
+                switch(transformation.type){
+                    case "Translate":
+                        transformation = Translate.parseFromDB(transformation.implementation);
+                        break;
+                    case "Rotate":
+                        transformation = Rotate.parseFromDB(transformation.implementation);
+                        break;
+                    case "Scale":
+                        transformation = Scale.parseFromDB(transformation.implementation);
+                        break;
+                }
+                size.transformations[c] = transformation;
             }
-            data.transformations[i] = transformation;
+            data.sizes[sizeKey] = size;
         }
         return new CSGTextModification(data);
     }

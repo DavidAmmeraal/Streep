@@ -7,6 +7,11 @@ button{
     height: 50px;
 }
 
+button:disabled{
+    background-color: #ffffff;
+    color: #80808d;
+}
+
 input[type="text"], select{
     background-color: white;
     border: none;

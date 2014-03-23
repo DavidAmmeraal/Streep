@@ -38,11 +38,19 @@ function(
     var urlParts = url.split("/");
     var id = urlParts[urlParts.length - 1];
 
+    //This object keeps track of the current engravings. If the legs are changed, and its possible to reapply the engravings on those legs it will do it through this.
+    var appliedEngravings = {
+        left: null,
+        right: null
+    }
+
     var frame = new Frame({
         id: id
     });
 
     var renderTarget = $('#renderer')[0];
+
+    var engravePage = null;
 
     frame.fetch({data: {depth: 3}}).then(function(){
         renderer = new Renderer({
@@ -97,7 +105,12 @@ function(
 
         $(frontPage).on('front-changed', function(event, replacementFront){
             try{
+
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
+                    applyEngravingsToNewLegs(_.find(newFrontObj.legs, function(legs){
+                       return legs.active;
+                    }));
+                    console.log(newFrontObj);
                     frontPage.front = newFrontObj;
                     frontPage.newFrontLoaded();
                     nosePage.front = newFrontObj;
@@ -130,6 +143,27 @@ function(
         $('#menu').show();
     }
 
+    function applyEngravingsToNewLegs(newLegs){
+        var execute = [];
+        for(var side in appliedEngravings){
+            if(appliedEngravings[side]){
+                var engraving = appliedEngravings[side];
+                var connector = _.find(newLegs.currentPattern[side].connectors, function(connector){
+                    return connector.name == engraving.connector;
+                });
+                var mod = _.find(connector.modifications, function(mod){
+                    return mod.action_name == engraving.type;
+                });
+                mod.setText(engraving.text, engraving.font, engraving.size);
+                engravePage.disableButtons();
+                execute.push(mod.execute());
+            }
+        }
+        Promise.all(execute).then(function(){
+            engravePage.enableButtons();
+        });
+    };
+
     function focusedOnLeg(comp){
         $('#menu').html('');
         var legPage = new LegPage({
@@ -137,7 +171,7 @@ function(
             leg: comp
         });
 
-        var engravePage = new EngravePage();
+        engravePage = new EngravePage();
         engravePage.setLeg(comp);
 
         var menu = new Menu({
@@ -169,6 +203,17 @@ function(
                 console.log(err.stack);
             }
         });
+
+        $(engravePage).on('engraving-applied', function(event, engraving){
+            appliedEngravings[engraving.side] = engraving;
+            console.log(appliedEngravings);
+        });
+
+        $(engravePage).on('leg-reset', function(event, side){
+            appliedEngravings[side] = null;
+            console.log(appliedEngravings);
+        });
+
         var zoomoutButton = $('<button>Terug</button>');
         zoomoutButton.on('click', function(){
             renderer.viewer.focusTo(comp.parent);
