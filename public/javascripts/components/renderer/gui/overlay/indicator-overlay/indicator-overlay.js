@@ -25,31 +25,14 @@ define([
 
         var comps = this.viewer.getComponents();
 
-        function toScreenXY( position, camera, div ) {
+        function toScreenXY( position, camera, div ){
             var pos = position.clone();
             var projScreenMat = new THREE.Matrix4();
-            projScreenMat.multiplyMatrices(self.viewer.camera.projectionMatrix, camera.matrixWorldInverse );
+            projScreenMat.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
             pos.applyProjection(projScreenMat);
 
-            var offset = findOffset(div);
-
-            return { x: ( pos.x + 1 ) * div.width / 2 + offset.left,
-                y: ( - pos.y + 1) * div.height / 2 + offset.top };
-
-        }
-
-        function findOffset(element) {
-            var pos = new Object();
-            pos.left = pos.top = 0;
-            if (element.offsetParent)
-            {
-                do
-                {
-                    pos.left += element.offsetLeft;
-                    pos.top += element.offsetTop;
-                } while (element = element.offsetParent);
-            }
-            return pos;
+            return { x: ( pos.x + 1 ) * $(div).width() / 2,
+                y: ( - pos.y + 1) * $(div).height() / 2 };
         }
 
         for(var c = 0; c < comps.length; c++){

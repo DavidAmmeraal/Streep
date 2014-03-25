@@ -1,5 +1,9 @@
 /** Bootstrap overwrites **/
 
+body{
+    font-family: Allerta, Helvetica, Arial;
+}
+
 .nav-tabs{
     border-bottom: none;
 }
@@ -146,8 +150,9 @@
    text-align: center;
    width: 100%;
 }
-.column-left #buttons .button{
-    float: left;
+.column-left #buttons button{
+    height: 40px;
+    margin: 5px 5px;
 }
 
 .column-left #renderer{

@@ -49,8 +49,27 @@ function(
     });
 
     var renderTarget = $('#renderer')[0];
-
     var engravePage = null;
+
+    var previewButton = $('#buttons > .preview');
+    var changeButton = $('#buttons > .change');
+
+    previewButton.on('click', function(){
+        if(previewButton.hasClass('previewing')){
+            renderer.showOverlays();
+            previewButton.removeClass('previewing');
+            previewButton.text('PREVIEW');
+        }else{
+            renderer.hideOverlays();
+            previewButton.addClass('previewing');
+            previewButton.text('STOP PREVIEWING');
+        }
+
+    });
+
+    changeButton.on('click', function(){
+        window.location = '/choose-frame';
+    });
 
     frame.fetch({data: {depth: 3}}).then(function(){
         renderer = new Renderer({
@@ -224,7 +243,8 @@ function(
 
     function resizeElements(){
         var menuHeight = $('#menu').height();
-        $('#renderer').height($(window).height() - menuHeight);
+        var buttonHeight = $('#buttons').height();
+        $('#renderer').height($(window).height() - menuHeight - buttonHeight);
         if(renderer){
             renderer.resize();
         }

@@ -48,13 +48,8 @@ define([
         };
 
         var handleFocusChanged = function(event, comp){
-            if(comp.parent && !comp.children){
-                self.connectors.show();
-                self.indicators.hide();
-            }else{
-                self.connectors.hide();
-                self.indicators.show();
-            }
+            self.comp = comp;
+            self.showOverlays();
         }
 
         initialize();
@@ -99,9 +94,22 @@ define([
             });
         });
     }
+    Renderer.prototype.showOverlays = function(){
+        if(this.comp.parent && !this.comp.children){
+            this.connectors.show();
+            this.indicators.hide();
+        }else{
+            this.connectors.hide();
+            this.indicators.show();
+        }
+    };
+    Renderer.prototype.hideOverlays = function(){
+        this.connectors.hide();
+        this.indicators.hide();
+    };
     Renderer.prototype.resize = function(){
         this.viewer.resize();
-    }
+    };
     Renderer.prototype.getPrice = function(){
         return this.renderedFrame.getPrice();
     }
