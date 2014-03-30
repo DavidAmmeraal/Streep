@@ -51,21 +51,7 @@ function(
     var renderTarget = $('#renderer')[0];
     var engravePage = null;
 
-    var previewButton = $('#buttons > .preview');
     var changeButton = $('#buttons > .change');
-
-    previewButton.on('click', function(){
-        if(previewButton.hasClass('previewing')){
-            renderer.showOverlays();
-            previewButton.removeClass('previewing');
-            previewButton.text('PREVIEW');
-        }else{
-            renderer.hideOverlays();
-            previewButton.addClass('previewing');
-            previewButton.text('STOP PREVIEWING');
-        }
-
-    });
 
     changeButton.on('click', function(){
         window.location = '/choose-frame';
@@ -79,7 +65,7 @@ function(
         renderer.loadFrame(frame).then(function(){
             $(renderer.viewer).on('viewer.focus', handleFocusChanged);
             $('#overview > .price').html('&euro;' + frame.get('basePrice'));
-            $('.column-left > .loading').hide();
+            $('.column-left > .loading').fadeOut(200);
         });
 
     });
@@ -96,7 +82,7 @@ function(
                 focusedOnLeg(comp);
             }
         }else{
-            $('#menu').hide();
+            $('#menu').fadeOut(200);
         }
     };
 
@@ -159,7 +145,7 @@ function(
             renderer.viewer.focusTo(comp.currentNose.parent);
         });
         $('#menu').append(zoomoutButton);
-        $('#menu').show();
+        $('#menu').fadeIn(200);
     }
 
     function applyEngravingsToNewLegs(newLegs){
@@ -238,7 +224,7 @@ function(
             renderer.viewer.focusTo(comp.parent);
         });
         $('#menu').append(zoomoutButton);
-        $('#menu').show();
+        $('#menu').fadeIn(200);
     }
 
     function resizeElements(){

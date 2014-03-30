@@ -145,12 +145,19 @@ body{
     vertical-align: middle;
 }
 .column-left #buttons{
+   z-index: 9998;
+   top: 60px;
+   position: absolute;
    float: left;
    height: 50px;
-   text-align: center;
-   width: 100%;
+   width: auto;
+   width: 200px;
 }
 .column-left #buttons button{
+    width: 200px;
+    font-size: 12px;
+    background-color: black;
+    color: white;
     height: 40px;
     margin: 5px 5px;
 }
@@ -451,6 +458,99 @@ body{
     color: white;
     cursor: pointer;
     background-size:25px 25px;
+}
+
+.overlay .indicator-tooltip{
+    width: 200px;
+    position: absolute;
+    color: black;
+}
+
+.overlay .indicator-tooltip.top{
+    margin-top: -100px;
+}
+
+.overlay .indicator-tooltip.top .arrow{
+    position: absolute;
+    top: 25px;
+    left: 0;
+    height: 58px;
+    width: 26px;
+    background: url('/images/arrow_down.png') no-repeat;
+}
+
+.overlay .indicator-tooltip.top .text{
+    text-align: center;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    height: 25px;
+    margin-left: -100px;
+}
+
+.overlay .indicator-tooltip.left{
+    margin-left: -25px;
+}
+
+.overlay .indicator-tooltip.left .arrow{
+    position: absolute;
+    right: 0;
+    height: 26px;
+    width: 58px;
+    background: url('/images/arrow_right.png') no-repeat;
+}
+
+.overlay .indicator-tooltip.left .text{
+    width: 200px;
+    position: absolute;
+    top: 25px;
+    left: 0;
+    text-align: right;
+}
+
+
+.overlay .indicator-tooltip.bottom{
+}
+
+.overlay .indicator-tooltip.bottom .arrow{
+    height: 58px;
+    width: 26px;
+    background: url('/images/arrow_top.png') no-repeat;
+}
+
+.overlay .indicator-tooltip.right{
+    margin-left: 50px;
+}
+
+.overlay .indicator-tooltip.right .arrow{
+    height: 26px;
+    width: 58px;
+    background: url('/images/arrow_left.png') no-repeat;
+}
+
+.overlay .indicator-tooltip.right .text{
+    margin-left: 40px;
+}
+
+.overlay.indicators .switch{
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid;
+    border-radius: 40px;
+    background: url('/images/info.png') no-repeat center;
+}
+
+.overlay.indicators .switch.on{
+    border-color: #60e5a5;
+}
+
+.overlay.indicators .switch.off{
+    border-color: #222222;
 }
 
 #overview{

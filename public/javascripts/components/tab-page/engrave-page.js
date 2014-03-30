@@ -34,9 +34,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     };
     EngravePage.prototype.render = function(){
         var self = this;
-        var display = _.find(this.leg.connectors, function(connector){
-            return connector.selected;
-        });
+        var display = this.leg.connectors[0];
 
         var html = $(this.template({fonts: this.fonts, sizes: this.sizes, display: display}));
         this.html = html;
@@ -64,9 +62,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.engraveClicked = function(event){
         var self = this;
 
-        var connector = _.find(this.leg.connectors, function(connector){
-            return connector.selected;
-        });
+        var connector = this.leg.connectors[0];
 
         var mod = _.find(connector.modifications, function(mod){
             console.log(mod);
@@ -111,9 +107,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.carveClicked = function(event){
         var self = this;
 
-        var connector = _.find(this.leg.connectors, function(connector){
-            return connector.selected;
-        });
+        var connector = this.leg.connectors[0];
 
         var mod = _.find(connector.modifications, function(mod){
             console.log(mod);

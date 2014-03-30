@@ -96,15 +96,12 @@ define([
     }
     Renderer.prototype.showOverlays = function(){
         if(this.comp.parent && !this.comp.children){
-            this.connectors.show();
             this.indicators.hide();
         }else{
-            this.connectors.hide();
             this.indicators.show();
         }
     };
     Renderer.prototype.hideOverlays = function(){
-        this.connectors.hide();
         this.indicators.hide();
     };
     Renderer.prototype.resize = function(){

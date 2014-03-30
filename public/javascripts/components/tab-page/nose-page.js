@@ -11,7 +11,10 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
             if(noseChooser)
                 noseChooser.destroy();
 
-            var activeNoseIndex = self.front.noses.indexOf(self.front.currentNose);
+            var activeNoseIndex = self.front.noses.indexOf(_.find(self.front.noses, function(nose){
+               return nose._id == self.front.currentNose._id;
+            }));
+
             if(activeNoseIndex == -1){
                 activeNoseIndex = 0;
             }
@@ -39,6 +42,7 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
 
             noseChooser = new Sly(noseSliderFrame, noseOptions);
             noseChooser.on('active', function(event, itemIndex){
+
                 if(self.front.currentNose.src != self.front.noses[itemIndex].src){
                     $(self).trigger('nose-changed', self.front.noses[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Neusbrug wordt ingeladen</div>')
@@ -46,8 +50,6 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
                 }
             });
             var nosesSlidee = self.element.find('.noses ul');
-            console.log(nosesSlidee.width());
-            console.log(nosesSlidee.parent().width());
             if(nosesSlidee.width() <= nosesSlidee.parent().width()){
                 self.element.find('.noses .scrollbar').hide();
             }

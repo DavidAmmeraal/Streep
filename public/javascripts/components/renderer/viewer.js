@@ -108,6 +108,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.positionCamera = function(position, duration){
+            console.log("positionCamera(" + JSON.stringify(position) + "," + duration + ")");
 			var curPosition = {};
 			curPosition.x = self.camera.position.x;
 			curPosition.y = self.camera.position.y;
