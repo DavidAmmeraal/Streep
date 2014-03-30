@@ -65,8 +65,23 @@ function(
         window.location = '/choose-frame';
     });
 
-    console.log(facebookButton[0]);
-    facebookButton.fancybox();
+    facebookButton.on('click', function(){
+        FB.ui({
+                method: 'feed',
+                name: 'The name',
+                link: 'The URL',
+                from: '100001738814056',
+                to: '100003105898115',
+                caption: 'An example caption'
+            },  function(response) {
+                if (response && response.post_id) {
+                    alert('Post was published.');
+                } else {
+                    alert('Post was not published.');
+                }
+            }
+        );
+    });
     /*
     shareButton.on('click', function(){
         renderer.getScreenshot().then(function(screenshot){
