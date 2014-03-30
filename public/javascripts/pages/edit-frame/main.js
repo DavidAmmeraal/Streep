@@ -35,9 +35,9 @@ function(
     LegPage,
     FrontPage,
     EngravePage,
-    NosePage,
-    FB
+    NosePage
 ){
+    console.log(FB);
     var renderer = null;
     $('body').height($(window).height());
 
@@ -65,22 +65,19 @@ function(
         window.location = '/choose-frame';
     });
 
-    facebookButton.on('click', function(){
-        FB.ui({
+    facebookButton.on('click', function(event){
+        event.preventDefault();
+        renderer.getScreenshot().then(function(screenshot){
+            console.log(screenshot);
+            FB.ui({
                 method: 'feed',
-                name: 'The name',
-                link: 'The URL',
-                from: '100001738814056',
-                to: '100003105898115',
-                caption: 'An example caption'
-            },  function(response) {
-                if (response && response.post_id) {
-                    alert('Post was published.');
-                } else {
-                    alert('Post was not published.');
-                }
-            }
-        );
+                link: 'http://local.streep.nl:3000',
+                caption: 'Create your own 3D printed glasses!',
+                picture: screenshot,
+                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eu venenatis tellus. Aliquam fermentum, mi sit amet elementum molestie, justo nibh hendrerit purus, a hendrerit risus nulla quis ipsum. Aenean et tortor sed purus molestie bibendum sit amet at tellus. Aenean egestas vulputate velit, sit amet commodo augue tincidunt sed. Aliquam nec metus imperdiet, semper nunc ac, laoreet est. Morbi in mattis diam. Vivamus eget nulla sed purus pulvinar posuere. Duis vitae turpis arcu. Curabitur rhoncus quis ligula eget fringilla. Maecenas eget turpis dapibus, tempus nulla nec, sodales tortor. Nam sodales, massa in tristique mattis, libero ipsum fermentum quam, eget lobortis nisl elit tincidunt eros. Sed a ligula non nibh venenatis laoreet. ers.'
+            });
+        });
+
     });
     /*
     shareButton.on('click', function(){
