@@ -60,15 +60,17 @@ function(
 
     var changeButton = $('#buttons > .change');
     var facebookButton = $('a.facebook');
+    var overviewLoading = $('#overview .loading');
 
     changeButton.on('click', function(){
         window.location = '/choose-frame';
     });
 
     facebookButton.on('click', function(event){
+        overviewLoading.show();
         event.preventDefault();
         renderer.getScreenshot().then(function(screenshot){
-            console.log(screenshot);
+            overviewLoading.hide();
             FB.ui({
                 method: 'feed',
                 link: 'http://local.streep.nl:3000',
