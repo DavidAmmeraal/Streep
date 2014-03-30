@@ -279,6 +279,9 @@ define(['./util/webgl-test'], function(WebGLTest){
 	};
 
 	Viewer.prototype = {
+        getScreenshot: function(){
+            return this.renderer.domElement.toDataURL();
+        },
         getComponents: function(){
             var findCompsIn = function(comp){
                 var comps = [];

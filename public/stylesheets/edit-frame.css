@@ -564,9 +564,14 @@ body{
 }
 
 #overview .preview{
-    height: 200px;
+    text-align: center;
+    margin-top: 10px;
     width: 100%;
     float: left;
+}
+
+#overview .preview img{
+    cursor: pointer;
 }
 
 #overview .price{

@@ -158,6 +158,35 @@ define([
             });
         });
 
-    }
+    };
+    Renderer.prototype.getScreenshot = function(){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            try{
+                var cameraPosition = self.viewer.camera.position;
+                var originalWidth = $(self.viewer.target).width();
+                var originalHeight = $(self.viewer.target).height();
+                $(self.viewer.target).width(1280);
+                $(self.viewer.target).height(720);
+                self.viewer.camera.position.x = self.renderedFrame.focusPerspective.cameraPosition.x;
+                self.viewer.camera.position.y = self.renderedFrame.focusPerspective.cameraPosition.y;
+                self.viewer.camera.position.z = self.renderedFrame.focusPerspective.cameraPosition.z;
+
+                self.viewer.camera.lookAt(self.renderedFrame.focusPerspective.lookAt);
+                self.viewer.resize();
+                self.viewer.positionCamera(cameraPosition);
+                var screenshot = self.viewer.getScreenshot()
+                $(self.viewer.target).width(originalWidth);
+                $(self.viewer.target).height(originalHeight);
+                self.viewer.resize();
+                $.post('/screenshot/save', {data: screenshot}).done(function(data){
+                    data = JSON.parse(data);
+                    resolve(data.screenshot);
+                });
+            }catch(err){
+                console.log(err);
+            }
+        });
+    };
     return Renderer;
 })

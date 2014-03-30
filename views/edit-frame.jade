@@ -4,6 +4,7 @@ block head
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/royalslider.css')
     link(rel='stylesheet', href='/javascripts/vendor/royalslider/skins/minimal-white/rs-minimal-white.css')
     link(rel='stylesheet', href='/javascripts/vendor/jscrollpane/jquery.jscrollpane.css')
+    link(rel='stylesheet', href='/javascripts/vendor/fancybox/jquery.fancybox.css')
     link(rel='stylesheet', href='/stylesheets/streep3d.css')
     link(rel='stylesheet', href='/stylesheets/edit-frame.css')
 
@@ -11,9 +12,11 @@ block content
     .column-right
         #overview
             .preview
-                img(src='/images/preview.png', width="100%", height="100%")
-            div(style='float: left; height: 80px; width: 100%')
-                |   &nbsp;
+                img(src='/images/pinterest.png')
+                a(href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fparse.com", data-fancybox-type="iframe", class="facebook")
+                    img(class='facebook', src='/images/facebook.png')
+                img(src='/images/twitter.png')
+                img(src='/images/m-wattes.png')
             .price
             .order
                 button
@@ -61,5 +64,8 @@ block js
 
     //Sly
     script(src='/javascripts/vendor/sly.min.js')
+
+    //Fancybox
+    script(src="/javascripts/vendor/fancybox/jquery.fancybox.pack.js")
 
     script(src='/javascripts/vendor/require.js', data-main='/javascripts/pages/edit-frame/main.js')

@@ -5,8 +5,14 @@ requirejs.config({
     //config is relative to the baseUrl, and
     //never includes a ".js" extension since
     //the paths config could be for a directory.
+    shim: {
+        'facebook' : {
+            exports: 'FB'
+        }
+    },
     paths: {
-        text: '../../vendor/text'
+        text: '../../vendor/text',
+        facebook: '//connect.facebook.net/en_US/all'
     }
 });
 
@@ -18,7 +24,8 @@ require([
     '../../components/tab-page/leg-page',
     '../../components/tab-page/front-page',
     '../../components/tab-page/engrave-page',
-    '../../components/tab-page/nose-page'
+    '../../components/tab-page/nose-page',
+    '../../vendor/facebook/fb'
 ],
 function(
     Renderer,
@@ -28,9 +35,9 @@ function(
     LegPage,
     FrontPage,
     EngravePage,
-    NosePage
+    NosePage,
+    FB
 ){
-
     var renderer = null;
     $('body').height($(window).height());
 
@@ -52,10 +59,22 @@ function(
     var engravePage = null;
 
     var changeButton = $('#buttons > .change');
+    var facebookButton = $('a.facebook');
 
     changeButton.on('click', function(){
         window.location = '/choose-frame';
     });
+
+    console.log(facebookButton[0]);
+    facebookButton.fancybox();
+    /*
+    shareButton.on('click', function(){
+        renderer.getScreenshot().then(function(screenshot){
+            console.log(screenshot);
+            $('#overview > .preview').append('<img src="' + screenshot + '" width="100%"/>');
+        })
+    });
+    */
 
     frame.fetch({data: {depth: 3}}).then(function(){
         renderer = new Renderer({

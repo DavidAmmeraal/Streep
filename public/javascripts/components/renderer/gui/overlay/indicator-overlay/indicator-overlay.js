@@ -56,7 +56,6 @@ define([
         this.element.find('.indicator').each(function(){
             var offset = $(this).offset();
             var comp = $(this).data('component');
-            console.log(comp.name);
             var contents;
             var position;
             if(comp.name == "poot_links" || comp.name == "poot_rechts"){
