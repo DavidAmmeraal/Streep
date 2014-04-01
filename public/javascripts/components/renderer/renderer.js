@@ -179,13 +179,15 @@ define([
                 self.viewer.camera.lookAt(self.renderedFrame.focusPerspective.lookAt);
                 self.viewer.resize();
                 var screenshot = self.viewer.getScreenshot();
-                console.log("SCREENSHOT RECEIVED");
                 self.viewer.camera.position.x = cameraPosition.x;
                 self.viewer.camera.position.y = cameraPosition.y;
                 self.viewer.camera.position.z = cameraPosition.z;
                 $(self.viewer.target).width(originalWidth);
                 $(self.viewer.target).height(originalHeight);
-                self.viewer.resize();
+                setTimeout(function(){
+                    self.viewer.resize();
+                }, 1000);
+
                 $.post('/screenshot/save', {data: screenshot}).done(function(data){
                     data = JSON.parse(data);
                     resolve(data.screenshot);
