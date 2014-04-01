@@ -245,7 +245,10 @@ define(['./util/webgl-test'], function(WebGLTest){
 			self.render();
 		};
 		
-		self.focusTo = function(comp){
+		self.focusTo = function(comp, length){
+            if(!length && length != 0){
+                length = 500;
+            }
             if(self.lookingAt)
                 self.lookingAt.focused = false;
 
@@ -253,7 +256,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 			self.lookingAt = comp;
 			//self.resetCamera();
 			if(comp.focusPerspective){
-				self.positionCamera(comp.focusPerspective.cameraPosition, 500);
+				self.positionCamera(comp.focusPerspective.cameraPosition, length);
 			}
             $(self).trigger('viewer.focus', comp);
 		};
