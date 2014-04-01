@@ -67,10 +67,12 @@ function(
     });
 
     facebookButton.on('click', function(event){
-        overviewLoading.show();
+        overviewLoading.fadeIn(50);
+        $('.column-left > .loading').fadeOut(50);
         event.preventDefault();
         renderer.getScreenshot().then(function(screenshot){
-            overviewLoading.hide();
+            overviewLoading.fadeOut(50);
+            $('.column-left > .loading').fadeOut(50);
             FB.ui({
                 method: 'feed',
                 link: 'http://local.streep.nl:3000',

@@ -168,25 +168,36 @@ define([
                     y: self.viewer.camera.position.y,
                     z: self.viewer.camera.position.z
                 };
+                var lightsPosition = {
+                    x: self.viewer.light.position.x,
+                    y: self.viewer.light.position.y,
+                    z: self.viewer.light.position.z
+                };
                 var originalWidth = $(self.viewer.target).width();
                 var originalHeight = $(self.viewer.target).height();
                 $(self.viewer.target).width(1280);
                 $(self.viewer.target).height(720);
                 self.viewer.camera.position.x = self.renderedFrame.focusPerspective.cameraPosition.x;
+                //self.light.position.x = self.renderedFrame.focusPerspective.cameraPosition.x + 20;
                 self.viewer.camera.position.y = self.renderedFrame.focusPerspective.cameraPosition.y;
+                //self.light.position.y = self.renderedFrame.focusPerspective.cameraPosition.x + 100;
                 self.viewer.camera.position.z = self.renderedFrame.focusPerspective.cameraPosition.z;
+               // self.light.position.z = self.renderedFrame.focusPerspective.cameraPosition.z;
 
                 self.viewer.camera.lookAt(self.renderedFrame.focusPerspective.lookAt);
                 self.viewer.resize();
                 var screenshot = self.viewer.getScreenshot();
-                self.viewer.camera.position.x = cameraPosition.x;
-                self.viewer.camera.position.y = cameraPosition.y;
-                self.viewer.camera.position.z = cameraPosition.z;
                 $(self.viewer.target).width(originalWidth);
                 $(self.viewer.target).height(originalHeight);
-                setTimeout(function(){
-                    self.viewer.resize();
-                }, 1000);
+                self.viewer.resize();
+                self.viewer.camera.position.x = cameraPosition.x;
+                //self.viewer.light.position.x = lightsPosition.x;
+                self.viewer.camera.position.y = cameraPosition.y;
+                //self.viewer.light.position.y = lightsPosition.y;
+                self.viewer.camera.position.z = cameraPosition.z;
+                //self.viewer.light.position.z = lightsPosition.z;
+                self.viewer.render();
+                self.viewer.render();
 
                 $.post('/screenshot/save', {data: screenshot}).done(function(data){
                     data = JSON.parse(data);
