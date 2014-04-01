@@ -571,6 +571,12 @@ body{
     float: left;
 }
 
+#overview .preview .pinterest-wrapper a{
+    position: relative;
+    display: inline;
+}
+
+
 #overview .preview img{
     cursor: pointer;
 }

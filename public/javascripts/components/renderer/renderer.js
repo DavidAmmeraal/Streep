@@ -163,7 +163,11 @@ define([
         var self = this;
         return new Promise(function(resolve, reject){
             try{
-                var cameraPosition = self.viewer.camera.position;
+                var cameraPosition = {
+                    x: self.viewer.camera.position.x,
+                    y: self.viewer.camera.position.y,
+                    z: self.viewer.camera.position.z
+                };
                 var originalWidth = $(self.viewer.target).width();
                 var originalHeight = $(self.viewer.target).height();
                 $(self.viewer.target).width(1280);
@@ -174,8 +178,11 @@ define([
 
                 self.viewer.camera.lookAt(self.renderedFrame.focusPerspective.lookAt);
                 self.viewer.resize();
-                self.viewer.positionCamera(cameraPosition);
-                var screenshot = self.viewer.getScreenshot()
+                var screenshot = self.viewer.getScreenshot();
+                console.log("SCREENSHOT RECEIVED");
+                self.viewer.camera.position.x = cameraPosition.x;
+                self.viewer.camera.position.y = cameraPosition.y;
+                self.viewer.camera.position.z = cameraPosition.z;
                 $(self.viewer.target).width(originalWidth);
                 $(self.viewer.target).height(originalHeight);
                 self.viewer.resize();
