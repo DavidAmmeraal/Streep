@@ -25,6 +25,8 @@ require([
     '../../components/tab-page/front-page',
     '../../components/tab-page/engrave-page',
     '../../components/tab-page/nose-page',
+    '../../components/frame-chooser/frame-chooser',
+    '../../components/size-chooser/size-chooser',
     '../../vendor/facebook/fb'
 ],
 function(
@@ -35,9 +37,10 @@ function(
     LegPage,
     FrontPage,
     EngravePage,
-    NosePage
+    NosePage,
+    FrameChooser,
+    SizeChooser
 ){
-    console.log(FB);
     var renderer = null;
     $('body').height($(window).height());
 
@@ -51,20 +54,69 @@ function(
         right: null
     }
 
-    var frame = new Frame({
-        id: id
-    });
+    var frameChooser = new FrameChooser({el: $('#menus > .frames')[0]});
+    var sizeChooser = new SizeChooser({el: $('#menus > .size')[0]})
+    var frame;
 
     var renderTarget = $('#renderer')[0];
     var engravePage = null;
 
-    var changeButton = $('#buttons > .change');
+    var sizeButton = $('#buttons > .change-size');
+    var changeButton = $('#buttons > .change-frame');
     var facebookButton = $('a.facebook');
     var overviewLoading = $('#overview .loading');
+    var infoButton = $('#buttons > .switch');
+    var STLButton = $('#buttons > .download-stl');
 
-    changeButton.on('click', function(){
-        window.location = '/choose-frame';
+    STLButton.on('click', function(){
+        var blob = new Blob([renderer.getSTL()], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "stl.stl");
     });
+
+    $(window).on('click', function(event){
+        if(frameChooser.$el.is(':visible')){
+            var box = frameChooser.getVisibleBox();
+            if(!(event.clientX > box.x[0] &&
+                event.clientX < box.x[1] &&
+                event.clientY > box.y[0] &&
+                event.clientY < box.y[1]
+            )){
+                frameChooser.hide();
+            }
+        }
+
+        if(sizeChooser.$el.is(':visible')){
+            var box = sizeChooser.getVisibleBox();
+            if(!(event.clientX > box.x[0] &&
+                event.clientX < box.x[1] &&
+                event.clientY > box.y[0] &&
+                event.clientY < box.y[1]
+                )){
+                sizeChooser.hide();
+            }
+        }
+    });
+
+    infoButton.on('click', function(){
+        if($($('.streep-tooltip').get(0)).is(':visible')){
+            $('.streep-tooltip').fadeOut(200);
+        }else{
+            $('.streep-tooltip').fadeIn(200);
+        }
+
+    });
+
+    changeButton.on('click', function(event){
+        frameChooser.show();
+        sizeChooser.hide();
+        event.stopPropagation();
+    });
+
+    sizeButton.on('click', function(event){
+        sizeChooser.show();
+        frameChooser.hide();
+        event.stopPropagation();
+    })
 
     facebookButton.on('click', function(event){
         overviewLoading.fadeIn(50);
@@ -83,27 +135,38 @@ function(
         });
 
     });
-    /*
-    shareButton.on('click', function(){
-        renderer.getScreenshot().then(function(screenshot){
-            console.log(screenshot);
-            $('#overview > .preview').append('<img src="' + screenshot + '" width="100%"/>');
+
+    $(frameChooser).on('frame-chosen', function(event, id){
+        loadFrame(id);
+    });
+
+    var loadFrame = function(id){
+        frame = new Frame({
+            id: id
+        });
+        frame.fetch({data: {depth: 3}}).then(function(){
+            if(renderer){
+                renderer.destroy();
+            }
+            renderer = new Renderer({
+                container: renderTarget,
+                backgroundColor: '#FFFFFF'
+            });
+            frameChooser.setActive(frame.id);
+            renderer.loadFrame(frame).then(function(){
+                $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+                $('#overview > .price').html('&euro;' + frame.get('basePrice'));
+                $('.column-left > .loading').fadeOut(200);
+                $('.streep-tooltip').fadeIn(500);
+                setTimeout(function(){
+                    $('.streep-tooltip').fadeOut(1000);
+                }, 9000)
+            });
+            $('#menu').html('');
         })
-    });
-    */
+    }
 
-    frame.fetch({data: {depth: 3}}).then(function(){
-        renderer = new Renderer({
-            container: renderTarget,
-            backgroundColor: '#FFFFFF'
-        });
-        renderer.loadFrame(frame).then(function(){
-            $(renderer.viewer).on('viewer.focus', handleFocusChanged);
-            $('#overview > .price').html('&euro;' + frame.get('basePrice'));
-            $('.column-left > .loading').fadeOut(200);
-        });
-
-    });
+    loadFrame(id);
 
     $(window).resize(resizeElements);
     resizeElements();
@@ -229,6 +292,7 @@ function(
         $(legPage).on('pattern-changed', function(event, newPattern){
             try{
                 renderer.changePattern(newPattern).then(function(newLegs){
+                    console.log("DONE CHANGING PATTERN!");
                     var focusedLeg = null;
                     if(newLegs.right.focused){
                         focusedLeg = newLegs.right;
@@ -265,7 +329,10 @@ function(
     function resizeElements(){
         var menuHeight = $('#menu').height();
         var buttonHeight = $('#buttons').height();
+        var columnLeftWidth = $('.column-left').width();
+        var buttonWidth = $('.column-left > #buttons').width();
         $('#renderer').height($(window).height() - menuHeight - buttonHeight);
+        $('#renderer').width(columnLeftWidth - buttonWidth);
         if(renderer){
             renderer.resize();
         }

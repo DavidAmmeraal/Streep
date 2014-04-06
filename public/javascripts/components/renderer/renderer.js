@@ -64,6 +64,7 @@ define([
     Renderer.prototype.indicators = null;
     Renderer.prototype.connectors = null;
     Renderer.prototype.loadFrame = function(frame){
+
         var self = this;
         return new Promise(function(resolve, reject){
             self.renderedFrame = Frame.parseFromDB(frame.toJSON());
@@ -75,13 +76,14 @@ define([
                         className: 'indicators'
                     });
 
-                    self.connectors = new ConnectorOverlay({
+                    /*self.connectors = new ConnectorOverlay({
                         targetElement: self.container,
                         viewer: self.viewer,
                         className: 'connectors'
                     });
 
                     self.connectors.hide();
+                    */
 
                     self.context.add(self.renderedFrame);
                     self.viewer.focusTo(self.renderedFrame);
@@ -134,12 +136,6 @@ define([
         var self = this;
         return new Promise(function(resolve, reject){
             self.renderedFrame.changePattern(pattern).then(function(newLegs){
-                _.each(newLegs, function(leg){
-                    if(leg.focused){
-                        self.connectors.currentComp = leg;
-                        self.connectors.render();
-                    }
-                });
                 resolve(newLegs);
             });
         });
@@ -151,13 +147,19 @@ define([
                 _.each(newLegs, function(leg){
                     if(leg.focused){
                         self.connectors.currentComp = leg;
-                        self.connectors.render();
+                        //self.connectors.render();
                     }
                 });
                 resolve(newLegs);
             });
         });
 
+    };
+    Renderer.prototype.destroy = function(){
+        console.log($(this.container).html(''));
+    };
+    Renderer.prototype.getSTL = function(){
+        return this.renderedFrame.exportSTL();
     };
     Renderer.prototype.getScreenshot = function(){
         var self = this;

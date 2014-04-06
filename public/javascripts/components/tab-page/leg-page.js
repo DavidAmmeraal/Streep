@@ -107,6 +107,11 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
                 self.colors = self.legs.availableColors;
                 var html = $(this.template({colors: self.colors, patterns: self.legs.patterns}));
                 this.element.html(html);
+                if(!_.find(self.legs.patterns, function(pattern){
+                    return pattern.active;
+                })){
+                    $(this.element.find('li.leg > img').get(0)).addClass('active');
+                }
             }catch(err){
                 console.log(err.stack);
             }
@@ -124,6 +129,15 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.setLeg = function(leg){
         this.element.find('.loading > .message').remove();
         this.element.find('.loading').hide();
+        this.element.find('img.active').removeClass('active');
+        this.legs = _.find(this.frame.currentFront.legs, function(legs){
+            return legs.active;
+        });
+        var activePattern = _.find(this.legs.patterns, function(pattern){
+           return pattern.active;
+        });
+        console.log(activePattern);
+        this.element.find('#pattern-' + activePattern._id).addClass('active');
         this.leg = leg;
     };
 

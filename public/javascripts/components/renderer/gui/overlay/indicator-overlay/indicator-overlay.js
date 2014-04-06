@@ -6,25 +6,10 @@ define([
     IndicatorOverlayTemplate
 ){
     var IndicatorOverlay = function(options){
-        var self = this;
         ViewerOverlay.apply(this, arguments);
-
-        var switchButton = $("<div class='switch on'></div>");
-        switchButton.on('click', function(){
-            var src = $(this);
-            if(src.hasClass('on')){
-                src.removeClass('on');
-                src.addClass('off');
-                self.hideIndicators();
-            }else if(src.hasClass('off')){
-                src.removeClass('off');
-                src.addClass('on');
-                self.showIndicators();
-            }
-        });
-        this.element.append(switchButton);
     }
     IndicatorOverlay.prototype = ViewerOverlay.prototype;
+    IndicatorOverlay.prototype.indicators = null;
     IndicatorOverlay.template = _.template(IndicatorOverlayTemplate);
     IndicatorOverlay.prototype.indicatorsVisible = true;
     IndicatorOverlay.prototype.render = function(){
@@ -32,14 +17,14 @@ define([
         this.renderTooltips();
     };
     IndicatorOverlay.prototype.hideIndicators = function(){
-      this.element.find('.indicator, .indicator-tooltip').animate({
+      this.element.find('.indicator, .streep-tooltip').animate({
         opacity: 0
       }, 200);
       this.indicatorsVisible = false;
     };
     IndicatorOverlay.prototype.showIndicators = function(){
         this.render();
-        this.element.find('.indicator, .indicator-tooltip').animate({
+        this.element.find('.indicator, .streep-tooltip').animate({
             opacity: 1
         }, 200);
         this.indicatorsVisible = true;
@@ -52,29 +37,33 @@ define([
     }
     IndicatorOverlay.prototype.renderTooltips = function(){
         var self = this;
-        this.element.find('.indicator-tooltip').remove();
         this.element.find('.indicator').each(function(){
             var offset = $(this).offset();
             var comp = $(this).data('component');
-            var contents;
-            var position;
+            var contents = $('<img src="/images/arrow_up.png" width="100%" height="100%"/>');
+            var position = "top";
             if(comp.name == "poot_links" || comp.name == "poot_rechts"){
                 contents = "Wijzig hier uw poten";
-                if(comp.name == "poot_links"){
-                    position = "right";
-                }else{
-                    position = "left";
-                }
             }else{
                 contents = "Wijzig hier uw voorkant";
-                position = "top";
             }
 
-            var div = $("<div class='indicator-tooltip " + position + "'><div class='arrow'>&nbsp;</div><div class='text'>" + contents + "</div></div>");
+            var div;
+            if(!$(this).data('tooltip')){
+                div = $("<div class='streep-tooltip " + position + "'><img src='/images/arrow_up.png' width='100%' height='100%'/><div class='text'>" + contents + "</div></div>");
+                self.element.append(div);
+                $(this).data('tooltip', div);
+            }else{
+                div = $(this).data('tooltip');
+            }
+
             if(!self.indicatorsVisible){
                 div.css('opacity', 0);
             }
-            self.element.append(div);
+
+            if(self.element.find('.streep-tooltip').length < self.element.find('.indicator')){
+                self.element.append(div);
+            }
             div.css('top', offset.top);
             if(position == "top" || position == "bottom"){
                 div.css('left', offset.left);
@@ -84,12 +73,22 @@ define([
                 div.css('left', offset.left);
             }
         });
+
     };
     IndicatorOverlay.prototype.renderIndicators = function(){
         var self = this;
-        this.element.find('.indicator').remove();
-
         var comps = this.viewer.getComponents();
+        var indicators = self.element.find('.indicator');
+
+        for(var i = 0; i < indicators.length; i++){
+            var indicator = $(indicators[i]);
+            if(!_.find(comps, function(comp){
+                return comp == indicator.data('component');
+            })){
+                indicator.data('tooltip').remove();
+                indicator.remove();
+            }
+        }
 
         function toScreenXY( position, camera, div ){
             var pos = position.clone();
@@ -105,21 +104,26 @@ define([
             var comp = comps[c];
             var xyPosition = toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement);
 
-            var div = $("<div class='indicator'>&nbsp;</div>");
-            div.css('left', xyPosition.x);
-            div.css('top', xyPosition.y);
-            div.data('component', comp);
+            var indicator = $(comp).data('indicatorElement');
+            if(!indicator){
+                indicator = $("<div class='indicator'>&nbsp;</div>");
+                indicator.data('component', comp);
+                $(comp).data('indicatorElement', indicator);
+                self.element.append(indicator);
+                indicator.on('click', (function(comp){
+                    return function(){
+                        self.viewer.focusTo(comp);
+                    }
+                })(comp));
+            }
+            indicator.css('left', xyPosition.x);
+            indicator.css('top', xyPosition.y);
 
             if(!self.indicatorsVisible){
-                div.css('opacity', 0);
+                indicator.css('opacity', 0);
             }
 
-            div.on('click', function(){
-                self.viewer.focusTo($(this).data('component'));
-            });
-
-            self.element.append(div);
         }
     };
     return IndicatorOverlay;
-})
+});
