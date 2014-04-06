@@ -137,6 +137,7 @@ function(
     });
 
     $(frameChooser).on('frame-chosen', function(event, id){
+        $('.column-left > .loading').fadeIn(200);
         loadFrame(id);
     });
 
