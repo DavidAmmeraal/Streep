@@ -25,8 +25,11 @@ require([
     '../../components/tab-page/front-page',
     '../../components/tab-page/engrave-page',
     '../../components/tab-page/nose-page',
+    '../../components/tab-page/glasses-page',
     '../../components/frame-chooser/frame-chooser',
     '../../components/size-chooser/size-chooser',
+    '../../util/webgl-test',
+    '../../components/server-renderer/server-renderer',
     '../../vendor/facebook/fb'
 ],
 function(
@@ -38,11 +41,15 @@ function(
     FrontPage,
     EngravePage,
     NosePage,
+    GlassesPage,
     FrameChooser,
-    SizeChooser
+    SizeChooser,
+    WebGLTest,
+    ServerRenderer
 ){
     var renderer = null;
     $('body').height($(window).height());
+    console.log(window);
 
     var url = document.URL;
     var urlParts = url.split("/");
@@ -149,21 +156,32 @@ function(
             if(renderer){
                 renderer.destroy();
             }
-            renderer = new Renderer({
-                container: renderTarget,
-                backgroundColor: '#FFFFFF'
+
+            if(WebGLTest.test()){
+                renderer = new Renderer({
+                    container: renderTarget,
+                    backgroundColor: '#FFFFFF'
+                });
+            }else{
+                renderer = new ServerRenderer({
+                    container: renderTarget
+                });
+            }
+
+            renderer.init().then(function(){
+                frameChooser.setActive(frame.id);
+                renderer.loadFrame(frame).then(function(){
+                    $('.column-left > .loading').fadeOut(200);
+                    $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+                    $('#overview > .price').html('&euro;' + frame.get('basePrice'));
+
+                    $('.streep-tooltip').fadeIn(500);
+                    setTimeout(function(){
+                        $('.streep-tooltip').fadeOut(1000);
+                    }, 9000)
+                });
+                $('#menu').html('');
             });
-            frameChooser.setActive(frame.id);
-            renderer.loadFrame(frame).then(function(){
-                $(renderer.viewer).on('viewer.focus', handleFocusChanged);
-                $('#overview > .price').html('&euro;' + frame.get('basePrice'));
-                $('.column-left > .loading').fadeOut(200);
-                $('.streep-tooltip').fadeIn(500);
-                setTimeout(function(){
-                    $('.streep-tooltip').fadeOut(1000);
-                }, 9000)
-            });
-            $('#menu').html('');
         })
     }
 
@@ -197,11 +215,16 @@ function(
            front: comp
         });
 
+        var glassesPage = new GlassesPage({
+            front: comp
+        });
+
         var menu = new Menu({
             element: $('#menu'),
             pages: [
                 frontPage,
-                nosePage
+                nosePage,
+                glassesPage
             ]
         });
 
@@ -211,9 +234,13 @@ function(
             try{
 
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
-                    applyEngravingsToNewLegs(_.find(newFrontObj.legs, function(legs){
-                       return legs.active;
-                    }));
+                    try{
+                        applyEngravingsToNewLegs(_.find(newFrontObj.legs, function(legs){
+                           return legs.active;
+                        }));
+                    }catch(err){
+                        console.log(err);
+                    }
                     console.log(newFrontObj);
                     frontPage.front = newFrontObj;
                     frontPage.newFrontLoaded();
@@ -239,11 +266,22 @@ function(
             }
         });
 
-        var zoomoutButton = $('<button>Terug</button>');
-        zoomoutButton.on('click', function(){
-            renderer.viewer.focusTo(comp.currentNose.parent);
+        $(glassesPage).on('glasses-changed', function(event, newGlasses){
+            try{
+                renderer.changeGlasses(newGlasses).then(function(newGlasses){
+                    glassesPage.newGlassesLoaded(newGlasses);
+                    $('#overview > .price').html('&euro;' + renderer.getPrice());
+                })
+            }catch(err){
+                console.log(err.stack);
+            }
         });
-        $('#menu').append(zoomoutButton);
+
+        var zoomoutButton = $('<button class="back">Terug</button>');
+        zoomoutButton.on('click', function(){
+            renderer.viewer.focusTo(comp.currentNose.parent, 500);
+        });
+        $('#menu > .contents').append(zoomoutButton);
         $('#menu').fadeIn(200);
     }
 
@@ -252,13 +290,14 @@ function(
         for(var side in appliedEngravings){
             if(appliedEngravings[side]){
                 var engraving = appliedEngravings[side];
-                var connector = _.find(newLegs.currentPattern[side].connectors, function(connector){
+                var connector = _.find(newLegs.patterns[0][side].connectors, function(connector){
                     return connector.name == engraving.connector;
                 });
                 var mod = _.find(connector.modifications, function(mod){
                     return mod.action_name == engraving.type;
                 });
-                mod.setText(engraving.text, engraving.font, engraving.size);
+                var sizes = _.keys(mod.sizes);
+                mod.setText(engraving.text, engraving.font, sizes[sizes.length - 1]);
                 engravePage.disableButtons();
                 execute.push(mod.execute());
             }
@@ -290,18 +329,19 @@ function(
         }, 1);
 
 
-        $(legPage).on('pattern-changed', function(event, newPattern){
+        $(legPage).on('pattern-changed', function(event, leg, pattern){
             try{
-                renderer.changePattern(newPattern).then(function(newLegs){
-                    console.log("DONE CHANGING PATTERN!");
+                renderer.changePattern(leg, pattern).then(function(newLegs){
+                    console.log("PATTERN CHANGED!");
                     var focusedLeg = null;
                     if(newLegs.right.focused){
                         focusedLeg = newLegs.right;
                     }else{
                         focusedLeg = newLegs.left;
                     }
-                    engravePage.setLeg(focusedLeg);
-                    legPage.setLeg(focusedLeg);
+
+                    engravePage.setLeg.apply(engravePage, [focusedLeg]);
+                    legPage.setLeg.apply(legPage, [focusedLeg]);
                     $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
             }catch(err){
@@ -319,21 +359,59 @@ function(
             console.log(appliedEngravings);
         });
 
-        var zoomoutButton = $('<button>Terug</button>');
+        var zoomoutButton = $('<button class="back">Terug</button>');
         zoomoutButton.on('click', function(){
-            renderer.viewer.focusTo(comp.parent);
+            renderer.viewer.focusTo(comp.parent, 500);
         });
-        $('#menu').append(zoomoutButton);
+        $('#menu > .contents').append(zoomoutButton);
         $('#menu').fadeIn(200);
     }
 
     function resizeElements(){
-        var menuHeight = $('#menu').height();
-        var buttonHeight = $('#buttons').height();
-        var columnLeftWidth = $('.column-left').width();
-        var buttonWidth = $('.column-left > #buttons').width();
-        $('#renderer').height($(window).height() - menuHeight - buttonHeight);
-        $('#renderer').width(columnLeftWidth - buttonWidth);
+        var rendererElement = $('#renderer');
+        var maxWidth = rendererElement.parent().width();
+        var maxHeight = rendererElement.parent().height() - rendererElement.parent().find('#menu').height();
+
+        var ratio = 21 / 9;
+        var wantedWidth = 0;
+        var wantedHeight = 0;
+        var marginLeft = 0;
+        var marginTop = 0;
+
+        if(maxWidth > maxHeight){
+            wantedHeight = maxHeight;
+            wantedWidth = maxHeight * ratio;
+        }else{
+            wantedWidth = maxWidth;
+            wantedHeight = maxWidth / ratio;
+        }
+
+        while(wantedWidth > maxWidth){
+            wantedWidth -= 1;
+            wantedHeight = wantedWidth / ratio;
+        }
+
+        while(wantedHeight > maxHeight){
+            wantedHeight -= 1;
+            wantedWidth = wantedHeight * ratio;
+        }
+
+        if(wantedWidth < maxWidth){
+            marginLeft = (maxWidth - wantedWidth) / 2;
+        }
+
+        if(wantedHeight < maxHeight){
+            marginTop = (maxHeight - wantedHeight) / 2;
+        }
+
+        rendererElement.css('width', wantedWidth);
+        rendererElement.css('height', wantedHeight);
+        rendererElement.css('left', marginLeft);
+        rendererElement.css('top', marginTop);
+
+        var menu = $('#menu');
+        menu.css('left', ($(window).width() - menu.width()) / 2);
+
         if(renderer){
             renderer.resize();
         }

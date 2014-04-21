@@ -38,7 +38,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             patternChooser = new Sly(patternSliderFrame, patternOptions);
             patternChooser.on('active', function(event, itemIndex){
                 if(self.frame.currentLeftLeg && self.frame.currentLeftLeg.src != self.legs.patterns[itemIndex].left.src){
-                    $(self).trigger('pattern-changed', self.legs.patterns[itemIndex]);
+                    $(self).trigger('pattern-changed', [self.leg, self.legs.patterns[itemIndex]]);
                     self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
                     self.element.find('.loading').show();
                 }
@@ -107,11 +107,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
                 self.colors = self.legs.availableColors;
                 var html = $(this.template({colors: self.colors, patterns: self.legs.patterns}));
                 this.element.html(html);
-                if(!_.find(self.legs.patterns, function(pattern){
-                    return pattern.active;
-                })){
-                    $(this.element.find('li.leg > img').get(0)).addClass('active');
-                }
+                this.setLeg(this.leg);
             }catch(err){
                 console.log(err.stack);
             }
@@ -127,17 +123,27 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
     LegPage.prototype.setLeg = function(leg){
+        console.log("LegPage.setLeg()");
+        var patterns = this.legs.patterns;
+        var i = 0;
+        var index = 0;
+        patterns.forEach(function(pattern){
+            var wanted = leg.src;
+            var left = pattern.left.src;
+            var right = pattern.right.src;
+            if(left == wanted || right == wanted){
+                index = i;
+            }
+            i++;
+        });
+
+        console.log("INDEX: " + index);
+
+        console.log("INDEX: " + index);
         this.element.find('.loading > .message').remove();
         this.element.find('.loading').hide();
         this.element.find('img.active').removeClass('active');
-        this.legs = _.find(this.frame.currentFront.legs, function(legs){
-            return legs.active;
-        });
-        var activePattern = _.find(this.legs.patterns, function(pattern){
-           return pattern.active;
-        });
-        console.log(activePattern);
-        this.element.find('#pattern-' + activePattern._id).addClass('active');
+        this.element.find('ul > li:eq(' + index + ')').find('img').addClass('active');
         this.leg = leg;
     };
 

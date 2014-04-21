@@ -1,0 +1,21 @@
+<div class="glasses-page">
+    <div class="loading"><img src="/images/ajax-loader.gif"></div>
+    <div class="slider glasses">
+        <div class="frame">
+            <ul>
+                <% for(var i = 0; i < glasses.length; i++){ %>
+                <% var glass = glasses[i]; %>
+                <li class="glass">
+                    <img id="glass-<%= glass._id %>" src="<%= glass.img %>" data-number="<%= i %>"/>
+                    <% if(glass.priceExtra){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+        <div class="scrollbar">
+            <div class="handle">
+                <div class="mousearea"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -64,6 +64,7 @@ define(['./component', './json-component'], function(Component, JSONComponent){
     };
 
     ParentComponent.prototype.addChild = function(comp){
+        console.log("ParentComponent.addChild(" + comp + ")");
         comp.parent = this;
         this.children.push(comp);
     };

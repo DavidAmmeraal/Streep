@@ -38,7 +38,7 @@ define([
     IndicatorOverlay.prototype.renderTooltips = function(){
         var self = this;
         this.element.find('.indicator').each(function(){
-            var offset = $(this).offset();
+            var offset = $(this).position();
             var comp = $(this).data('component');
             var contents = $('<img src="/images/arrow_up.png" width="100%" height="100%"/>');
             var position = "top";
@@ -102,27 +102,28 @@ define([
 
         for(var c = 0; c < comps.length; c++){
             var comp = comps[c];
-            var xyPosition = toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement);
+            if(comp.indicator){
+                var xyPosition = toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement);
 
-            var indicator = $(comp).data('indicatorElement');
-            if(!indicator){
-                indicator = $("<div class='indicator'>&nbsp;</div>");
-                indicator.data('component', comp);
-                $(comp).data('indicatorElement', indicator);
-                self.element.append(indicator);
-                indicator.on('click', (function(comp){
-                    return function(){
-                        self.viewer.focusTo(comp);
-                    }
-                })(comp));
+                var indicator = $(comp).data('indicatorElement');
+                if(!indicator){
+                    indicator = $("<div class='indicator'>&nbsp;</div>");
+                    indicator.data('component', comp);
+                    $(comp).data('indicatorElement', indicator);
+                    self.element.append(indicator);
+                    indicator.on('click', (function(comp){
+                        return function(){
+                            self.viewer.focusTo(comp, 500);
+                        }
+                    })(comp));
+                }
+                indicator.css('left', xyPosition.x);
+                indicator.css('top', xyPosition.y);
+
+                if(!self.indicatorsVisible){
+                    indicator.css('opacity', 0);
+                }
             }
-            indicator.css('left', xyPosition.x);
-            indicator.css('top', xyPosition.y);
-
-            if(!self.indicatorsVisible){
-                indicator.css('opacity', 0);
-            }
-
         }
     };
     return IndicatorOverlay;

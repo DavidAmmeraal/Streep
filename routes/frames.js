@@ -74,20 +74,29 @@ exports.findById = function(req, res){
                         Frame.populate(result, options, function(err, frame){
                             if(err) return res.json(500);
                             result = frame;
-
-                            if(depth > 2){
-                                var options = {
-                                    path: 'fronts.legs.patterns',
-                                    model: 'Pattern'
-                                }
-                                Frame.populate(result, options, function(err, frame){
-                                    if(err) return res.json(500);
-                                    result = frame;
-                                    res.send(JSON.stringify(result));
-                                });
-                            }else{
-                                res.send(JSON.stringify(result));
+                            var options = {
+                                path: 'fronts.glasses',
+                                model: 'Glass'
                             }
+
+                            Frame.populate(result, options, function(err, frame){
+                                if(err) return res.json(500);
+                                result = frame;
+
+                                if(depth > 2){
+                                    var options = {
+                                        path: 'fronts.legs.patterns',
+                                        model: 'Pattern'
+                                    }
+                                    Frame.populate(result, options, function(err, frame){
+                                        if(err) return res.json(500);
+                                        result = frame;
+                                        res.send(JSON.stringify(result));
+                                    });
+                                }else{
+                                    res.send(JSON.stringify(result));
+                                }
+                            });
                         });
 
                     });

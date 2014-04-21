@@ -33,26 +33,6 @@ define([
         var self = this;
 
         $.extend(self, options);
-
-        var initialize = function(){
-            console.log("Renderer.initialize()");
-            self.context = new ComponentContext();
-            self.viewer = new Viewer(self.container, self.context, {
-                backgroundColor: self.backgroundColor,
-                startPosition: new THREE.Vector3(-100, 20, 400)
-            });
-
-            $(self.viewer).on('viewer.focus', handleFocusChanged);
-
-            new KeyboardListener({viewer: self.viewer});
-        };
-
-        var handleFocusChanged = function(event, comp){
-            self.comp = comp;
-            self.showOverlays();
-        }
-
-        initialize();
     };
 
     Renderer.prototype.backgroundColor = "#FFFFFF";
@@ -63,6 +43,28 @@ define([
     Renderer.prototype.viewer = null;
     Renderer.prototype.indicators = null;
     Renderer.prototype.connectors = null;
+    Renderer.prototype.init = function(){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.context = new ComponentContext();
+            self.viewer = new Viewer(self.container, self.context, {
+                backgroundColor: self.backgroundColor,
+                startPosition: new THREE.Vector3(-100, 20, 400)
+            });
+
+            $(self.viewer).on('viewer.focus', function(){
+                self.handleFocusChanged.apply(self, arguments);
+            });
+
+            new KeyboardListener({viewer: self.viewer});
+            resolve();
+        });
+    };
+    Renderer.prototype.handleFocusChanged = function(event, comp){
+        var self = this;
+        self.comp = comp;
+        self.showOverlays();
+    };
     Renderer.prototype.loadFrame = function(frame){
 
         var self = this;
@@ -75,15 +77,6 @@ define([
                         viewer: self.viewer,
                         className: 'indicators'
                     });
-
-                    /*self.connectors = new ConnectorOverlay({
-                        targetElement: self.container,
-                        viewer: self.viewer,
-                        className: 'connectors'
-                    });
-
-                    self.connectors.hide();
-                    */
 
                     self.context.add(self.renderedFrame);
                     self.viewer.focusTo(self.renderedFrame);
@@ -131,15 +124,24 @@ define([
     Renderer.prototype.getRenderedFrameObj = function(){
         return this.renderedFrame;
     };
-    Renderer.prototype.changePattern = function(pattern){
+    Renderer.prototype.changePattern = function(leg, pattern){
         console.log("Renderer.prototype.changePattern()");
         var self = this;
         return new Promise(function(resolve, reject){
-            self.renderedFrame.changePattern(pattern).then(function(newLegs){
+            self.renderedFrame.changePattern(leg, pattern).then(function(newLegs){
                 resolve(newLegs);
             });
         });
     };
+    Renderer.prototype.changeGlasses = function(newGlasses){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.renderedFrame.changeGlasses(newGlasses).then(function(newGlasses){
+                resolve(newGlasses);
+                self.viewer.render();
+            });
+        });
+    }
     Renderer.prototype.changeLegs = function(leg){
         var self = this;
         return new Promise(function(resolve, reject){

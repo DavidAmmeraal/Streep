@@ -1,4 +1,4 @@
-define(['./util/webgl-test'], function(WebGLTest){
+define(['../../util/webgl-test'], function(WebGLTest){
 	var Viewer = function(target, context, options){
 		var self = this;
         this.target = $(target);
@@ -247,7 +247,7 @@ define(['./util/webgl-test'], function(WebGLTest){
 		
 		self.focusTo = function(comp, length){
             if(!length && length != 0){
-                length = 500;
+                //length = 500;
             }
             if(self.lookingAt)
                 self.lookingAt.focused = false;
@@ -255,6 +255,7 @@ define(['./util/webgl-test'], function(WebGLTest){
             comp.focused = true
 			self.lookingAt = comp;
 			//self.resetCamera();
+            console.log("LENGTH: " + length);
 			if(comp.focusPerspective){
 				self.positionCamera(comp.focusPerspective.cameraPosition, length);
 			}

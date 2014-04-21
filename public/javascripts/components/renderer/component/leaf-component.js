@@ -86,6 +86,9 @@ define(['./component'], function(Component){
     LeafComponent.prototype.remove = function(){
         this.trigger('request-removal', this);
     };
+    LeafComponent.prototype.setTransparancy = function(opacity){
+        this.mesh.material = new THREE.MeshPhongMaterial({color: this.color, transparent: true, opacity: opacity});
+    };
     LeafComponent.prototype.setColor = function(color){
         if(color.indexOf("#") != -1){
             color = color.replace("#", "0x");

@@ -2,6 +2,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     var EngravePage = function(options){
         var self = this;
         TabPage.apply(this, [options]);
+
     };
 
     EngravePage.prototype = Object.create(TabPage.prototype);
@@ -10,7 +11,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.side = null;
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.fonts = ['Helvetiker', 'Banana Brick', 'Fantasque', 'Gentilis'];
-    EngravePage.prototype.sizes = ["S", "M", "L"];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.activate = function(){};
     EngravePage.prototype.setLeg = function(leg){
@@ -36,7 +36,14 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         var self = this;
         var display = this.leg.connectors[0];
 
-        var html = $(this.template({fonts: this.fonts, sizes: this.sizes, display: display}));
+        console.log(display);
+
+        var sizes = _.keys(display.modifications[0].sizes);
+        sizes = sizes.map(function(size){
+            return size.toUpperCase();
+        });
+
+        var html = $(this.template({fonts: this.fonts, sizes: sizes, display: display}));
         this.html = html;
 
         this.html.find('button.engrave').on('click', function(event){
@@ -47,6 +54,18 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         });
         this.html.find('button.reset').on('click', function(event){
             self.resetClicked.apply(self, [event])
+        });
+
+        this.html.find('.text').on('keydown', function(event){
+            var length = self.html.find('.text').val().length;
+            if(length == 12 && event.keyCode != 8){
+                event.preventDefault();
+            }
+        });
+
+        this.html.find('.text').on('keyup', function(event){
+            var length = self.html.find('.text').val().length;
+            self.html.find('.counter').text(length);
         });
 
         this.element.html(this.html);

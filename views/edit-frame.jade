@@ -27,21 +27,23 @@ block content
     .column-left
         .loading
             |   Montuur wordt ingeladen
-        .notification
-        #menus
-                .frames
-                .size
-        #buttons
-                .switch.on
-                    |   &nbsp;
-                button(class='change-frame')
-                    |   KIES MONTUUR
-                button(class='change-size')
-                    |   KIES MAAT
-                button(class='download-stl')
-                    |   Download STL
-        #renderer
-        #menu
+        .contents
+            #buttons
+                    .switch.on
+                        |   &nbsp;
+                    button(class='change-frame')
+                        |   KIES MONTUUR
+                    button(class='change-size')
+                        |   KIES MAAT
+                    button(class='download-stl')
+                        |   Download STL
+            .center-wrapper
+                #renderer
+                #menus
+                    .frames
+                    .size
+                #menu
+
 
 block js
     script(src='http://code.createjs.com/easeljs-0.7.0.min.js')

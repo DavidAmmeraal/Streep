@@ -17,6 +17,8 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     Frame.currentRightLeg = null;
     Frame.loaded = false;
     Frame.prototype.getPrice = function(){
+        console.log("Frame.prototype.getPrice()");
+        var self = this;
         var price = parseFloat(this.basePrice);
 
         var activeFront = _.find(this.fronts, function(front){
@@ -34,7 +36,17 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         price += parseFloat(activeFront.priceExtra);
         price += parseFloat(activeLegs.priceExtra);
         price += parseFloat(activeNose.priceExtra);
-        price += parseFloat(activeLegs.currentPattern.priceExtra);
+        price += parseFloat(self.currentFront.currentGlasses.priceExtra);
+
+        activeLegs.patterns.forEach(function(pattern){
+            if(pattern.right.src == self.currentRightLeg.src){
+                price += parseFloat(pattern.priceExtra);
+            }
+
+            if(pattern.left.src == self.currentLeftLeg.src){
+                price += parseFloat(pattern.priceExtra);
+            }
+        });
 
         return price;
     };
@@ -72,6 +84,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         }
     };
     Frame.prototype.changeFront = function(newFront){
+        console.log("Frame.changeFront()");
         this.cancelModifications();
         var self = this;
         var currentColor = self.currentFront.color;
@@ -113,13 +126,57 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }catch(err){
                     console.log(err);
                 }
-                self.changeLegs(self.currentFront.legs[0]).then(function(){
-                    resolve(self.currentFront);
-                });
+
+                if(self.currentFront.glasses.length > 0){
+                    Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[0])]).then(function(){
+                        resolve(self.currentFront);
+                    })
+                }else{
+                    try{
+                        self.changeLegs(self.currentFront.legs[0]).then(function(){
+                            resolve(self.currentFront);
+                        });
+                    }catch(err){
+                        console.log(err.stack);
+                    }
+                }
+
+
             });
         });
     };
-    Frame.prototype.changePattern = function(newPattern){
+    Frame.prototype.changePattern = function(leg, newPattern){
+        console.log("Frame.changePattern(" + leg + ", " + newPattern + ")");
+        var self = this;
+        var currentColor = this.currentLeftLeg.color;
+        return new Promise(function(resolve, reject){
+            var newLeg;
+
+            if(leg == self.currentRightLeg){
+                newLeg = JSONComponent.parseFromDB(newPattern['right']);
+                self.currentRightLeg = newLeg;
+            }else{
+                newLeg = JSONComponent.parseFromDB(newPattern['left']);
+                self.currentLeftLeg = newLeg;
+            }
+            newLeg.load().then(function(){
+                try{
+                    self.removeChild(leg);
+                    newLeg.focused = true;
+
+                    if(currentColor){
+                        newLeg.setColor(currentColor);
+                    }
+                    self.addChild(newLeg);
+                    newLeg.trigger('request-render', newLeg);
+                    resolve({"right": self.currentRightLeg, "left": self.currentLeftLeg});
+                }catch(err){
+                    console.log(err);
+                }
+            });
+        });
+
+        /*
         var activeLegs = _.find(this.currentFront.legs, function(legs){
             return legs.active;
         });
@@ -158,8 +215,10 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 resolve({"right": rightLeg, "left": leftLeg});
             });
         });
+        */
     };
     Frame.prototype.changeLegs = function(newLegs){
+        console.log("Frame.changeLegs()");
         _.each(this.currentFront.legs, function(legs){
             if(legs.active)
                 legs.active = false;
@@ -178,11 +237,11 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         }
 
         newLegs.active = true;
-        newLegs.currentPattern = newLegs.patterns[0];
+        var defaultPattern = newLegs.patterns[0];
         var self = this;
         return new Promise(function(resolve, reject){
-            var leftLeg = JSONComponent.parseFromDB(newLegs.currentPattern['left']);
-            var rightLeg = JSONComponent.parseFromDB(newLegs.currentPattern['right']);
+            var leftLeg = JSONComponent.parseFromDB(defaultPattern['left']);
+            var rightLeg = JSONComponent.parseFromDB(defaultPattern['right']);
             Promise.all([leftLeg.load(), rightLeg.load()]).then(function(){
                 try{
                     self.removeChild(self.currentRightLeg);
@@ -231,7 +290,43 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             }
         });
     };
+    Frame.prototype.changeGlasses = function(newGlasses){
+        console.log("Frame.prototype.changeGlasses()");
+        var self = this;
+        this.cancelModifications();
+
+        return new Promise(function(resolve, reject){
+            var glassesObj = JSONComponent.parseFromDB(newGlasses);
+
+            var finalize = function(){
+                try{
+                    glassesObj.active = true;
+                    self.currentFront.priceExtra = glassesObj.priceExtra;
+                    self.currentFront.currentGlasses.setTransparancy(glassesObj.opacity);
+                }catch(err){
+                    console.log(err);
+                }
+                resolve(glassesObj);
+            };
+
+            if(!self.currentFront.currentGlasses || (glassesObj.src != self.currentFront.currentGlasses.src)){
+                glassesObj.load().then(function(){
+                    if(self.currentFront.currentGlasses){
+                        self.removeChild(self.currentFront.currentGlasses);
+                    }
+                    self.currentFront.currentGlasses = glassesObj;
+                    self.addChild(self.currentFront.currentGlasses);
+                    finalize();
+                });
+            }else{
+                finalize();
+            }
+
+        });
+    };
     Frame.parseFromDB = function(data){
+        console.log("Frame.parseFromDB()");
+        console.log(data);
         var front = data.fronts[0];
         data.currentFront = front;
         data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);

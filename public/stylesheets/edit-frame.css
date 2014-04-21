@@ -2,6 +2,17 @@
 
 body{
     font-family: Allerta, Helvetica, Arial;
+    overflow: hidden;
+}
+
+.content{
+    position: relative;
+    max-width: 1800px;
+    top: 0;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
 }
 
 .nav-tabs{
@@ -126,6 +137,7 @@ body{
 }
 
 .column-left{
+    position: relative;
     height: 100%;
     margin-right: 250px;
 }
@@ -143,6 +155,14 @@ body{
     z-index: 9999;
     display: table-cell;
     vertical-align: middle;
+}
+
+.column-left .contents{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .column-left #menus{
@@ -241,14 +261,14 @@ body{
 
 .column-left #buttons{
    z-index: 9998;
-   top: 60px;
-   position: relative;
-   float: left;
-   height: 50px;
+   position: absolute;
+   height: 100%;
+   padding-top: 60px;
    width: 200px;
+   display: inline-block;
 }
 .column-left #buttons button{
-    width: 200px;
+    width: 190px;
     font-size: 12px;
     background-color: black;
     color: white;
@@ -268,20 +288,28 @@ body{
     background: url('/images/info.png') no-repeat center;
 }
 
-.column-left #renderer{
-    position: relative;
-    height: 50%;
+.column-left .contents #menu{
+    width: 575px;
     float: left;
 }
 
-.column-left #menu{
-    width: 100%;
+.column-left .center-wrapper{
+    height: 100%;
+    margin-left: 200px;
+}
+
+.column-left .center-wrapper #renderer{
+    position: relative;
+}
+
+#menu{
+    position: absolute;
     height: 250px;
-    float: left;
+    bottom: 0;
 }
 
 #menu .contents{
-    width: 500px;
+    position: relative;
     margin: 0 auto;
 }
 
@@ -376,6 +404,7 @@ body{
 
 #menu .contents .tab-content #engrave .engrave-page{
     position: relative;
+    width: 450px;
     float: left;
 }
 
@@ -426,6 +455,15 @@ body{
 #menu .contents .tab-content #engrave .engrave-page .buttons button{
     margin: 0 5px 0 5px;
     float: left;
+}
+
+#menu .contents .tab-content #engrave .engrave-page .buttons .counter{
+    display: inline-block;
+    height: 50px;
+    width: 100px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2em;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .buttons button.reset{
@@ -542,6 +580,67 @@ body{
     transform: rotate(-45deg);
 }
 
+#menu .contents .tab-content #glasses .glasses-page{
+    position: relative;
+    float: left;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .loading{
+    font-weight: bold;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #2a2a2a;
+    font-size: 25px;
+    text-align: center;
+    padding: 20px;
+    display: none;
+    z-index: 9999;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses{
+    position: relative;
+    float: left;
+    width: 480px;
+    margin: 10px 0 10px 0;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses .glass{
+    position: relative;
+    width: 118px;
+    height: 65px;
+    overflow: hidden;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses .glass img{
+    position: absolute;
+    display: block;
+    cursor: pointer;
+    margin-right: 2px;
+    width: 118px;
+
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses img.active{
+    border-top: 3px solid #60e5a5;
+    height: 65px;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses .glass .price{
+    position: absolute;
+    background-color: #60e5a5;
+    font-weight: bold;
+    bottom: -20px;
+    right: -30px;
+    height: 50px;
+    width: 70px;
+    text-align: center;
+    -ms-transform: rotate(-45deg); /* IE 9 */
+    -webkit-transform: rotate(-45deg); /* Chrome, Safari, Opera */
+    transform: rotate(-45deg);
+}
+
 .overlay{
     position: absolute;
     top: 0;
@@ -596,7 +695,7 @@ body{
 
 .streep-tooltip.top{
     margin-top: 25px;
-    margin-left: -288px;
+    margin-left: -88px;
 }
 
 .overlay .indicator-tooltip{
