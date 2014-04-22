@@ -324,6 +324,7 @@ body{
 
 #menu .contents .tab-content #color .leg-page{
     position: relative;
+    width: 500px;
     float: left;
 }
 
