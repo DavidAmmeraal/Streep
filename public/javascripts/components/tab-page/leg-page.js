@@ -37,7 +37,14 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             });
             patternChooser = new Sly(patternSliderFrame, patternOptions);
             patternChooser.on('active', function(event, itemIndex){
-                if(self.frame.currentLeftLeg && self.frame.currentLeftLeg.src != self.legs.patterns[itemIndex].left.src){
+                var side;
+                if(self.leg == self.frame.currentLeftLeg){
+                    side = "left";
+                }else{
+                    side = "right";
+                }
+
+                if(self.leg.src != self.legs.patterns[itemIndex][side].src){
                     $(self).trigger('pattern-changed', [self.leg, self.legs.patterns[itemIndex]]);
                     self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
                     self.element.find('.loading').show();
@@ -124,6 +131,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype.template = _.template(LegPageTemplate);
     LegPage.prototype.setLeg = function(leg){
         console.log("LegPage.setLeg()");
+        console.log(leg);
         var patterns = this.legs.patterns;
         var i = 0;
         var index = 0;
@@ -137,9 +145,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             i++;
         });
 
-        console.log("INDEX: " + index);
-
-        console.log("INDEX: " + index);
         this.element.find('.loading > .message').remove();
         this.element.find('.loading').hide();
         this.element.find('img.active').removeClass('active');

@@ -11,6 +11,7 @@ define(['text!./templates/menu.html'], function(MenuTemplate){
        };
 
        var render = function(){
+           console.log("Menu.render()");
            self.element.html(template({pages: self.pages}));
            for(var i = 0; i < self.pages.length; i++){
                var page = self.pages[i];

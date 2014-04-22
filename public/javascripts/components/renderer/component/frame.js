@@ -169,7 +169,8 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     }
                     self.addChild(newLeg);
                     newLeg.trigger('request-render', newLeg);
-                    resolve({"right": self.currentRightLeg, "left": self.currentLeftLeg});
+                    var obj = {"right": self.currentRightLeg, "left": self.currentLeftLeg};
+                    resolve(obj);
                 }catch(err){
                     console.log(err);
                 }

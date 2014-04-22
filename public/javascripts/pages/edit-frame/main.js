@@ -308,6 +308,7 @@ function(
     };
 
     function focusedOnLeg(comp){
+        console.log("FOCUSED ON LEG!!");
         $('#menu').html('');
         var legPage = new LegPage({
             frame: renderer.getRenderedFrameObj(),
@@ -334,13 +335,17 @@ function(
                 renderer.changePattern(leg, pattern).then(function(newLegs){
                     console.log("PATTERN CHANGED!");
                     var focusedLeg = null;
-                    if(newLegs.right.focused){
+
+                    if(newLegs.right.name == leg.name){
                         focusedLeg = newLegs.right;
                     }else{
                         focusedLeg = newLegs.left;
                     }
 
+                    console.log("hoi1");
                     engravePage.setLeg.apply(engravePage, [focusedLeg]);
+                    engravePage.render.apply(engravePage);
+                    console.log('hoi2');
                     legPage.setLeg.apply(legPage, [focusedLeg]);
                     $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });
@@ -356,7 +361,6 @@ function(
 
         $(engravePage).on('leg-reset', function(event, side){
             appliedEngravings[side] = null;
-            console.log(appliedEngravings);
         });
 
         var zoomoutButton = $('<button class="back">Terug</button>');

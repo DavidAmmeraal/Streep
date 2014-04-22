@@ -425,6 +425,7 @@ body{
     text-align: center;
     display: none;
     padding: 10px 20px;
+    z-index: 9998;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .disabled, .loading img{
