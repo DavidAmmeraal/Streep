@@ -11,7 +11,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.currentTarget = null;
     EngravePage.prototype.side = null;
     EngravePage.prototype.tabTitle = "Graveren";
-    EngravePage.prototype.fonts = ['Helvetiker', 'Banana Brick', 'Fantasque', 'Gentilis'];
+    EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Slackey', 'UnifrakturMaguntia'];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.activate = function(){};
     EngravePage.prototype.setLeg = function(leg){
@@ -83,7 +83,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
                 this.html.find('.text').on('keyup', function(event){
                     var length = self.html.find('.text').val().length;
-                    self.html.find('.counter').text(length);
+                    self.html.find('.counter').text(12 - length);
                 });
 
                 this.element.html(this.html);
@@ -127,7 +127,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         var size = this.element.find('select.size > :selected').val().toLowerCase();
         var text = this.element.find('input.text').val();
-        var font = "helvetiker";
+        var font = this.element.find('select.font > :selected').val().toLowerCase();
         var type = 'engrave';
 
         if(text.length > 0){
@@ -192,7 +192,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         var size = this.element.find('select.size > :selected').val().toLowerCase();
         var text = this.element.find('input.text').val();
-        var font = "helvetiker";
+        var font = this.element.find('select.font > :selected').val().toLowerCase();
         var type = 'carve';
 
         if(text.length > 0){

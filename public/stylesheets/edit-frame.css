@@ -414,6 +414,11 @@ body{
     position: relative;
 }
 
+#menu .contents .tab-content #engrave .engrave-page .fields select.font{
+    font-size: 15px;
+    width: 150px;
+}
+
 #menu .contents .tab-content #engrave .engrave-page .disabled, .loading{
     font-weight: bold;
     position: absolute;
@@ -444,7 +449,7 @@ body{
 #menu .contents .tab-content #engrave .engrave-page .fields input.text{
     border-right: 1px solid #dcdcdc;
     float: left;
-    width: 200px;
+    width: 300px;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .buttons{

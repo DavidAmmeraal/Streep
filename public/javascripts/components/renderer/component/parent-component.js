@@ -93,9 +93,10 @@ define(['./component', './json-component'], function(Component, JSONComponent){
     };
 
     ParentComponent.prototype.exportSTL = function(){
-        var stl = "";
+        var stl = {};
         for(var i = 0; i < this.children.length; i++){
-            stl += this.children[i].exportSTL();
+            var child = this.children[i];
+            stl[child.name] = child.exportSTL();
         }
 
         return stl;

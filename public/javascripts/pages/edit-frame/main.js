@@ -76,8 +76,12 @@ function(
     var STLButton = $('#buttons > .download-stl');
 
     STLButton.on('click', function(){
-        var blob = new Blob([renderer.getSTL()], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "stl.stl");
+        var stls = renderer.getSTL();
+        for(var key in stls){
+            var stl = stls[key];
+            var blob = new Blob([stl], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, key + ".stl");
+        }
     });
 
     $(window).on('click', function(event){
@@ -342,10 +346,8 @@ function(
                         focusedLeg = newLegs.left;
                     }
 
-                    console.log("hoi1");
                     engravePage.setLeg.apply(engravePage, [focusedLeg]);
                     engravePage.render.apply(engravePage);
-                    console.log('hoi2');
                     legPage.setLeg.apply(legPage, [focusedLeg]);
                     $('#overview > .price').html('&euro;' + renderer.getPrice());
                 });

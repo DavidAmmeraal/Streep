@@ -21,9 +21,6 @@ define([
         var actualSize = self.sizes[size].fontSize;
         var actualDepth = self.sizes[size].depth;
         self.transformations = self.sizes[size].transformations;
-        console.log("TRANSFORMATIONS");
-        console.log(self.transformations);
-        console.log("END TRANSFORMATIONS");
         this.geo = new THREE.TextGeometry(text, {
             height: actualDepth,
             size: actualSize,

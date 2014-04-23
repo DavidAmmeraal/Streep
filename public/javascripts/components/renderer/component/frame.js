@@ -36,7 +36,10 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         price += parseFloat(activeFront.priceExtra);
         price += parseFloat(activeLegs.priceExtra);
         price += parseFloat(activeNose.priceExtra);
-        price += parseFloat(self.currentFront.currentGlasses.priceExtra);
+
+        if(self.currentFront.currentGlasses){
+            price += parseFloat(self.currentFront.currentGlasses.priceExtra);
+        }
 
         activeLegs.patterns.forEach(function(pattern){
             if(pattern.right.src == self.currentRightLeg.src){
