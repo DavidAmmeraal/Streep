@@ -43,7 +43,7 @@ var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
     withCapabilities(webdriver.Capabilities.chrome()).
     build();
-driver.get('http://google.com');
+driver.get('http://threejs.org/examples/#webgl_animation_cloth');
 //END selenium
 
 
