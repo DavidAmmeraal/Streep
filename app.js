@@ -35,7 +35,7 @@ connectDb();
 var app = express();
 
 //Start selenium
-/*
+
 var webdriver = require('selenium-webdriver');
 var keyword = "Diego Mejia";
 
@@ -43,8 +43,7 @@ var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
     withCapabilities(webdriver.Capabilities.chrome()).
     build();
-driver.get('http://localhost:3000/server-rendering/renderer');
-*/
+driver.get('http://google.com');
 //END selenium
 
 
