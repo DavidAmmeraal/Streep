@@ -39,6 +39,7 @@ var app = express();
 var webdriver = require('selenium-webdriver');
 var keyword = "Diego Mejia";
 
+console.log(webdriver.Capabilities.chrome());
 var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
     withCapabilities(webdriver.Capabilities.chrome()).
