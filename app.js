@@ -44,7 +44,7 @@ var driver = new webdriver.Builder().
     withCapabilities(webdriver.Capabilities.chrome()).
     build();
 driver.get('chrome://gpu')
-driver.executeScript('window.scrollBy(0,1500)');
+driver.executeScript('window.scrollBy(0,3000)');
 //END selenium
 
 
