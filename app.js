@@ -30,7 +30,9 @@ mongoose.connection.on('open', function (ref) {
     console.log('Connected to mongo server.');
 });
 
-connectDb();
+setTimeout(function(){
+    connectDb();
+}, 5000);
 
 var app = express();
 
