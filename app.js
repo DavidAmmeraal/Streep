@@ -50,7 +50,7 @@ var driver = new webdriver.Builder().
     build();
 driver.get('chrome://gpu')
 setTimeout(function(){
-    driver.executeScript('window.scrollBy(0,800)');
+    driver.executeScript('window.scrollBy(0,0)');
 }, 1000);
 
 //END selenium
