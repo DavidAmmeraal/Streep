@@ -48,7 +48,7 @@ var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
     withCapabilities(caps).
     build();
-driver.get('chrome://gpu')
+driver.get('http://threejs.org/examples/#webgl_animation_cloth')
 setTimeout(function(){
     driver.executeScript('window.scrollBy(0,0)');
 }, 1000);
