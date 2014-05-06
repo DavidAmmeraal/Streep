@@ -43,7 +43,7 @@ var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
     withCapabilities(webdriver.Capabilities.chrome()).
     build();
-driver.get('chrome://gpu')
+driver.get('about://flags')
 setTimeout(function(){
     console.log(driver.getPageSource().then(function(source){
         console.log(source);
