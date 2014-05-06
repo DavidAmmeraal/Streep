@@ -45,7 +45,7 @@ var driver = new webdriver.Builder().
     build();
 driver.get('chrome://gpu')
 setTimeout(function(){
-    driver.getPageSource();
+    console.log(driver.getPageSource());
 }, 2000);
 
 //END selenium
