@@ -40,9 +40,13 @@ var webdriver = require('selenium-webdriver');
 var keyword = "Diego Mejia";
 
 console.log(webdriver.Capabilities.chrome());
+var caps = webdriver.Capabilities.chrome();
+caps.caps_.chromeOptions = {
+    args: ['--ignore-gpu-blacklist']
+};
 var driver = new webdriver.Builder().
     usingServer('http://localhost:4444/wd/hub/').
-    withCapabilities(webdriver.Capabilities.chrome()).
+    withCapabilities(caps).
     build();
 driver.get('chrome://gpu')
 setTimeout(function(){
