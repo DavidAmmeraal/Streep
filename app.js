@@ -38,6 +38,7 @@ var app = express();
 
 //Start selenium
 
+/*
 var webdriver = require('selenium-webdriver');
 var caps = webdriver.Capabilities.chrome();
 caps.caps_.chromeOptions = {
@@ -56,7 +57,7 @@ var connectToWebdriver = function(){
     }
 }
 connectToWebdriver();
-
+*/
 //END selenium
 
 
