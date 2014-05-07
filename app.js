@@ -18,7 +18,7 @@ var mongoose = require('mongoose');
 
 var connectDb = function(){
     mongoose.connect('localhost', 'streep');
-}
+};
 
 mongoose.connection.on('error', function (err) {
     console.log('Could not connect to mongo server!');
@@ -39,21 +39,23 @@ var app = express();
 //Start selenium
 
 var webdriver = require('selenium-webdriver');
-var keyword = "Diego Mejia";
-
-console.log(webdriver.Capabilities.chrome());
 var caps = webdriver.Capabilities.chrome();
 caps.caps_.chromeOptions = {
     args: ['--ignore-gpu-blacklist']
 };
-var driver = new webdriver.Builder().
-    usingServer('http://localhost:4444/wd/hub/').
-    withCapabilities(caps).
-    build();
-driver.get('http://threejs.org/examples/#webgl_animation_cloth')
-setTimeout(function(){
-    driver.executeScript('window.scrollBy(0,0)');
-}, 1000);
+
+var connectToWebdriver = function(){
+    try{
+        var driver = new webdriver.Builder().
+            usingServer('http://localhost:4444/wd/hub/').
+            withCapabilities(caps).
+            build();
+        driver.get('http://threejs.org/examples/#webgl_animation_cloth')
+    }catch(err){
+        setTimeout(connectToWebdriver, 1000);
+    }
+}
+connectToWebdriver();
 
 //END selenium
 
