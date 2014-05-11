@@ -90,7 +90,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             }else if(modsApplied){
                 this.html = $(this.template({fonts: [], sizes: [], display: display}));
                 this.element.html(this.html);
-                this.disable();
+                this.disable('Deze poot is al gegraveerd!');
                 this.element.find('button.reset').removeAttr('disabled');
                 this.element.find('button.reset').on('click', function(event){
                     self.resetClicked.apply(self, [event])
@@ -153,9 +153,13 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         this.html.find('button.carve').attr('disabled', 'disabled');
         this.html.find('button.reset').attr('disabled', 'disabled');
     };
-    EngravePage.prototype.disable = function(){
+    EngravePage.prototype.disable = function(msg){
         var loadingEl = this.element.find('.loading');
-        loadingEl.append('<div class="message">Deze poot kan niet gegraveerd worden!</div>');
+        if(msg){
+            loadingEl.append('<div class="message">' + msg + '</div>');
+        }else{
+            loadingEl.append('<div class="message">Deze poot kan niet gegraveerd worden, kies de standaard poot om wel te kunnen graveren!</div>');
+        }
         loadingEl.find('img').hide();
         loadingEl.show();
         this.disableButtons();

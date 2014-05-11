@@ -123,16 +123,19 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			};
 			
 			var tick = function(){
-				self.camera.position.x = curPosition.x;
-				self.light.position.x = curPosition.x + 20;
-				self.camera.position.y = curPosition.y;
-				self.light.position.y = curPosition.y + 100;
-				self.camera.position.z = curPosition.z;
-				self.light.position.z = curPosition.z;
+                var x = parseInt(curPosition.x);
+                var y = parseInt(curPosition.y);
+                var z = parseInt(curPosition.z);
+				self.camera.position.x = x;
+				self.light.position.x = x + 20;
+				self.camera.position.y = y;
+				self.light.position.y = y + 100;
+				self.camera.position.z = z;
+				self.light.position.z = z;
 
 				if(self.sceneReady){
                     if(self.lookingAt.focusPerspective){
-                        self.camera.lookAt(self.lookingAt.focusPerspective.lookAt)
+                        self.camera.lookAt(self.lookingAt.focusPerspective.lookAt);
                     }else if(self.lookingAt.mesh.position){
 						self.camera.lookAt(self.lookingAt.mesh.position);
 					}else{
@@ -255,7 +258,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
             comp.focused = true
 			self.lookingAt = comp;
 			//self.resetCamera();
-            console.log("LENGTH: " + length);
 			if(comp.focusPerspective){
 				self.positionCamera(comp.focusPerspective.cameraPosition, length);
 			}

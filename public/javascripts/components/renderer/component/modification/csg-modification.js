@@ -51,7 +51,7 @@ define(['../transformation/transformation', './modification', '../../util/geomet
         console.log(mesh);
         globalviewer.getScene().add(mesh);
         globalviewer.render();
-*/
+        */
 
 
         return new Promise(function(resolve, reject){

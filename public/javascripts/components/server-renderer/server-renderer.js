@@ -41,12 +41,15 @@ define([
         console.log(JSON.stringify(command));
         return new Promise(function(resolve){
             $.post(self.host + '/' + self.url + '/' + self.commandURI, command).then(function(data){
-                console.log(data);
                 var img = $('<img src="' + data.img + '" />');
                 container.html(img);
                 resolve();
             });
         });
+    };
+
+    ServerRenderer.prototype.resize = function(){
+
     };
 
     return ServerRenderer;

@@ -19,6 +19,7 @@ define([
                 }else{
                     radio.addClass('checked');
                 }
+                $(self).trigger('size-changed');
             });
         },
         render: function(){
@@ -29,6 +30,9 @@ define([
         },
         hide: function(){
             this.$el.fadeOut(200);
+        },
+        getSelectedSize: function(){
+            return this.$el.find('input[type="radio"].checked').val();
         },
         setSize: function(size){
 

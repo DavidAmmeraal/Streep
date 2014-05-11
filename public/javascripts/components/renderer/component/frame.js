@@ -87,7 +87,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         }
     };
     Frame.prototype.changeFront = function(newFront){
-        console.log("Frame.changeFront()");
+        console.log("Frame.changeFront(" + newFront + ")");
         this.cancelModifications();
         var self = this;
         var currentColor = self.currentFront.color;
@@ -130,11 +130,13 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     console.log(err);
                 }
 
-                if(self.currentFront.glasses.length > 0){
+                if(self.currentFront.glasses && self.currentFront.glasses.length > 0){
+                    console.log("THERE ARE GLASSES!");
                     Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[0])]).then(function(){
                         resolve(self.currentFront);
                     })
                 }else{
+                    console.log("NO GLASSES AVAILABLE!");
                     try{
                         self.changeLegs(self.currentFront.legs[0]).then(function(){
                             resolve(self.currentFront);
@@ -289,7 +291,8 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     });
                 }
             }catch(err){
-                console.log("ERROR!");
+                console.log(err);
+                console.log(err.stack);
                 reject(err);
             }
         });
@@ -330,7 +333,9 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     };
     Frame.parseFromDB = function(data){
         console.log("Frame.parseFromDB()");
+        console.log("DATA");
         console.log(data);
+        console.log("END DATA!!");
         var front = data.fronts[0];
         data.currentFront = front;
         data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);

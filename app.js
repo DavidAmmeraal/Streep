@@ -8,6 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var frames = require('./routes/frames');
 var fronts = require('./routes/fronts');
+var sizes = require('./routes/sizes');
 var screenshot = require('./routes/screenshot');
 var serverRendering = require('./routes/server-rendering');
 var fillTestData = require('./routes/fill-test-data');
@@ -37,7 +38,6 @@ setTimeout(function(){
 var app = express();
 
 //Start selenium
-
 /*
 var webdriver = require('selenium-webdriver');
 var caps = webdriver.Capabilities.chrome();
@@ -51,7 +51,7 @@ var connectToWebdriver = function(){
             usingServer('http://localhost:4444/wd/hub/').
             withCapabilities(caps).
             build();
-        driver.get('http://threejs.org/examples/#webgl_animation_cloth')
+        driver.get('http://localhost:3000/server-rendering/renderer');
     }catch(err){
         setTimeout(connectToWebdriver, 1000);
     }
@@ -79,7 +79,6 @@ if ('development' == app.get('env')) {
 }
 
 var server = http.createServer(app);
-/*
 var io = require('socket.io').listen(server);
 var waitingCommands = {};
 io.sockets.on('connection', function (socket) {
@@ -94,18 +93,21 @@ io.sockets.on('connection', function (socket) {
         waitingCommands[data.commandID].send(data);
         delete waitingCommands[data.commandID];
     });
-});*/
+});
 
 app.get('/', frames.chooseFrame);
 app.get('/users', user.list);
 
 app.get('/choose-frame', frames.chooseFrame);
+app.get('/edit-frame', frames.editFrame);
 app.get('/edit-frame/:id', frames.editFrame);
 
 app.get('/models_api/frames', frames.all);
 app.get('/models_api/frames/:id', frames.findById);
 app.get('/models_api/fronts', fronts.all);
 app.get('/models_api/fronts/:id', frames.findById);
+app.get('/models_api/sizes', sizes.all);
+app.get('/models_api/sizes/:id', sizes.findById);
 app.get('/server-rendering/renderer', serverRendering.renderer);
 
 

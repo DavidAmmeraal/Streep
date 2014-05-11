@@ -1,24 +1,24 @@
 define([
-    '../../domain/collections/frames',
+    '../../domain/collections/sizes',
     'text!/javascripts/components/frame-chooser/templates/frame-chooser.html'
 ], function(
-    Frames,
+    Sizes,
     FrameChooserTemplate
 ){
 
     var FrameChooser = Backbone.View.extend({
-        collection: new Frames(),
+        collection: new Sizes(),
         template: _.template(FrameChooserTemplate),
         frames: null,
         events: {
             "click .frame": function(event){
-                console.log(this);
-                $(this).trigger('frame-chosen', $(event.currentTarget).attr('data-frameId'))
+                $(this).trigger('frame-chosen', $(event.currentTarget).attr('data-frameId'));
             }
         },
         initialize: function(){
             var self = this;
             self.collection.fetch().then(function(){
+                console.log(self.collection.toJSON());
                 self.render.apply(self);
             });
         },

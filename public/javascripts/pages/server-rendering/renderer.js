@@ -9,8 +9,6 @@ define([
     ComponentContext,
     Frame
 ){
-    console.log(Viewer);
-
     var Renderer = function(options){
         var self = this;
         $.extend(self, options);
@@ -39,11 +37,51 @@ define([
             });
         });
     };
+    Renderer.prototype.getIndicators = function(){
+        var self = this;
+        var comps = this.viewer.getComponents();
+
+        console.log("COMPS: ");
+        console.log(comps);
+
+        function toScreenXY( position, camera, div ){
+            var pos = position.clone();
+            var projScreenMat = new THREE.Matrix4();
+            projScreenMat.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
+            pos.applyProjection(projScreenMat);
+
+            return { x: ( pos.x + 1 ) * $(div).width() / 2,
+                y: ( - pos.y + 1) * $(div).height() / 2 };
+        }
+
+        var indicators = [];
+
+        for(var c = 0; c < comps.length; c++){
+            var comp = comps[c];
+            if(comp.indicator){
+                var indicator = {
+                    position: {},
+                    tooltipText: ""
+                };
+                switch(comp.name){
+                    case "poot_links":
+                    case "poot-rechts":
+                        indicator.tooltipText = "Wijzig hier uw poten";
+                        break;
+                    default:
+                        indicator.tooltipText = "Wijzig hier uw voorkant";
+                }
+                indicator.position = toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement);
+                indicators.push(indicator);
+            }
+        }
+
+        return indicators;
+    };
     Renderer.prototype.loadFrame = function(data){
         console.log("Renderer.prototype.loadFrame(" + JSON.stringify(data) + ")");
         var self = this;
         return new Promise(function(resolve){
-            console.log("IN PROMISE");
             try{
                 var session = self.sessions[data.sessionID];
                 session.frame = Frame.parseFromDB(data.frame);
@@ -59,9 +97,10 @@ define([
                     }
                     resolve({
                         'commandID': data.commandID,
-                        'img': self.viewer.getScreenshot()
+                        'img': self.viewer.getScreenshot(),
+                        'indicators': self.getIndicators()
                     })
-                })
+                });
             }catch(err){
                 console.log(err.stack);
             }

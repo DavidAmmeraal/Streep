@@ -18,6 +18,7 @@ requirejs.config({
 
 require([
     '../../components/renderer/renderer',
+    '../../domain/models/size',
     '../../domain/models/frame',
     '../../components/menu/menu',
     '../../components/tab-page/tab-page',
@@ -34,6 +35,7 @@ require([
 ],
 function(
     Renderer,
+    Size,
     Frame,
     Menu,
     TabPage,
@@ -64,6 +66,8 @@ function(
     var frameChooser = new FrameChooser({el: $('#menus > .frames')[0]});
     var sizeChooser = new SizeChooser({el: $('#menus > .size')[0]})
     var frame;
+    var sizesId = "536e393072e65c45ab8efee8";
+    var sizes;
 
     var renderTarget = $('#renderer')[0];
     var engravePage = null;
@@ -147,14 +151,21 @@ function(
 
     });
 
-    $(frameChooser).on('frame-chosen', function(event, id){
+    $(frameChooser).on('frame-chosen', function(event, chosenSizesId){
         $('.column-left > .loading').fadeIn(200);
-        loadFrame(id);
+        loadSizes(chosenSizesId).then(loadFrame);
     });
 
-    var loadFrame = function(id){
+    $(sizeChooser).on('size-changed', function(event){
+        $('.column-left > .loading').fadeIn(200);
+        loadFrame();
+    });
+
+    var loadFrame = function(){
+        var chosenSize = sizeChooser.getSelectedSize();
+        var frameId = sizes.get('frames')[chosenSize];
         frame = new Frame({
-            id: id
+            id: frameId
         });
         frame.fetch({data: {depth: 3}}).then(function(){
             if(renderer){
@@ -186,10 +197,17 @@ function(
                 });
                 $('#menu').html('');
             });
-        })
+        });
+    };
+
+    var loadSizes = function(sizeId){
+        sizes = new Size({
+            id: sizeId
+        });
+        return sizes.fetch();
     }
 
-    loadFrame(id);
+    loadSizes(sizesId).then(loadFrame);
 
     $(window).resize(resizeElements);
     resizeElements();
@@ -236,7 +254,6 @@ function(
 
         $(frontPage).on('front-changed', function(event, replacementFront){
             try{
-
                 renderer.changeFront(replacementFront).then(function(newFrontObj){
                     try{
                         applyEngravingsToNewLegs(_.find(newFrontObj.legs, function(legs){
@@ -312,7 +329,6 @@ function(
     };
 
     function focusedOnLeg(comp){
-        console.log("FOCUSED ON LEG!!");
         $('#menu').html('');
         var legPage = new LegPage({
             frame: renderer.getRenderedFrameObj(),

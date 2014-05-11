@@ -40,17 +40,23 @@ define([
         this.element.find('.indicator').each(function(){
             var offset = $(this).position();
             var comp = $(this).data('component');
-            var contents = $('<img src="/images/arrow_up.png" width="100%" height="100%"/>');
             var position = "top";
-            if(comp.name == "poot_links" || comp.name == "poot_rechts"){
-                contents = "Wijzig hier uw poten";
-            }else{
-                contents = "Wijzig hier uw voorkant";
+            switch(comp.name){
+                case "poot_links":
+                    contents = "Wijzig hier uw linkerpoot";
+                    break;
+                case "poot_rechts":
+                    contents = "Wijzig hier uw rechterpoot";
+                    break;
+                default:
+                    contents = "Wijzig hier uw voorkant";
+                    position = "bottom";
+                    break;
             }
 
             var div;
             if(!$(this).data('tooltip')){
-                div = $("<div class='streep-tooltip " + position + "'><img src='/images/arrow_up.png' width='100%' height='100%'/><div class='text'>" + contents + "</div></div>");
+                div = $("<div class='streep-tooltip " + position + "'><img src='/images/tooltip_" + position + ".png' width='100%' height='100%'/><div class='text'>" + contents + "</div></div>");
                 self.element.append(div);
                 $(this).data('tooltip', div);
             }else{
@@ -85,7 +91,9 @@ define([
             if(!_.find(comps, function(comp){
                 return comp == indicator.data('component');
             })){
-                indicator.data('tooltip').remove();
+                if(indicator.data('tooltip')){
+                    indicator.data('tooltip').remove();
+                }
                 indicator.remove();
             }
         }
