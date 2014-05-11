@@ -95,7 +95,7 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-app.get('/', frames.chooseFrame);
+app.get('/', frames.editFrame);
 app.get('/users', user.list);
 
 app.get('/choose-frame', frames.chooseFrame);
