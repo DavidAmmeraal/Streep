@@ -16,7 +16,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
         this.renderer = null;
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
-        this.backgroundColor = 0x363636;
+        this.backgroundColo = 0x000000;
+        // this.backgroundColor = 0x363636;
         this.projector = new THREE.Projector();
         var currentHover = null;
 

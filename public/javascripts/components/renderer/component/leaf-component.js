@@ -73,6 +73,8 @@ define(['./component'], function(Component){
         this.mesh = new THREE.Mesh(this.geo, this.material);
         $(this.mesh).data('streep-component', this);
         this.mesh.name = this.name;
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
     };
     LeafComponent.prototype.hover = function(){
         this.mesh.material.color.setHex(this.hoverColor);
@@ -96,7 +98,11 @@ define(['./component'], function(Component){
         this.color = color;
 
         if(this.mesh){
-            this.mesh.material.color.setHex(this.color);
+            try{
+                this.mesh.material.color.setHex(this.color);
+            }catch(err){
+                console.log(err);
+            }
             this.refresh();
         }else{
             this.material.color.setHex(this.color);

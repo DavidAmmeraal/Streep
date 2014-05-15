@@ -15,12 +15,26 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
         var self = this;
         return new Promise(function(resolve, reject){
             if(self.src){
-                var loader = new THREE.JSONLoader();
-                loader.load(self.src, function(object){
-                    self.geo = object;
+                console.log(self.src);
+                var splits = self.src.split(".");
+                var extension = splits[splits.length - 1];
+                var loader;
+                switch(extension){
+                    case "js":
+                        loader = new THREE.JSONLoader();
+                        break;
+                    case "stl":
+                        loader = new THREE.STLLoader();
+                        break;
+                }
+                loader.load(self.src, function(geo, material){
+                    self.material = new THREE.MeshLambertMaterial({shading: THREE.FlatShading});
+                    self.geo = geo;
+                    console.log(self.geo);
                     self.redraw();
                     self.loaded = true;
                     resolve(self);
+
                 });
             }
         });
