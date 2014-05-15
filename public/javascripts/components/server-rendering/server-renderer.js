@@ -4,14 +4,17 @@ define([
         $.extend(this, options);
     };
 
-    ServerRenderer.prototype.host = "http://streep.nl:3000";
+    ServerRenderer.prototype.host = "http://local.streep.nl:3000";
     ServerRenderer.prototype.url = "server-rendering";
     ServerRenderer.prototype.commandURI = "command";
     ServerRenderer.prototype.sessionID = null;
     ServerRenderer.prototype.container = null;
     ServerRenderer.prototype.init = function(){
         var self = this;
-        return self.startSession()
+        if(!self.sessionID){
+            return self.startSession();
+        }
+        return Promise.resolve();
     };
     ServerRenderer.prototype.startSession = function(){
         console.log("ServerRenderer.prototype.startSession()");
@@ -43,6 +46,10 @@ define([
                 resolve();
             });
         });
+    };
+
+    ServerRenderer.prototype.destroy = function(){
+
     };
 
     ServerRenderer.prototype.resize = function(){

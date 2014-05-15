@@ -14,10 +14,6 @@ define([
         $.extend(self, options);
 
         this.context = new ComponentContext();
-        this.viewer = new Viewer(this.container, this.context, {
-            backgroundColor: self.backgroundColor,
-            startPosition: new THREE.Vector3(-100, 20, 400)
-        });
     };
 
     Renderer.prototype.sessions = {};
@@ -29,9 +25,6 @@ define([
     Renderer.prototype.getIndicators = function(){
         var self = this;
         var comps = this.viewer.getComponents();
-
-        console.log("COMPS: ");
-        console.log(comps);
 
         function toScreenXY( position, camera, div ){
             var pos = position.clone();
@@ -68,27 +61,49 @@ define([
         return indicators;
     };
     Renderer.prototype.loadFrame = function(data){
-        console.log("Renderer.prototype.loadFrame(" + JSON.stringify(data) + ")");
         var self = this;
         return new Promise(function(resolve){
             try{
-                self.frame = Frame.parseFromDB(data.frame);
-                self.container.width(data.containerDimensions[0]);
-                self.container.height(data.containerDimensions[1]);
-                self.viewer.resize();
-                self.frame.load().then(function(){
-                    self.context.add(self.frame);
-                    try{
-                        self.viewer.focusTo(self.frame);
-                    }catch(err){
-                        console.log(err.stack);
-                    }
-                    resolve({
-                        'commandID': data.commandID,
-                        'img': self.viewer.getScreenshot(),
-                        'indicators': self.getIndicators()
-                    })
-                });
+
+                function doTheRest(){
+                    self.frame = Frame.parseFromDB(data.frame);
+                    self.container.width(data.containerDimensions[0]);
+                    self.container.height(data.containerDimensions[1]);
+                    self.viewer.resize();
+                    self.frame.load().then(function(){
+                        console.log(self.context.get('components'));
+                        console.log("FRAME LOADED !!!!!!!!!");
+                        self.context.add(self.frame);
+                        try{
+                            self.viewer.focusTo(self.frame);
+                        }catch(err){
+                            console.log(err.stack);
+                        }
+                        resolve({
+                            'commandID': data.commandID,
+                            'img': self.viewer.getScreenshot(),
+                            'indicators': self.getIndicators()
+                        })
+                    });
+                }
+
+                if(!self.viewer){
+                    self.viewer = new Viewer(self.container, self.context, {
+                        backgroundColor: self.backgroundColor,
+                        startPosition: new THREE.Vector3(-100, 20, 400)
+                    });
+                }else{
+                    self.viewer.destroy();
+                }
+                if(self.frame){
+                    self.frame.remove();
+                    setTimeout(function(){
+                        doTheRest();
+                    }, 1);
+                }else{
+                    doTheRest();
+                }
+
             }catch(err){
                 console.log(err.stack);
             }

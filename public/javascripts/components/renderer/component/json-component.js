@@ -11,11 +11,9 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 
 	JSONComponent.prototype = Object.create(LeafComponent.prototype);
     JSONComponent.prototype.load = function(){
-        console.log("JSONComponent.prototype.load()");
         var self = this;
         return new Promise(function(resolve, reject){
             if(self.src){
-                console.log(self.src);
                 var splits = self.src.split(".");
                 var extension = splits[splits.length - 1];
                 var loader;
@@ -30,7 +28,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                 loader.load(self.src, function(geo, material){
                     self.material = new THREE.MeshLambertMaterial({shading: THREE.FlatShading});
                     self.geo = geo;
-                    console.log(self.geo);
                     self.redraw();
                     self.loaded = true;
                     resolve(self);
@@ -41,8 +38,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
     };
 
     JSONComponent.parseFromDB = function(data){
-        console.log("JSONComponent.parseFromDB");
-        console.log(data);
         try{
             if(data.connectors){
                 for(var i = 0; i < data.connectors.length; i++){

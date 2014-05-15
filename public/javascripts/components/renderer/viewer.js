@@ -109,7 +109,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.positionCamera = function(position, duration){
-            console.log("positionCamera(" + JSON.stringify(position) + "," + duration + ")");
 			var curPosition = {};
 			curPosition.x = self.camera.position.x;
 			curPosition.y = self.camera.position.y;
@@ -170,11 +169,13 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.parseContext = function(){
+            console.log("Viewer.parseContext()");
 			var components = self.context.get('components');
 			for(var key in components){
 				var comp = components[key];
 				self.addComponent(comp);
 			}
+            console.log("END Viewer.parseContext()");
 		};
 		
 		self.setBackgroundColor = function(color){
@@ -231,7 +232,9 @@ define(['../../util/webgl-test'], function(WebGLTest){
                     self.render();
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
+                    console.log("REQUEST REMOVAL RECEIVED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     self.scene.remove(requester.mesh);
+                    console.log(self.scene.children.length);
                     delete requester;
                     self.render();
                 });
@@ -240,6 +243,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		
 		self.render = function(){
             self.renderer.render(self.scene, self.camera);
+
             $(self).trigger('viewer.render');
 		};
 		
@@ -280,7 +284,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
             comp.unhover();
             currentHover = null;
             self.render();
-        }
+        };
 		
 		initialize();
 	};
@@ -288,6 +292,10 @@ define(['../../util/webgl-test'], function(WebGLTest){
 	Viewer.prototype = {
         getScreenshot: function(){
             return this.renderer.domElement.toDataURL();
+        },
+        destroy: function(){
+            this.scene = new THREE.Scene();
+            this.scene.add(this.light);
         },
         getComponents: function(){
             var findCompsIn = function(comp){

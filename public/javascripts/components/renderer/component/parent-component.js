@@ -64,10 +64,15 @@ define(['./component', './json-component'], function(Component, JSONComponent){
     };
 
     ParentComponent.prototype.addChild = function(comp){
-        console.log("ParentComponent.addChild(" + comp + ")");
         comp.parent = this;
         this.children.push(comp);
     };
+
+    ParentComponent.prototype.remove = function(){
+        this.children.map(function(child){
+            child.remove();
+        });
+    }
 
     ParentComponent.prototype.removeChild = function(comp){
         if(comp && typeof comp.remove === "function"){

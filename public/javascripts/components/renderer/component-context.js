@@ -13,11 +13,17 @@ define(['./util/observable'], function(Observable){
 		};
 		
 		this.remove = function(comp){
+            console.log("ComponentContext.remove()");
 			var comps = self.get('components');
-			comps.splice(comps.indexOf(comp), 0);
-			self.set('components', comp);		
-			self.updateObservers();
+			comps.splice(comps.indexOf(comp), 1);
+			self.set('components', comps);
+            comp.remove();
 		};
+
+        this.empty = function(){
+            self.set('components', []);
+            self.updateObservers();
+        }
 	};
 	ComponentContext.prototype = new Observable();
 	return ComponentContext;

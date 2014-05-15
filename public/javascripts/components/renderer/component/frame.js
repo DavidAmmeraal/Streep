@@ -4,7 +4,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
 		$.extend(self, arguments[0]);
 
         var initialize = function(){
-            console.log("Frame._initialize()");
 
         };
 
@@ -17,7 +16,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
     Frame.currentRightLeg = null;
     Frame.loaded = false;
     Frame.prototype.getPrice = function(){
-        console.log("Frame.prototype.getPrice()");
         var self = this;
         var price = parseFloat(this.basePrice);
 
@@ -87,7 +85,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         }
     };
     Frame.prototype.changeFront = function(newFront){
-        console.log("Frame.changeFront(" + newFront + ")");
         this.cancelModifications();
         var self = this;
         var currentColor = self.currentFront.color;
@@ -131,12 +128,10 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }
 
                 if(self.currentFront.glasses && self.currentFront.glasses.length > 0){
-                    console.log("THERE ARE GLASSES!");
                     Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[0])]).then(function(){
                         resolve(self.currentFront);
                     })
                 }else{
-                    console.log("NO GLASSES AVAILABLE!");
                     try{
                         self.changeLegs(self.currentFront.legs[0]).then(function(){
                             resolve(self.currentFront);
@@ -151,7 +146,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.prototype.changePattern = function(leg, newPattern){
-        console.log("Frame.changePattern(" + leg + ", " + newPattern + ")");
         var self = this;
         var currentColor = this.currentLeftLeg.color;
         return new Promise(function(resolve, reject){
@@ -224,7 +218,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         */
     };
     Frame.prototype.changeLegs = function(newLegs){
-        console.log("Frame.changeLegs()");
         _.each(this.currentFront.legs, function(legs){
             if(legs.active)
                 legs.active = false;
@@ -298,7 +291,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.prototype.changeGlasses = function(newGlasses){
-        console.log("Frame.prototype.changeGlasses()");
         var self = this;
         this.cancelModifications();
 
@@ -332,10 +324,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.parseFromDB = function(data){
-        console.log("Frame.parseFromDB()");
-        console.log("DATA");
-        console.log(data);
-        console.log("END DATA!!");
         var front = data.fronts[0];
         data.currentFront = front;
         data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);

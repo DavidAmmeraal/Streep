@@ -168,35 +168,39 @@ function(
             id: frameId
         });
         frame.fetch({data: {depth: 3}}).then(function(){
-            if(renderer){
-                renderer.destroy();
-            }
-
-            if(WebGLTest.test()){
-                renderer = new Renderer({
-                    container: renderTarget,
-                    backgroundColor: '#FFFFFF'
-                });
+            if(!renderer){
+                if(WebGLTest.test()){
+                    renderer = new Renderer({
+                        container: renderTarget,
+                        backgroundColor: '#FFFFFF'
+                    });
+                }else{
+                    renderer = new ServerRenderer({
+                        container: renderTarget
+                    });
+                }
+                afterRendererReady();
             }else{
-                renderer = new ServerRenderer({
-                    container: renderTarget
-                });
+                renderer.destroy();
+                afterRendererReady();
             }
 
-            renderer.init().then(function(){
-                frameChooser.setActive(frame.id);
-                renderer.loadFrame(frame).then(function(){
-                    $('.column-left > .loading').fadeOut(200);
-                    $(renderer.viewer).on('viewer.focus', handleFocusChanged);
-                    $('#overview > .price').html('&euro;' + frame.get('basePrice'));
+            function afterRendererReady(){
+                renderer.init().then(function(){
+                    frameChooser.setActive(frame.id);
+                    renderer.loadFrame(frame).then(function(){
+                        $('.column-left > .loading').fadeOut(200);
+                        $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+                        $('#overview > .price').html('&euro;' + frame.get('basePrice'));
 
-                    $('.streep-tooltip').fadeIn(500);
-                    setTimeout(function(){
-                        $('.streep-tooltip').fadeOut(1000);
-                    }, 9000)
+                        $('.streep-tooltip').fadeIn(500);
+                        setTimeout(function(){
+                            $('.streep-tooltip').fadeOut(1000);
+                        }, 9000)
+                    });
+                    $('#menu').html('');
                 });
-                $('#menu').html('');
-            });
+            }
         });
     };
 
