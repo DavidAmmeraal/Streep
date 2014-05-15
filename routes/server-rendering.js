@@ -27,7 +27,7 @@ exports.startSession = function(){
             sessionID = caps.caps_['webdriver.remote.sessionid'];
 
         }).then(function(){
-            driver.get('http://local.streep.nl:3000/server-rendering/renderer/' + sessionID);
+            driver.get('http://localhost:3000/server-rendering/renderer/' + sessionID);
             io.sockets.on('connection', function (socket) {
                 socket.on('ready', function(data){
                     if(data.sessionID == sessionID){
