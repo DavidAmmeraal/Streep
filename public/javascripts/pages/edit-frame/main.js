@@ -30,7 +30,7 @@ require([
     '../../components/frame-chooser/frame-chooser',
     '../../components/size-chooser/size-chooser',
     '../../util/webgl-test',
-    '../../components/server-renderer/server-renderer',
+    '../../components/server-rendering/server-renderer',
     '../../vendor/facebook/fb'
 ],
 function(

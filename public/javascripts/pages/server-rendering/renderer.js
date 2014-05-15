@@ -25,18 +25,7 @@ define([
     Renderer.prototype.container = null;
     Renderer.prototype.context = null;
     Renderer.prototype.viewer = null;
-    Renderer.prototype.startSession = function(data){
-        console.log("Renderer.startSession(" + data + ")");
-        var self = this;
-        return new Promise(function(resolve){
-            var session = new Session(data.commandID);
-            self.sessions[session.id] = session;
-            resolve({
-                commandID: data.commandID,
-                sessionID: session.id
-            });
-        });
-    };
+    Renderer.prototype.frame = null;
     Renderer.prototype.getIndicators = function(){
         var self = this;
         var comps = this.viewer.getComponents();
@@ -83,15 +72,14 @@ define([
         var self = this;
         return new Promise(function(resolve){
             try{
-                var session = self.sessions[data.sessionID];
-                session.frame = Frame.parseFromDB(data.frame);
+                self.frame = Frame.parseFromDB(data.frame);
                 self.container.width(data.containerDimensions[0]);
                 self.container.height(data.containerDimensions[1]);
                 self.viewer.resize();
-                session.frame.load().then(function(){
-                    self.context.add(session.frame);
+                self.frame.load().then(function(){
+                    self.context.add(self.frame);
                     try{
-                        self.viewer.focusTo(session.frame);
+                        self.viewer.focusTo(self.frame);
                     }catch(err){
                         console.log(err.stack);
                     }

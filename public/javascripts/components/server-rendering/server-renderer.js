@@ -4,7 +4,7 @@ define([
         $.extend(this, options);
     };
 
-    ServerRenderer.prototype.host = "http://192.168.1.210:3000";
+    ServerRenderer.prototype.host = "http://local.streep.nl:3000";
     ServerRenderer.prototype.url = "server-rendering";
     ServerRenderer.prototype.commandURI = "command";
     ServerRenderer.prototype.sessionID = null;
@@ -16,11 +16,8 @@ define([
     ServerRenderer.prototype.startSession = function(){
         console.log("ServerRenderer.prototype.startSession()");
         var self = this;
-        var command = {
-            'name': 'startSession'
-        };
         return new Promise(function(resolve){
-            $.post(self.host + '/' + self.url + '/' + self.commandURI, command).then(function(data){
+            $.get(self.host + '/' + self.url + '/start-session').then(function(data){
                 self.sessionID = data.sessionID;
                 resolve();
             });

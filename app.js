@@ -37,30 +37,6 @@ setTimeout(function(){
 
 var app = express();
 
-//Start selenium
-/*
-var webdriver = require('selenium-webdriver');
-var caps = webdriver.Capabilities.chrome();
-caps.caps_.chromeOptions = {
-    args: ['--ignore-gpu-blacklist']
-};
-
-var connectToWebdriver = function(){
-    try{
-        var driver = new webdriver.Builder().
-            usingServer('http://localhost:4444/wd/hub/').
-            withCapabilities(caps).
-            build();
-        driver.get('http://localhost:3000/server-rendering/renderer');
-    }catch(err){
-        setTimeout(connectToWebdriver, 1000);
-    }
-}
-connectToWebdriver();
-*/
-//END selenium
-
-
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -80,39 +56,33 @@ if ('development' == app.get('env')) {
 
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
-var waitingCommands = {};
-io.sockets.on('connection', function (socket) {
-    app.post('/server-rendering/command', function(req, res){
-        var uuid = require('node-uuid');
-        var id = uuid.v1();
-        req.body.commandID = id;
-        waitingCommands[id] = res;
-        socket.emit('command', req.body);
-    });
-    socket.on('commandDone', function(data){
-        waitingCommands[data.commandID].send(data);
-        delete waitingCommands[data.commandID];
-    });
-});
+
+serverRendering.setIO(io);
 
 app.get('/', frames.editFrame);
 app.get('/users', user.list);
 
+app.post('/server-rendering/command', serverRendering.command());
+app.post('/server-rendering/command', function(req, res){
+    var uuid = require('node-uuid');
+    var id = uuid.v1();
+    req.body.commandID = id;
+    waitingCommands[id] = res;
+    socket.emit('command', req.body);
+});
+
 app.get('/choose-frame', frames.chooseFrame);
 app.get('/edit-frame', frames.editFrame);
 app.get('/edit-frame/:id', frames.editFrame);
-
 app.get('/models_api/frames', frames.all);
 app.get('/models_api/frames/:id', frames.findById);
 app.get('/models_api/fronts', fronts.all);
 app.get('/models_api/fronts/:id', frames.findById);
 app.get('/models_api/sizes', sizes.all);
 app.get('/models_api/sizes/:id', sizes.findById);
-app.get('/server-rendering/renderer', serverRendering.renderer);
-
-
+app.get('/server-rendering/start-session', serverRendering.startSession());
+app.get('/server-rendering/renderer/:id', serverRendering.renderer);
 app.post('/screenshot/save', screenshot.save);
-
 app.get('/fill-test-data', fillTestData.start);
 
 server.listen(app.get('port'), function(){
