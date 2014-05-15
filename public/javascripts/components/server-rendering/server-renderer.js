@@ -4,7 +4,7 @@ define([
         $.extend(this, options);
     };
 
-    ServerRenderer.prototype.host = "http://local.streep.nl:3000";
+    ServerRenderer.prototype.host = "http://localhost:3000";
     ServerRenderer.prototype.url = "server-rendering";
     ServerRenderer.prototype.commandURI = "command";
     ServerRenderer.prototype.sessionID = null;
