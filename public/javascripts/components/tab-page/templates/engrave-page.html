@@ -1,10 +1,7 @@
 <div class="engrave-page">
-    <%
-        var displayCSS = null;
-        display ? displayCSS = "none" : displayCSS = "block";
-    %>
+    <div class="loading"></div>
+    <div class="disabled"></div>
     <div class="fields">
-        <div class="loading"><img src="/images/ajax-loader.gif"></div>
         <input type="text" class="text">
         <select class="font">
             <% _.each(fonts, function(font){ %>

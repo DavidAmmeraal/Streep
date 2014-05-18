@@ -27423,6 +27423,10 @@ THREE.FontUtils = {
 	divisions : 10,
 
 	getFace : function() {
+        console.log("FACES");
+        console.log(this.faces);
+        console.log("END FACES");
+
 		return this.faces[ this.face ][ this.weight ][ this.style ];
 
 	},

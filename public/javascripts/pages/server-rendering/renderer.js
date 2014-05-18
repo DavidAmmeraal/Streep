@@ -23,6 +23,14 @@ define([
     Renderer.prototype.viewer = null;
     Renderer.prototype.frame = null;
     Renderer.prototype.focusedComp = null;
+    Renderer.prototype.appliedModifications = {
+        'left_leg': {},
+        'right_leg': {}
+    }
+    Renderer.prototype.appliedModificationArguments = {
+        'left_leg': {},
+        'right_leg': {}
+    };
     Renderer.prototype.getIndicators = function(){
         console.log("Renderer.getIndicators()");
         var self = this;
@@ -85,6 +93,28 @@ define([
                 });
             });
         });
+    };
+    Renderer.prototype.resetLeg = function(data){
+        var self = this;
+        var side = data.side;
+        var obj;
+        if(side == "right_leg"){
+            obj = this.frame.currentRightLeg;
+        }else{
+            obj = this.frame.currentLeftLeg;
+        }
+        obj.connectors[0].reset();
+        this.appliedModifications[side] = {};
+        return Promise.resolve({
+            'commandID': data.commandID,
+            'img': self.viewer.getScreenshot(),
+            'indicators': false,
+            'data': {
+                'engravePage': {
+                    'engraved': false
+                }
+            }
+        })
     };
     Renderer.prototype.changePattern = function(data){
         console.log("Renderer.prototype.changePattern");
@@ -243,18 +273,36 @@ define([
             return returnObj;
         });
 
+        var sizes = [];
+        if(obj.connectors && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
+            console.log(obj.connectors[0].modifications[0].sizes);
+            for(var size in obj.connectors[0].modifications[0].sizes){
+                console.log("SIZE: " + size);
+                sizes.push(size);
+            }
+        }else{
+            sizes = false
+        }
+
+        var engravePageObj = {};
+        engravePageObj.side = focusedStr;
+        engravePageObj.sizes = sizes;
+        if(this.appliedModifications[focusedStr].action_name){
+            engravePageObj.engraved = true;
+        }
+
         return {
             'focusedOn': focusedStr,
             'legPage': {
                 side: focusedStr,
                 patterns: patterns,
                 colors: this.frame.currentFront.legs[0].availableColors
-            }
+            },
+            'engravePage': engravePageObj
         }
     };
     Renderer.prototype.focus = function(data){
         console.log("Renderer.prototype.focus()");
-        console.log(data);
         var self = this;
         return new Promise(function(resolve, reject){
             console.log(data.comp.name);
@@ -275,6 +323,92 @@ define([
                 'img': self.viewer.getScreenshot(),
                 'indicators': indicators,
                 'data': componentSpecificResponses
+            });
+        });
+    };
+    Renderer.prototype.carveLeg = function(data){
+        var font = data.font;
+        var size = data.size;
+        var text = data.text;
+        var self = this;
+
+        this.appliedModificationArguments[data.side] = {
+            text: text,
+            font: font,
+            type: 'carve'
+        }
+
+        var leg;
+
+        if(data.side == "right_leg"){
+            leg = this.frame.currentRightLeg;
+        }else{
+            leg = this.frame.currentLeftLeg;
+        }
+
+        var modification = _.find(leg.connectors[0].modifications, function(modification){
+            return modification.action_name == "carve";
+        });
+
+        this.appliedModifications[data.side] = modification;
+
+        modification.setText(text, font, size);
+
+        return new Promise(function(resolve, reject){
+            modification.execute().then(function(){
+                resolve({
+                    commandID: data.commandID,
+                    img: self.viewer.getScreenshot(),
+                    indicators: false,
+                    data: {
+                        engravePage: {
+                            engraved: true
+                        }
+                    }
+                });
+            });
+        });
+    };
+    Renderer.prototype.engraveLeg = function(data){
+        var font = data.font;
+        var size = data.size;
+        var text = data.text;
+        var self = this;
+
+        this.appliedModificationArguments[data.side] = {
+            text: text,
+            font: font,
+            type: 'engrave'
+        }
+
+        var leg;
+
+        if(data.side == "right_leg"){
+            leg = this.frame.currentRightLeg;
+        }else{
+            leg = this.frame.currentLeftLeg;
+        }
+
+        var modification = _.find(leg.connectors[0].modifications, function(modification){
+            return modification.action_name == "engrave";
+        });
+
+        this.appliedModifications[data.side] = modification;
+
+        modification.setText(text, font, size);
+
+        return new Promise(function(resolve, reject){
+            modification.execute().then(function(){
+                resolve({
+                    commandID: data.commandID,
+                    img: self.viewer.getScreenshot(),
+                    indicators: false,
+                    data: {
+                        engravePage: {
+                            engraved: true
+                        }
+                    }
+                });
             });
         });
     };

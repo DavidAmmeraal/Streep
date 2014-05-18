@@ -267,6 +267,8 @@ function(
     };
 
     function serverFocusedOnLeg(data){
+        console.log("serverFocusedOnLeg()");
+        console.log(data);
         $('#menu').html('');
         var legPage = new LegPage({
             patterns: data.legPage.patterns,
@@ -274,18 +276,24 @@ function(
             colors: data.legPage.colors
         });
 
-        //engravePage = new EngravePage();
-        //engravePage.setLeg(comp);
+        engravePage = new EngravePage({
+            side: data.legPage.side,
+            sizes: data.engravePage.sizes
+        });
 
         var menu = new Menu({
             element: $('#menu'),
             pages: [
-                legPage
+                legPage,
+                engravePage
             ]
         });
 
         legPage.activate();
 
+        if(data.engravePage.engraved){
+            engravePage.setEngraved.apply(engravePage, [data.engravePage.engraved]);
+        }
 
         $(legPage).on('pattern-changed', function(event, side, pattern){
             try{
@@ -305,12 +313,26 @@ function(
             renderer.changeLegsColor(color);
         });
 
-        /*
-        $(engravePage).on('engraving-applied', function(event, engraving){
-            appliedEngravings[engraving.side] = engraving;
-            console.log(appliedEngravings);
+
+        $(engravePage).on('request-engraving', function(event, engraving){
+            renderer.engraveLeg(engraving.side, engraving.size, engraving.font, engraving.text).then(function(serverResponse){
+                engravePage.setEngraved(serverResponse.data.engravePage.engraved);
+            });
         });
 
+        $(engravePage).on('request-carving', function(event, carving){
+            renderer.carveLeg(carving.side, carving.size, carving.font, carving.text).then(function(serverResponse){
+                engravePage.setEngraved(serverResponse.data.engravePage.engraved);
+            });
+        });
+
+        $(engravePage).on('reset-requested', function(event, side){
+            renderer.resetLeg(side).then(function(serverResponse){
+                engravePage.setEngraved(serverResponse.data.engravePage.engraved);
+            });
+        });
+
+        /*
         $(engravePage).on('leg-reset', function(event, side){
             appliedEngravings[side] = null;
         });

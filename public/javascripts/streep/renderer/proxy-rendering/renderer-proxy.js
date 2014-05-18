@@ -12,7 +12,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://local.streep.nl:3000",
+        host: "http://streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -227,6 +227,87 @@ define([
                 sessionID: this.sessionID,
                 color: color,
                 'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        carveLeg: function(side, size, font, text){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'carveLeg',
+                sessionID: this.sessionID,
+                side: side,
+                font: font,
+                size: size,
+                text: text,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        engraveLeg: function(side, size, font, text){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'engraveLeg',
+                sessionID: this.sessionID,
+                side: side,
+                font: font,
+                size: size,
+                text: text,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        resetLeg: function(side){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'resetLeg',
+                sessionID: this.sessionID,
+                side: side,
+                containerDimensions: [container.width(), container.height()]
             };
             return new Promise(function(resolve){
                 $.post(self.host + '/' + self.uri + '/command', command).then(function(data){

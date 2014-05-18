@@ -11,101 +11,44 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.currentTarget = null;
     EngravePage.prototype.side = null;
     EngravePage.prototype.tabTitle = "Graveren";
+    EngravePage.prototype.size = null;
     EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Slackey', 'UnifrakturMaguntia'];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
-    EngravePage.prototype.activate = function(){};
-    EngravePage.prototype.setLeg = function(leg){
-        console.log("EngravePage.setLeg()");
-        var self = this;
-
-        var listenToConnectors = function(){
-            _.each(leg.connectors, function(connector){
-                $(connector).on('selected', function(){
-                    self.render.apply(self);
-                });
-            });
-        }
-
-        this.leg = leg;
-
-        if(this.leg.parent.currentLeftLeg == this.leg){
-            this.side = "left";
-        }else if(this.leg.parent.currentRightLeg == this.leg){
-            this.side = "right";
-        }
-
-        if(leg.connectors.length > 0){
-            listenToConnectors(leg);
-        }
+    EngravePage.prototype.side = null;
+    EngravePage.prototype.engraved = false;
+    EngravePage.prototype.activate = function(){
+        console.log("ACTIVATE");
 
     };
     EngravePage.prototype.render = function(){
-        console.log("EngravePage.prototype.render()");
-        try{
-            var self = this;
-            var display = this.leg.connectors[0];
-            var hasModifications = false;
-            var modsApplied = false;
+        console.log("RENDERE!!!!");
+        var self = this;
 
-            if(display && display.modifications.length > 0){
-                hasModifications = true;
-                if(display.used){
-                    modsApplied = true;
-                }
+        var html = $(this.template({fonts: this.fonts, sizes: this.sizes}));
+        this.html = html;
+
+        this.html.find('button.engrave').on('click', function(event){
+            self.engraveClicked.apply(self, [event]);
+        });
+        this.html.find('button.carve').on('click', function(event){
+            self.carveClicked.apply(self, [event]);
+        });
+        this.html.find('button.reset').on('click', function(event){
+            self.resetClicked.apply(self, [event])
+        });
+
+        this.html.find('.text').on('keydown', function(event){
+            var length = self.html.find('.text').val().length;
+            if(length == 12 && event.keyCode != 8){
+                event.preventDefault();
             }
+        });
 
-            if(hasModifications && !modsApplied){
-                var sizes = _.keys(display.modifications[0].sizes);
-                sizes = sizes.map(function(size){
-                    return size.toUpperCase();
-                });
-
-                var html = $(this.template({fonts: this.fonts, sizes: sizes, display: display}));
-                this.html = html;
-
-                this.html.find('button.engrave').on('click', function(event){
-                    self.engraveClicked.apply(self, [event]);
-                });
-                this.html.find('button.carve').on('click', function(event){
-                    self.carveClicked.apply(self, [event]);
-                });
-                this.html.find('button.reset').on('click', function(event){
-                    console.log("RESET CLICKED!!");
-                    self.resetClicked.apply(self, [event])
-                });
-
-                this.html.find('.text').on('keydown', function(event){
-                    var length = self.html.find('.text').val().length;
-                    if(length == 12 && event.keyCode != 8){
-                        event.preventDefault();
-                    }
-                });
-
-                this.html.find('.text').on('keyup', function(event){
-                    var length = self.html.find('.text').val().length;
-                    self.html.find('.counter').text(12 - length);
-                });
-
-                this.element.html(this.html);
-            }else if(modsApplied){
-                this.html = $(this.template({fonts: [], sizes: [], display: display}));
-                this.element.html(this.html);
-                this.disable('Deze poot is al gegraveerd!');
-                this.element.find('button.reset').removeAttr('disabled');
-                this.element.find('button.reset').on('click', function(event){
-                    self.resetClicked.apply(self, [event])
-                });
-                this.element.find('button.reset').css('z-index', 9999);
-            }else{
-                this.html = $(this.template({fonts: [], sizes: [], display: display}));
-                this.element.html(this.html);
-                this.element.find('button.reset').css('z-index', '');
-                this.disable();
-            }
-        }catch(err){
-            console.log(err);
-        }
-
+        this.html.find('.text').on('keyup', function(event){
+            var length = self.html.find('.text').val().length;
+            self.html.find('.counter').text(12 - length);
+        });
+        this.element.html(this.html);
     };
     EngravePage.prototype.resetClicked = function(event){
         var self = this;
@@ -118,28 +61,13 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.engraveClicked = function(event){
         var self = this;
 
-        var connector = this.leg.connectors[0];
-
-        var mod = _.find(connector.modifications, function(mod){
-            console.log(mod);
-            return mod.setText && mod.action_name == "engrave";
-        });
-
         var size = this.element.find('select.size > :selected').val().toLowerCase();
         var text = this.element.find('input.text').val();
         var font = this.element.find('select.font > :selected').val().toLowerCase();
-        var type = 'engrave';
 
         if(text.length > 0){
             this.loading(true);
-
-            mod.setText(text, font, size);
-            mod.applied = true;
-            mod.execute().then(function(){
-                $(self).trigger('engraving-applied', {'side': self.side, 'connector': connector.name, 'text': text, 'font': font, 'size': size, 'type': type});
-                self.render();
-            });
-            console.log("Engrave Clicked!");
+            $(self).trigger('request-engraving', {'side': self.side, 'text': text, 'font': font, 'size': size});
         }
 
     };
@@ -184,31 +112,34 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             this.enableButtons();
         }
     };
+    EngravePage.prototype.setEngraved = function(engraved){
+        console.log("setEngraved(" + engraved + ")");
+        var self = this;
+        var disabledEl = this.html.find('.disabled');
+        this.engraved = engraved;
+        if(engraved){
+            this.loading(false);
+            disabledEl.html('');
+            disabledEl.append('<div class="message">Deze poot is al gegraveerd, druk op reset om opnieuw te graveren<br /><button class="reset">RESET</button></div>');
+            disabledEl.find('button.reset').on('click', function(){
+                $(self).trigger('reset-requested', self.side);
+            });
+            disabledEl.show();
+        }else{
+            disabledEl.find('.message').remove();
+            disabledEl.hide();
+        }
+    };
     EngravePage.prototype.carveClicked = function(event){
         var self = this;
-
-        var connector = this.leg.connectors[0];
-
-        var mod = _.find(connector.modifications, function(mod){
-            console.log(mod);
-            return mod.setText && mod.action_name == "carve";
-        });
 
         var size = this.element.find('select.size > :selected').val().toLowerCase();
         var text = this.element.find('input.text').val();
         var font = this.element.find('select.font > :selected').val().toLowerCase();
-        var type = 'carve';
 
         if(text.length > 0){
             this.loading(true);
-
-            mod.setText(text, font, size);
-            mod.applied = true;
-            mod.execute().then(function(){
-                $(self).trigger('engraving-applied', {'side': self.side, 'connector': connector.name, 'text': text, 'font': font, 'size': size, 'type': type});
-                self.render();
-            });
-            console.log("Carve Clicked!");
+            $(self).trigger('request-carving', {'side': self.side, 'text': text, 'font': font, 'size': size});
         }
     }
 
