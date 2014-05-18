@@ -1,6 +1,5 @@
 var uuid = require('node-uuid');
 var io = null;
-var zip = new require('node-zip')();
 exports.setIO = function(IO){
     io = IO;
 }
