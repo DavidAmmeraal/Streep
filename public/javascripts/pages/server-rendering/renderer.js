@@ -497,6 +497,16 @@ define([
             'indicators': indicators
         })
     };
+    Renderer.prototype.getSTL = function(data){
+        var self = this;
+        console.log("Renderer.prototype.getSTL()");
+        var stl = self.frame.exportSTL();
+
+        return Promise.resolve({
+            'commandID': data.commandID,
+            'stl': stl
+        });
+    };
 
     return Renderer;
 });

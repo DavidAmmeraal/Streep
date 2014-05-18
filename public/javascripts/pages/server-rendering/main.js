@@ -16,6 +16,7 @@ require(['./renderer'], function(Renderer){
     var socket = io.connect('http://localhost');
     socket.emit('ready', {'sessionID': id});
     socket.on('command', function(data){
+        console.log("COMMAND RECEIVED!");
         if(data.sessionID == id){
             renderer.handleCommand(data).then(function(data){
                 socket.emit('commandDone', data);

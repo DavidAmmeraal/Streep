@@ -1,5 +1,6 @@
 var uuid = require('node-uuid');
 var io = null;
+var zip = new require('node-zip')();
 exports.setIO = function(IO){
     io = IO;
 }
@@ -7,6 +8,24 @@ var sockets = {};
 
 exports.renderer = function(req, res){
     res.render('renderer', { title: 'Server renderer' });
+};
+
+exports.getSTL = function(req, res){
+    var sessionID = req.params.sessionId;
+    var socket = sockets[sessionID];
+    var commandID = uuid.v4();
+    var command = {
+        commandID: commandID,
+        sessionID: sessionID,
+        name: 'getSTL'
+    }
+    socket.emit('command', command);
+    socket.on('commandDone', function(data){
+        if(data.commandID == commandID){
+            var buffer = new Buffer(data.stl, "utf-8");
+            console.log(buffer.toString());
+        }
+    });
 };
 
 exports.startSession = function(){
@@ -27,7 +46,6 @@ exports.startSession = function(){
         var sessionID;
         driver.getCapabilities().then(function(caps){
             sessionID = caps.caps_['webdriver.remote.sessionid'];
-
         }).then(function(){
             driver.get('http://localhost:3000/server-rendering/renderer/' + sessionID);
             io.sockets.on('connection', function (socket) {

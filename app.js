@@ -82,6 +82,7 @@ app.get('/models_api/sizes', sizes.all);
 app.get('/models_api/sizes/:id', sizes.findById);
 app.get('/server-rendering/start-session', serverRendering.startSession());
 app.get('/server-rendering/renderer/:id', serverRendering.renderer);
+app.get('/server-rendering/get-stl/:sessionId', serverRendering.getSTL);
 app.post('/screenshot/save', screenshot.save);
 app.get('/fill-test-data', fillTestData.start);
 

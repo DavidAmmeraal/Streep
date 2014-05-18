@@ -177,23 +177,11 @@ function(
         });
         frame.fetch({data: {depth: 3}}).then(function(){
             if(!renderer){
-                if(WebGLTest.test()){
-                    console.log("Start the Client Renderer!");
-                    renderer = new ClientRenderer({
-                        container: renderTarget,
-                        backgroundColor: '#FFFFFF'
-                    });
-                    /*
-                    renderer = new Renderer({
-                        container: renderTarget,
-                        backgroundColor: '#FFFFFF'
-                    });
-                    */
-                }else{
-                    renderer = new RendererProxy({
-                        container: renderTarget
-                    });
-                }
+
+                renderer = new RendererProxy({
+                    container: renderTarget
+                });
+
                 afterRendererReady();
             }else{
                 renderer.destroy();
@@ -507,6 +495,7 @@ function(
     };
 
     function focusedOnLeg(comp){
+        console.log("Main focusedOnLeg()");
         $('#menu').html('');
         var legPage = new LegPage({
             frame: renderer.getFrame(),
@@ -526,7 +515,6 @@ function(
         setTimeout(function(){
             legPage.activate();
         }, 1);
-
 
         $(legPage).on('pattern-changed', function(event, leg, pattern){
             try{
