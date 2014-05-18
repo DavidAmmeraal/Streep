@@ -13,10 +13,12 @@ exports.startSession = function(){
     return function(req, res){
         console.log(io);
         var webdriver = require('selenium-webdriver');
-        var caps = webdriver.Capabilities.chrome();
+        console.log("HOI WEBDRIVER");
+        var caps = webdriver.Capabilities.firefox();
+        /*
         caps.caps_.chromeOptions = {
             args: ['--ignore-gpu-blacklist']
-        };
+        };*/
         var driver = new webdriver.Builder().
             usingServer('http://localhost:4444/wd/hub/').
             withCapabilities(caps).
