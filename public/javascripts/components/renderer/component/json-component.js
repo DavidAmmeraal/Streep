@@ -5,8 +5,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 		
 		LeafComponent.apply(this, arguments);
 
-		this.properties = function(){
-		};
+        console.log(this._id);
 	};
 
 	JSONComponent.prototype = Object.create(LeafComponent.prototype);
@@ -35,6 +34,12 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                 });
             }
         });
+    };
+
+    JSONComponent.prototype.toJSON = function(){
+        return {
+            name: this.name
+        }
     };
 
     JSONComponent.parseFromDB = function(data){

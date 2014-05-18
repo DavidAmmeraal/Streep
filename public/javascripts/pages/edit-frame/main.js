@@ -31,6 +31,8 @@ require([
     '../../components/size-chooser/size-chooser',
     '../../util/webgl-test',
     '../../components/server-rendering/server-renderer',
+    '../../streep/renderer/client-rendering/client-renderer',
+    '../../streep/renderer/proxy-rendering/renderer-proxy',
     '../../vendor/facebook/fb'
 ],
 function(
@@ -47,7 +49,9 @@ function(
     FrameChooser,
     SizeChooser,
     WebGLTest,
-    ServerRenderer
+    ServerRenderer,
+    ClientRenderer,
+    RendererProxy
 ){
     var renderer = null;
     $('body').height($(window).height());
@@ -78,6 +82,10 @@ function(
     var overviewLoading = $('#overview .loading');
     var infoButton = $('#buttons > .switch');
     var STLButton = $('#buttons > .download-stl');
+
+    var frontPage;
+    var nosePage;
+    var legPage;
 
     STLButton.on('click', function(){
         var stls = renderer.getSTL();
@@ -170,12 +178,19 @@ function(
         frame.fetch({data: {depth: 3}}).then(function(){
             if(!renderer){
                 if(WebGLTest.test()){
+                    console.log("Start the Client Renderer!");
+                    renderer = new ClientRenderer({
+                        container: renderTarget,
+                        backgroundColor: '#FFFFFF'
+                    });
+                    /*
                     renderer = new Renderer({
                         container: renderTarget,
                         backgroundColor: '#FFFFFF'
                     });
+                    */
                 }else{
-                    renderer = new ServerRenderer({
+                    renderer = new RendererProxy({
                         container: renderTarget
                     });
                 }
@@ -190,15 +205,21 @@ function(
                     frameChooser.setActive(frame.id);
                     renderer.loadFrame(frame).then(function(){
                         $('.column-left > .loading').fadeOut(200);
-                        $(renderer.viewer).on('viewer.focus', handleFocusChanged);
+                        $(renderer).on('focus-changed', handleFocusChanged);
                         $('#overview > .price').html('&euro;' + frame.get('basePrice'));
 
                         $('.streep-tooltip').fadeIn(500);
                         setTimeout(function(){
                             $('.streep-tooltip').fadeOut(1000);
                         }, 9000)
+                    }).catch(function(err){
+                        console.log(err);
+                        console.log(err.stack);
                     });
                     $('#menu').html('');
+                }).catch(function(err){
+                    console.log(err);
+                    console.log(err.stack);
                 });
             }
         });
@@ -216,24 +237,155 @@ function(
     $(window).resize(resizeElements);
     resizeElements();
 
-    function handleFocusChanged(event, comp){
-        if(comp.parent && !comp.children){
-            var parent = comp.parent;
-            if(comp == parent.currentFront.currentNose){
-                focusedOnFront(parent.currentFront);
-            }else if(comp == parent.currentLeftLeg || comp == parent.currentRightLeg){
-                focusedOnLeg(comp);
+    function handleFocusChanged(event, comp, serverData){
+        console.log("SERVERDATA");
+        console.log(serverData);
+        console.log("END SERVERDATA");
+        if(serverData){
+            switch(serverData.focusedOn){
+                case "front":
+                    serverFocusedOnFront(serverData);
+                    break;
+                case "left_leg":
+                case "right_leg":
+                    serverFocusedOnLeg(serverData);
+                    break;
             }
         }else{
-            $('#menu').fadeOut(200);
+            if(comp && comp.parent && !comp.children){
+                var parent = comp.parent;
+                if(comp == parent.currentFront.currentNose){
+                    focusedOnFront(parent.currentFront);
+                }else if(comp == parent.currentLeftLeg || comp == parent.currentRightLeg){
+                    focusedOnLeg(comp);
+                }
+            }else{
+                $('#menu').fadeOut(200);
+            }
         }
+
+    };
+
+    function serverFocusedOnLeg(data){
+        $('#menu').html('');
+        var legPage = new LegPage({
+            patterns: data.legPage.patterns,
+            side: data.legPage.side,
+            colors: data.legPage.colors
+        });
+
+        //engravePage = new EngravePage();
+        //engravePage.setLeg(comp);
+
+        var menu = new Menu({
+            element: $('#menu'),
+            pages: [
+                legPage
+            ]
+        });
+
+        legPage.activate();
+
+
+        $(legPage).on('pattern-changed', function(event, side, pattern){
+            try{
+                renderer.changePattern(side, pattern).then(function(serverResponse){
+                    var activePattern = _.find(serverResponse.data.legPage.patterns, function(pattern){
+                        return pattern.active;
+                    });
+                    var index = serverResponse.data.legPage.patterns.indexOf(activePattern);
+                    legPage.setActiveIndex(index);
+                });
+            }catch(err){
+                console.log(err.stack);
+            }
+        });
+
+        $(legPage).on('color-changed', function(event, color){
+            renderer.changeLegsColor(color);
+        });
+
+        /*
+        $(engravePage).on('engraving-applied', function(event, engraving){
+            appliedEngravings[engraving.side] = engraving;
+            console.log(appliedEngravings);
+        });
+
+        $(engravePage).on('leg-reset', function(event, side){
+            appliedEngravings[side] = null;
+        });
+        */
+
+        var zoomoutButton = $('<button class="back">Terug</button>');
+        zoomoutButton.on('click', function(){
+            renderer.zoomOut();
+        });
+
+        $('#menu > .contents').append(zoomoutButton);
+        $('#menu').fadeIn(200);
+    };
+
+    function serverFocusedOnFront(data){
+        console.log("serverFocusedOnFront()");
+        $('#menu').html('');
+
+        var frontPage = new FrontPage({
+            fronts: data.frontPage.fronts,
+            colors: data.frontPage.colors
+        });
+
+        var nosePage = new NosePage({
+            noses: data.nosePage.noses
+        });
+
+        var menu = new Menu({
+            element: $('#menu'),
+            pages: [
+                frontPage,
+                nosePage
+            ]
+        });
+
+        frontPage.activate();
+        nosePage.activate();
+
+        $(frontPage).on('front-changed', function(event, replacementFront){
+            renderer.changeFront(replacementFront).then(function(serverResponse){
+                frontPage.fronts = serverResponse.data.frontPage.fronts;
+                frontPage.newFrontLoaded();
+                frontPage.activate();
+                frontPage.render();
+                console.log(replacementFront);
+                nosePage.noses = serverResponse.data.nosePage.noses;
+                nosePage.activate();
+                nosePage.render();
+            })
+        });
+
+        $(frontPage).on('front-color-changed', function(event, color){
+           renderer.changeFrontColor(color);
+        });
+
+        $(nosePage).on('nose-changed', function(event, replacementNose){
+            renderer.changeNose(replacementNose).then(function(newNoseObj){
+                nosePage.nose = newNoseObj;
+                nosePage.newNoseLoaded();
+            });
+        });
+
+        var zoomoutButton = $('<button class="back">Terug</button>');
+        zoomoutButton.on('click', function(){
+            renderer.zoomOut();
+        });
+        $('#menu > .contents').append(zoomoutButton);
+        $('#menu').fadeIn(200);
     };
 
     function focusedOnFront(comp){
         $('#menu').html('');
 
         var frontPage = new FrontPage({
-            frame: renderer.getRenderedFrameObj(),
+            frame: renderer.getFrame(),
             front: comp
         });
 
@@ -304,7 +456,7 @@ function(
 
         var zoomoutButton = $('<button class="back">Terug</button>');
         zoomoutButton.on('click', function(){
-            renderer.viewer.focusTo(comp.currentNose.parent, 500);
+            renderer.focus(comp.currentNose.parent);
         });
         $('#menu > .contents').append(zoomoutButton);
         $('#menu').fadeIn(200);
@@ -335,7 +487,7 @@ function(
     function focusedOnLeg(comp){
         $('#menu').html('');
         var legPage = new LegPage({
-            frame: renderer.getRenderedFrameObj(),
+            frame: renderer.getFrame(),
             leg: comp
         });
 
@@ -357,7 +509,6 @@ function(
         $(legPage).on('pattern-changed', function(event, leg, pattern){
             try{
                 renderer.changePattern(leg, pattern).then(function(newLegs){
-                    console.log("PATTERN CHANGED!");
                     var focusedLeg = null;
 
                     if(newLegs.right.name == leg.name){
@@ -387,7 +538,7 @@ function(
 
         var zoomoutButton = $('<button class="back">Terug</button>');
         zoomoutButton.on('click', function(){
-            renderer.viewer.focusTo(comp.parent, 500);
+            renderer.focus(comp.parent);
         });
         $('#menu > .contents').append(zoomoutButton);
         $('#menu').fadeIn(200);

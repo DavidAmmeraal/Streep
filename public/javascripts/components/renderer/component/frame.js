@@ -85,9 +85,13 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         }
     };
     Frame.prototype.changeFront = function(newFront){
+        console.log("Frame.prototype.changeFront()");
         this.cancelModifications();
         var self = this;
-        var currentColor = self.currentFront.color;
+        var currentColor = null;
+        if(self.currentFront.currentNose){
+            currentColor = self.currentFront.currentNose.color;
+        }
         _.each(this.fronts, function(front){
             if(front.active)
                 front.active = false;
@@ -175,47 +179,10 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }
             });
         });
-
-        /*
-        var activeLegs = _.find(this.currentFront.legs, function(legs){
-            return legs.active;
-        });
-        activeLegs.currentPattern.active = false;
-        var currentColor = this.currentLeftLeg.color;
-        newPattern.active = true;
-        activeLegs.currentPattern = newPattern;
-        var self = this;
-        return new Promise(function(resolve, reject){
-            var leftLeg = JSONComponent.parseFromDB(activeLegs.currentPattern['left']);
-            var rightLeg = JSONComponent.parseFromDB(activeLegs.currentPattern['right']);
-            Promise.all([leftLeg.load(), rightLeg.load()]).then(function(){
-                try{
-                    self.removeChild(self.currentRightLeg);
-                    self.removeChild(self.currentLeftLeg);
-
-                    if(self.currentRightLeg && self.currentRightLeg.focused){
-                        rightLeg.focused = true;
-                    }else if(self.currentLeftLeg && self.currentLeftLeg.focused){
-                        leftLeg.focused = true;
-                    }
-
-                    self.currentLeftLeg = leftLeg;
-                    self.currentRightLeg = rightLeg;
-                    if(currentColor){
-                        self.currentLeftLeg.setColor(currentColor);
-                        self.currentRightLeg.setColor(currentColor);
-                    }
-                    self.addChild(leftLeg);
-                    self.addChild(rightLeg);
-                    leftLeg.trigger('request-render', leftLeg);
-                    rightLeg.trigger('request-render', rightLeg);
-                }catch(err){
-                    console.log(err.stack);
-                }
-                resolve({"right": rightLeg, "left": leftLeg});
-            });
-        });
-        */
+    };
+    Frame.prototype.changeLegsColor = function(color){
+        this.currentLeftLeg.setColor(color);
+        this.currentRightLeg.setColor(color);
     };
     Frame.prototype.changeLegs = function(newLegs){
         _.each(this.currentFront.legs, function(legs){
@@ -322,6 +289,12 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             }
 
         });
+    };
+    Frame.prototype.toJSON = function(data){
+        return {
+            id: this._id,
+            name: this.name
+        }
     };
     Frame.parseFromDB = function(data){
         var front = data.fronts[0];

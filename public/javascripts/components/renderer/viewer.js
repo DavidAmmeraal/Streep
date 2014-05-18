@@ -109,6 +109,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.positionCamera = function(position, duration){
+            console.log("Viewer.positionCamera(" + position + ", " + duration + ")");
 			var curPosition = {};
 			curPosition.x = self.camera.position.x;
 			curPosition.y = self.camera.position.y;
@@ -117,6 +118,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			newPosition.x = position.x;
 			newPosition.y = position.y;
 			newPosition.z = position.z;
+
+            console.log("DURATION: " + duration);
 
 			var onComplete = function(){
 				createjs.Ticker.removeEventListener("tick", tick);
@@ -144,6 +147,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
 					self.render();
 				}
 			};
+            console.log("DURATION: " + duration);
+            console.log("WEBGL: " + WebGLTest.test());
 			if(duration && WebGLTest.test()){
 				createjs.Tween.get(curPosition).to(newPosition, duration).call(onComplete);
 				createjs.Ticker.addEventListener("tick", tick);
@@ -254,9 +259,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.focusTo = function(comp, length){
-            if(!length && length != 0){
-                //length = 500;
-            }
+            console.log("self.viewer.focusTo(" + length + ")");
             if(self.lookingAt)
                 self.lookingAt.focused = false;
 
@@ -264,6 +267,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			self.lookingAt = comp;
 			//self.resetCamera();
 			if(comp.focusPerspective){
+                console.log("HOI HOI HOI HOI");
 				self.positionCamera(comp.focusPerspective.cameraPosition, length);
 			}
             $(self).trigger('viewer.focus', comp);
@@ -296,6 +300,16 @@ define(['../../util/webgl-test'], function(WebGLTest){
         destroy: function(){
             this.scene = new THREE.Scene();
             this.scene.add(this.light);
+        },
+        get2DPositions: function(position){
+            var self = this;
+            var pos = position.clone();
+            var projScreenMat = new THREE.Matrix4();
+            projScreenMat.multiplyMatrices( this.camera.projectionMatrix, this.camera.matrixWorldInverse );
+            pos.applyProjection(projScreenMat);
+
+            return { x: ( pos.x + 1 ) * self.target.width() / 2,
+                y: ( - pos.y + 1) * self.target.height() / 2 };
         },
         getComponents: function(){
             var findCompsIn = function(comp){

@@ -11,7 +11,6 @@ define([
     './component/transformation/scale',
     './component/transformation/translate',
     './keyboard-listener/keyboard-listener',
-    './gui/overlay/connector-overlay/connector-overlay',
     './gui/overlay/indicator-overlay/indicator-overlay'
 ], function(
     Viewer,
@@ -26,12 +25,10 @@ define([
     Scale,
     Translate,
     KeyboardListener,
-    ConnectorOverlay,
     IndicatorOverlay
 ){
     var Renderer = function(options){
         var self = this;
-
         $.extend(self, options);
     };
 

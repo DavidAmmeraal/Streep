@@ -7,12 +7,14 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
         var activated = false;
 
         var createNoseChooser = function(){
+            console.log("NosePage.createNoseChooser()");
+            console.log(self.noses);
             var html = self.element;
             if(noseChooser)
                 noseChooser.destroy();
 
-            var activeNoseIndex = self.front.noses.indexOf(_.find(self.front.noses, function(nose){
-               return nose._id == self.front.currentNose._id;
+            var activeNoseIndex = self.noses.indexOf(_.find(self.noses, function(nose){
+               return nose.active
             }));
 
             if(activeNoseIndex == -1){
@@ -42,9 +44,9 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
 
             noseChooser = new Sly(noseSliderFrame, noseOptions);
             noseChooser.on('active', function(event, itemIndex){
-
-                if(self.front.currentNose.src != self.front.noses[itemIndex].src){
-                    $(self).trigger('nose-changed', self.front.noses[itemIndex]);
+                if(self.nose != self.noses[itemIndex]){
+                    self.noses[itemIndex].index = itemIndex;
+                    $(self).trigger('nose-changed', self.noses[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Neusbrug wordt ingeladen</div>')
                     self.element.find('.loading').show();
                 }
@@ -57,25 +59,23 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
         };
 
         this.render = function(){
+            console.log("NosePage.render()");
             var self = this;
-            self.noses = self.front.noses;
             var html = $(this.template({noses: self.noses}));
             this.element.html(html);
         };
 
         this.activate = function(){
-            if(!activated){
+            console.log("NosePage.activate()");
+            console.log(this.noses);
+            var self = this;
+            setTimeout(function(){
+                self.parseNoses();
                 activated = true;
                 createNoseChooser();
-            }
-        }
+            }, 1)
 
-        this.newFrontLoaded = function(){
-            self.element.find('.loading > .message').remove();
-            self.element.find('.loading').hide();
-            activated = false;
-            self.render();
-        };
+        }
 
         this.newNoseLoaded = function(){
             self.element.find('.loading > .message').remove();
@@ -86,8 +86,13 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
     NosePage.prototype = Object.create(TabPage.prototype);
     NosePage.prototype.id = "front_nose";
     NosePage.prototype.tabTitle = "Neusbruggen";
-    NosePage.prototype.fronts = [];
-    NosePage.prototype.front = null;
+    NosePage.prototype.nose = null;
+    NosePage.prototype.noses = [];
+    NosePage.prototype.parseNoses = function(){
+        this.nose = _.find(this.noses, function(nose){
+            return nose.active;
+        });
+    };
     NosePage.prototype.colors = [];
     NosePage.prototype.template = _.template(NosePageTemplate);
 

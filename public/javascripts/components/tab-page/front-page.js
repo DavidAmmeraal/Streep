@@ -11,12 +11,9 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             if(frontChooser)
                 frontChooser.destroy();
 
-            var activeFrontIndex = _.indexOf(self.fronts, _.find(self.fronts, function(front){
-                return front.active;
-            }));
-
             var frontsSliderFrame = html.find('.fronts > .frame');
             var frontsScrollbar = html.find('.fronts > .scrollbar');
+            var activeFrontIndex = self.fronts.indexOf(self.front);
             var frontsOptions = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
@@ -38,6 +35,7 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             frontChooser = new Sly(frontsSliderFrame, frontsOptions);
             frontChooser.on('active', function(event, itemIndex){
                 if(self.front != self.fronts[itemIndex]){
+                    self.fronts[itemIndex].index = itemIndex;
                     $(self).trigger('front-changed', self.fronts[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Montuur dikte wordt ingeladen</div>')
                     self.element.find('.loading').show();
@@ -83,7 +81,7 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
             colorChooser = new Sly(colorSliderFrame, colorOptions);
             colorChooser.on('active', function(event, itemIndex){
                 var color = $($('.colors .color').get(itemIndex)).attr('data-color');
-                self.front.currentNose.setColor(color);
+                $(self).trigger('front-color-changed', color);
             });
             colorChooser.init();
             var colorsSlidee = self.element.find('.colors ul');
@@ -94,13 +92,12 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
 
         this.render = function(){
             var self = this;
-            self.colors = self.front.availableColors;
-            self.fronts = self.frame.fronts;
             var html = $(this.template({colors: self.colors, fronts: self.fronts}));
             this.element.html(html);
         };
 
         this.activate = function(){
+            this.parseFronts();
             setTimeout(function(){
                 createFrontChooser();
                 createColorChooser();
@@ -119,6 +116,11 @@ define(['./tab-page', 'text!./templates/front-page.html'], function(TabPage, Fro
     FrontPage.prototype.tabTitle = "Montuur dikte en kleur";
     FrontPage.prototype.fronts = [];
     FrontPage.prototype.front = null;
+    FrontPage.prototype.parseFronts = function(){
+        this.front = _.find(this.fronts, function(front){
+            return front.active;
+        });
+    };
     FrontPage.prototype.colors = [];
     FrontPage.prototype.template = _.template(FrontPageTemplate);
 

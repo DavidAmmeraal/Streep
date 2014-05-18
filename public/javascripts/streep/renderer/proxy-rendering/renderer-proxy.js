@@ -1,0 +1,274 @@
+define([
+    '../frame-renderer',
+    '../../../components/renderer/viewer',
+    '../../../components/renderer/component/frame'
+], function(
+    FrameRenderer,
+    Frame
+){
+
+    var RendererProxy = function(){
+        FrameRenderer.apply(this, arguments);
+    };
+
+    RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
+        host: "http://local.streep.nl:3000",
+        uri: "server-rendering",
+        sessionID: null,
+        target: null,
+        init: function(){
+            var self = this;
+            return new Promise(function(resolve, reject){
+                self.target = $('<div class="viewer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"></div>');
+                $(self.container).append(self.target);
+                FrameRenderer.prototype.init.apply(self).then(function(){
+                    if(!self.sessionID){
+                        self.startSession().then(function(){
+                            resolve();
+                        });
+                    }else{
+                        resolve();
+                    }
+                });
+            })
+        },
+        startSession: function(){
+            console.log("RendererProxy.prototype.startSession()");
+            var self = this;
+            return new Promise(function(resolve){
+                $.get(self.host + '/' + self.uri + '/start-session').then(function(data){
+                    self.sessionID = data.sessionID;
+                    resolve();
+                });
+            });
+
+        },
+        loadFrame: function(frame){
+            console.log("RendererProxy.prototype.loadFrame()");
+            var self = this;
+            var container = $(self.container);
+            this.frame = frame;
+            var command = {
+                'name': 'loadFrame',
+                'sessionID' : this.sessionID,
+                'frame': this.frame.toJSON(),
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+                    self.indicators.setIndicators(data.indicators);
+                    self.indicators.render();
+                    resolve();
+                });
+            });
+        },
+        focus: function(comp){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'focus',
+                'sessionID': this.sessionID,
+                'comp': comp,
+                'containerDimensions': [container.width(), container.height()]
+            }
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    console.log(data.data);
+                    $(self).trigger('focus-changed', [comp, data.data]);
+                });
+            });
+        },
+        zoomOut: function(){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'zoomOut',
+                'sessionID': this.sessionID,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log("ZOOMOUT COMPLETED ON SERVER");
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                        self.indicators.show();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    console.log(data.data);
+                    $(self).trigger('focus-changed');
+                });
+            });
+        },
+        changeNose: function(nose){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changeNose',
+                sessionID: this.sessionID,
+                nose: nose,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve();
+                });
+            });
+        },
+        changeFront: function(front){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changeFront',
+                sessionID: this.sessionID,
+                front: front,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        changePattern: function(side, pattern){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changePattern',
+                sessionID: this.sessionID,
+                side: side,
+                pattern: pattern,
+                containerDimensions: [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        changeLegsColor: function(color){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changeLegsColor',
+                sessionID: this.sessionID,
+                color: color,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        changeFrontColor: function(color){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changeFrontColor',
+                sessionID: this.sessionID,
+                color: color,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve(data);
+                });
+            });
+        },
+        resize: function(){
+            var self = this;
+            var container = $(self.container);
+            var command = {
+                name: 'resize',
+                sessionID: this.sessionID,
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                $.post(self.host + '/' + self.uri + '/command', command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+                    resolve();
+                });
+            });
+        }
+    });
+
+    return RendererProxy;
+});

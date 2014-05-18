@@ -7,13 +7,13 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
         var colorChooser = null;
 
         var createPatternChooser = function(){
+            console.log("CREATE PATTERN CHOOSER");
             var html = self.element;
             if(patternChooser)
                 patternChooser.destroy();
 
-            var activePatternIndex = _.indexOf(self.legs.patterns, _.find(self.legs.patterns, function(pattern){
-                return pattern.active;
-            }));
+
+            var activePatternIndex = _.indexOf(self.patterns, self.activePattern);
 
             var patternSliderFrame = html.find('.legs > .frame');
             var patternScrollbar = html.find('.legs > .scrollbar');
@@ -37,15 +37,8 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             });
             patternChooser = new Sly(patternSliderFrame, patternOptions);
             patternChooser.on('active', function(event, itemIndex){
-                var side;
-                if(self.leg == self.frame.currentLeftLeg){
-                    side = "left";
-                }else{
-                    side = "right";
-                }
-
-                if(self.leg.src != self.legs.patterns[itemIndex][side].src){
-                    $(self).trigger('pattern-changed', [self.leg, self.legs.patterns[itemIndex]]);
+                if(self.activePattern != self.patterns[itemIndex]){
+                    $(self).trigger('pattern-changed', [self.side, self.patterns[itemIndex]]);
                     self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
                     self.element.find('.loading').show();
                 }
@@ -56,6 +49,7 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             if(patternSlidee.width() < patternSlidee.parent().width()){
                 self.element.find('.legs .scrollbar').hide();
             }
+            console.log("END CREATE PATTERN CHOOSER!");
         };
 
         var createColorChooser = function(){
@@ -72,7 +66,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             var colorOptions = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
-                smart: 1,
                 activateOn: 'click',
                 mouseDragging: 1,
                 touchDragging: 1,
@@ -90,10 +83,10 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             self.colorChooser = new Sly(colorSliderFrame, colorOptions);
             self.colorChooser.on('active', function(event, itemIndex){
                 var color = $($('.colors .color').get(itemIndex)).attr('data-color').replace('#', '0x');
-                self.frame.currentLeftLeg.setColor(color);
-                self.frame.currentRightLeg.setColor(color);
+                $(self).trigger('color-changed', color);
             });
             self.colorChooser.init();
+            self.colorChooser.slideTo(0, true);
             var colorsSlidee = self.element.find('.colors ul');
             if(colorsSlidee.width() < colorsSlidee.parent().width()){
                 self.element.find('.colors .scrollbar').hide();
@@ -101,20 +94,32 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
         };
 
         this.activate = function(){
-            createPatternChooser();
-            createColorChooser();
+            this.parse();
+            setTimeout(function(){
+                createPatternChooser();
+                createColorChooser();
+            }, 1);
+
         }
+
+        this.setActiveIndex  = function(index){
+            this.activePattern = this.patterns[index];
+            self.element.find('.loading').find('.message').remove();
+            self.element.find('.loading').hide();
+            self.element.find('.legs .leg img.active').removeClass('active');
+            self.element.find('.legs .leg:eq(' + index +') img').addClass('active');
+        };
+
+        this.parse = function(){
+            this.activePattern = _.find(this.patterns, function(pattern){
+                return pattern.active;
+            });
+        };
 
         this.render = function(){
             try{
-                var self = this;
-                self.legs = _.find(self.frame.currentFront.legs, function(legs){
-                    return legs.active;
-                });
-                self.colors = self.legs.availableColors;
-                var html = $(this.template({colors: self.colors, patterns: self.legs.patterns}));
+                var html = $(this.template({colors: self.colors, patterns: self.patterns}));
                 this.element.html(html);
-                this.setLeg(this.leg);
             }catch(err){
                 console.log(err.stack);
             }
@@ -125,32 +130,11 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
     LegPage.prototype = Object.create(TabPage.prototype);
     LegPage.prototype.id = "color";
     LegPage.prototype.tabTitle = "Patronen en kleur";
-    LegPage.prototype.leg = null;
-    LegPage.prototype.legs = [];
+    LegPage.prototype.side = null;
+    LegPage.prototype.activePattern = null;
+    LegPage.prototype.patterns = [];
     LegPage.prototype.colors = [];
     LegPage.prototype.template = _.template(LegPageTemplate);
-    LegPage.prototype.setLeg = function(leg){
-        console.log("LegPage.setLeg()");
-        console.log(leg);
-        var patterns = this.legs.patterns;
-        var i = 0;
-        var index = 0;
-        patterns.forEach(function(pattern){
-            var wanted = leg.src;
-            var left = pattern.left.src;
-            var right = pattern.right.src;
-            if(left == wanted || right == wanted){
-                index = i;
-            }
-            i++;
-        });
-
-        this.element.find('.loading > .message').remove();
-        this.element.find('.loading').hide();
-        this.element.find('img.active').removeClass('active');
-        this.element.find('ul > li:eq(' + index + ')').find('img').addClass('active');
-        this.leg = leg;
-    };
 
 
     return LegPage;
