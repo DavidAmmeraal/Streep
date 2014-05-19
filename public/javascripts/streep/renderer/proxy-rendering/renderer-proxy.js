@@ -3,8 +3,7 @@ define([
     '../../../components/renderer/viewer',
     '../../../components/renderer/component/frame'
 ], function(
-    FrameRenderer,
-    Frame
+    FrameRenderer
 ){
 
     var RendererProxy = function(){

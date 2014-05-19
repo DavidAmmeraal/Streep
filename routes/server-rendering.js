@@ -16,6 +16,7 @@ var checkSeleniumSessions = function(){
         if((now - session.lastAlive) > 20000 && !session.closed){
             session.closed = true;
             session.session.close();
+            session.session.quit();
         }
     }
 }
@@ -87,11 +88,15 @@ exports.receiveSTL = function(){
 
 exports.keepAlive = function(){
     return function(req, res){
-        var sessionID = req.params.sessionID;
-        openSeleniumSessions.filter(function(item){
-            return item.sessionID == sessionID;
-        })[0].lastAlive = new Date().getTime();
-        res.send({'ok': true});
+        try{
+            var sessionID = req.params.sessionID;
+            openSeleniumSessions.filter(function(item){
+                return item.sessionID == sessionID;
+            })[0].lastAlive = new Date().getTime();
+            res.send({'ok': true});
+        }catch(err){
+            res.send({'ok': false});
+        }
     };
 }
 
