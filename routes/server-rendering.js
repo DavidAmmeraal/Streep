@@ -6,6 +6,29 @@ exports.setIO = function(IO){
 }
 var sockets = {};
 var waitingForSTL = {};
+var openSeleniumSessions = [];
+
+var checkSeleniumSessions = function(){
+    console.log("checkSeleniumSessions()");
+    var now = new Date().getTime();
+    for(var i = 0; i < openSeleniumSessions.length; i++){
+        var session = openSeleniumSessions[i];
+        if((now - session.lastAlive) > 20000 && !session.closed){
+            session.closed = true;
+            session.session.close();
+        }
+    }
+}
+
+var purgeClosedSessions = function(){
+    console.log("purgeClosedSessions()");
+    openSeleniumSessions = openSeleniumSessions.filter(function(session){
+        return !session.closed;
+    });
+};
+
+setInterval(checkSeleniumSessions, 5000);
+setInterval(purgeClosedSessions, 10000);
 
 exports.renderer = function(req, res){
     res.render('renderer', { title: 'Server renderer' });
@@ -62,6 +85,16 @@ exports.receiveSTL = function(){
     }
 }
 
+exports.keepAlive = function(){
+    return function(req, res){
+        var sessionID = req.params.sessionID;
+        openSeleniumSessions.filter(function(item){
+            return item.sessionID == sessionID;
+        })[0].lastAlive = new Date().getTime();
+        res.send({'ok': true});
+    };
+}
+
 exports.startSession = function(){
     return function(req, res){
         console.log(io);
@@ -80,6 +113,7 @@ exports.startSession = function(){
         var sessionID;
         driver.getCapabilities().then(function(caps){
             sessionID = caps.caps_['webdriver.remote.sessionid'];
+            openSeleniumSessions.push({'sessionID': sessionID, 'session': driver, 'lastAlive': new Date().getTime()});
         }).then(function(){
             driver.get('http://localhost:3000/server-rendering/renderer/' + sessionID);
             io.sockets.on('connection', function (socket) {

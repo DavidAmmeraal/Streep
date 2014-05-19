@@ -38,7 +38,9 @@ define([
             return new Promise(function(resolve){
                 $.get(self.host + '/' + self.uri + '/start-session').then(function(data){
                     self.sessionID = data.sessionID;
-                    console.log("SESSIONID: " + data.sessionID);
+                    setInterval(function(){
+                        $.post(self.host + '/' + self.uri + '/keep-alive/' + data.sessionID, {'keep-alive': true});
+                    }, 10000);
                     resolve();
                 });
             });
