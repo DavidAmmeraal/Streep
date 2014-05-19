@@ -88,12 +88,7 @@ function(
     var legPage;
 
     STLButton.on('click', function(){
-        var stls = renderer.getSTL();
-        for(var key in stls){
-            var stl = stls[key];
-            var blob = new Blob([stl], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, key + ".stl");
-        }
+        renderer.getSTL();
     });
 
     $(window).on('click', function(event){

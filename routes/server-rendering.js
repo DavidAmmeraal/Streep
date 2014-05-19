@@ -1,9 +1,11 @@
 var uuid = require('node-uuid');
 var io = null;
+var AdmZip = require('adm-zip');
 exports.setIO = function(IO){
     io = IO;
 }
 var sockets = {};
+var waitingForSTL = {};
 
 exports.renderer = function(req, res){
     res.render('renderer', { title: 'Server renderer' });
@@ -18,14 +20,47 @@ exports.getSTL = function(req, res){
         sessionID: sessionID,
         name: 'getSTL'
     }
+    waitingForSTL[commandID] = {};
+    waitingForSTL[commandID]['parts'] = [];
+    waitingForSTL[commandID]['amount'] = null;
+    waitingForSTL[commandID]['callback'] = function(){
+        if(waitingForSTL[commandID]['parts'].length == waitingForSTL[commandID]['amount']){
+
+            var zip = new AdmZip();
+            for(var i = 0; i < waitingForSTL[commandID]['parts'].length; i++){
+                var part = waitingForSTL[commandID]['parts'][i];
+                console.log("NAME: " + part.name);
+                zip.addFile(part.name + ".stl", new Buffer(part.stl), "Part for STREEP glasses");
+            }
+            var toSend = zip.toBuffer();
+            res.set('Content-Type', 'application/zip')
+            res.set('Content-Disposition', 'attachment; filename=file.zip');
+            res.set('Content-Length', toSend.length);
+            res.end(toSend, 'binary');
+        }
+    };
     socket.emit('command', command);
     socket.on('commandDone', function(data){
-        if(data.commandID == commandID){
-            var buffer = new Buffer(data.stl, "utf-8");
-            console.log(buffer.toString());
-        }
     });
 };
+
+exports.receiveSTL = function(){
+    return function(req, res){
+        var commandID = req.params.commandID;
+        console.log("commandID:" + commandID);
+        if(req.body.stl){
+            if(req.body.name != "length"){
+                waitingForSTL[commandID]['parts'].push(req.body);
+                waitingForSTL[commandID].callback();
+            }
+            res.send({'ok': true});
+        }else if(req.body.amount){
+            waitingForSTL[commandID]['amount'] = parseInt(req.body.amount);
+            res.send({'ok': true});
+        }
+
+    }
+}
 
 exports.startSession = function(){
     return function(req, res){

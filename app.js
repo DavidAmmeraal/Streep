@@ -43,6 +43,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
+app.use(express.bodyParser({limit: '50mb'}))
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
@@ -85,6 +86,7 @@ app.get('/server-rendering/renderer/:id', serverRendering.renderer);
 app.get('/server-rendering/get-stl/:sessionId', serverRendering.getSTL);
 app.post('/screenshot/save', screenshot.save);
 app.get('/fill-test-data', fillTestData.start);
+app.post('/server-rendering/receive-stl/:commandID', serverRendering.receiveSTL());
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -500,11 +500,19 @@ define([
     Renderer.prototype.getSTL = function(data){
         var self = this;
         console.log("Renderer.prototype.getSTL()");
-        var stl = self.frame.exportSTL();
+        var objects = self.frame.exportSTL();
+
+        $.post('http://localhost:3000/server-rendering/receive-stl/' + data.commandID, {amount: objects.length}).then(function(){
+            console.log("FIRST REQUEST SEND!");
+            for(key in objects){
+                $.post('http://localhost:3000/server-rendering/receive-stl/' + data.commandID, {name: key, stl: objects[key]}).then(function(){
+                    console.log("SEND SEND SEND");
+                });
+            }
+        });
 
         return Promise.resolve({
-            'commandID': data.commandID,
-            'stl': stl
+            'commandID': data.commandID
         });
     };
 

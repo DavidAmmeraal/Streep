@@ -12,7 +12,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://streep.nl:3000",
+        host: "http://local.streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -352,7 +352,7 @@ define([
         },
         getSTL: function(){
             var self = this;
-            $.get(self.host + '/' + self.uri + '/getSTL/' + this.sessionID);
+            window.open(self.host + '/' + self.uri + '/get-stl/' + this.sessionID);
         }
     });
 
