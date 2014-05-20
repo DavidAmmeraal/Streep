@@ -14,7 +14,7 @@ define(['../modification/modification', '../modification/csg-text-modification',
 	};
 
     Connector.prototype.name = null;
-    Connector.prototype.position = new THREE.Vector3(0, 0, 0);
+    Connector.prototype.position = null;
     Connector.prototype.component = null;
     Connector.prototype.modifications = [];
     Connector.prototype.originalGeo = null;

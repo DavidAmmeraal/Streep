@@ -78,19 +78,81 @@ define([
                         active: front.active
                     }
                 });
-                resolve({
-                    'commandID': data.commandID,
-                    'img': self.viewer.getScreenshot(),
-                    'indicators': false,
-                    'data': {
-                        'frontPage': {
-                          fronts: fronts
-                        },
-                        'nosePage': {
-                            noses: self.frame.currentFront.noses
+
+                var finish = function(){
+                    resolve({
+                        'commandID': data.commandID,
+                        'img': self.viewer.getScreenshot(),
+                        'indicators': false,
+                        'data': {
+                            'frontPage': {
+                                fronts: fronts
+                            },
+                            'nosePage': {
+                                noses: self.frame.currentFront.noses
+                            }
+                        }
+                    });
+                }
+
+                if(self.appliedModificationArguments){
+                    console.log("THERE WHERE MODIFICATIONS ON THIS LEG!!!!");
+                    var modsToDo = [];
+                    for(var legStr in self.appliedModificationArguments){
+                        if(self.appliedModificationArguments[legStr].text){
+                            var text = self.appliedModificationArguments[legStr].text;
+                            var font = self.appliedModificationArguments[legStr].font;
+                            var leg
+                            if(legStr == "right_leg" && self.appliedModificationArguments[legStr].text){
+                                leg = self.frame.currentRightLeg;
+                            }else if(self.appliedModificationArguments[legStr].text){
+                                leg = self.frame.currentLeftLeg;
+                            }
+
+                            console.log("LEG");
+                            console.log(leg);
+                            console.log("END LEG");
+
+                            if(leg.connectors && leg.connectors[0] && leg.connectors[0].modifications){
+                                var mod = _.find(leg.connectors[0].modifications, function(mod){
+                                    return mod.action_name == self.appliedModificationArguments[legStr].type
+                                });
+
+                                var size;
+                                if(mod.sizes['l']){
+                                    size = 'l';
+                                }else if(mod.sizes['m']){
+                                    size = 'm';
+                                }else {
+                                    size = 's';
+                                }
+
+                                mod.setText(text, font, size);
+                                modsToDo.push(mod);
+                            }
                         }
                     }
-                });
+
+                    if(modsToDo.length){
+                        var chainModifications = function(key){
+                            if(!key){
+                                key = 0;
+                            }
+                            modsToDo[key].execute().then(function(){
+                                if(modsToDo[key + 1]){
+                                    chainModifications(key + 1);
+                                }else{
+                                    finish();
+                                }
+                            })
+                        };
+                        chainModifications();
+                    }else{
+                        finish();
+                    }
+                }else{
+                    finish();
+                }
             });
         });
     };
@@ -105,6 +167,7 @@ define([
         }
         obj.connectors[0].reset();
         this.appliedModifications[side] = {};
+        this.appliedModificationArguments[side] = {};
         return Promise.resolve({
             'commandID': data.commandID,
             'img': self.viewer.getScreenshot(),
@@ -153,6 +216,38 @@ define([
 
         return new Promise(function(resolve){
             self.frame.changePattern(leg, actualPattern).then(function(){
+
+                var obj;
+                switch(data.side){
+                    case "right_leg":
+                        obj = self.frame.currentRightLeg;
+                        break;
+                    case "left_leg":
+                        obj = self.frame.currentLeftLeg;
+                        break;
+                }
+
+                var sizes = [];
+                try{
+                    if(obj.connectors && obj.connectors[0] && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
+                        console.log(obj.connectors[0].modifications[0].sizes);
+                        for(var size in obj.connectors[0].modifications[0].sizes){
+                            sizes.push(size);
+                        }
+                    }else{
+                        sizes = false
+                    }
+                }catch(err){
+                    console.log(err);
+                    console.log(err.stack);
+                }
+
+                console.log(sizes);
+
+                var engravePageObj = {};
+                engravePageObj.side = data.side;
+                engravePageObj.sizes = sizes;
+
                 resolve({
                     'commandID': data.commandID,
                     'img': self.viewer.getScreenshot(),
@@ -160,7 +255,8 @@ define([
                     'data': {
                         'legPage': {
                             'patterns': patterns
-                        }
+                        },
+                        'engravePage':engravePageObj
                     }
                 });
             });
@@ -277,15 +373,22 @@ define([
         });
 
         var sizes = [];
-        if(obj.connectors && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
-            console.log(obj.connectors[0].modifications[0].sizes);
-            for(var size in obj.connectors[0].modifications[0].sizes){
-                console.log("SIZE: " + size);
-                sizes.push(size);
+        try{
+            if(obj.connectors && obj.connectors[0] && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
+                console.log(obj.connectors[0].modifications[0].sizes);
+                for(var size in obj.connectors[0].modifications[0].sizes){
+                    console.log("SIZE: " + size);
+                    sizes.push(size);
+                }
+            }else{
+                sizes = false
             }
-        }else{
-            sizes = false
+        }catch(err){
+            console.log(err);
+            console.log(err.stack);
         }
+
+        console.log(sizes);
 
         var engravePageObj = {};
         engravePageObj.side = focusedStr;
@@ -294,7 +397,6 @@ define([
             engravePageObj.engraved = true;
         }
 
-        console.log("WE'RE THERE");
         return {
             'focusedOn': focusedStr,
             'legPage': {
@@ -518,6 +620,11 @@ define([
         return Promise.resolve({
             'commandID': data.commandID
         });
+    };
+    Renderer.prototype.getPrice = function(data){
+        console.log("GET PRICE!!!!");
+        console.log(this.frame.getPrice());
+        return Promise.resolve({'commandID': data.commandID, 'price': this.frame.getPrice()});
     };
 
     return Renderer;

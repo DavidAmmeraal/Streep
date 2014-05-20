@@ -82,10 +82,7 @@ function(
     var overviewLoading = $('#overview .loading');
     var infoButton = $('#buttons > .switch');
     var STLButton = $('#buttons > .download-stl');
-
-    var frontPage;
-    var nosePage;
-    var legPage;
+    var price = $('#overview > .price');
 
     STLButton.on('click', function(){
         renderer.getSTL();
@@ -156,6 +153,8 @@ function(
 
     $(frameChooser).on('frame-chosen', function(event, chosenSizesId){
         $('.column-left > .loading').fadeIn(200);
+        $('.indicator').remove();
+        $('.streep-tooltip').remove();
         loadSizes(chosenSizesId).then(loadFrame);
     });
 
@@ -175,6 +174,17 @@ function(
 
                 renderer = new RendererProxy({
                     container: renderTarget
+                });
+
+                $(renderer).on('commandLoading', function(event){
+                    $('.column-left > .command-loading').fadeIn(200);
+                });
+
+                $(renderer).on('commandError', function(event){
+                    $('.column-left > .command-error').fadeIn(200);
+                });
+                $(renderer).on('commandDone', function(event){
+                    $('.column-left > .command-loading').fadeOut(200);
                 });
 
                 afterRendererReady();
@@ -221,9 +231,6 @@ function(
     resizeElements();
 
     function handleFocusChanged(event, comp, serverData){
-        console.log("SERVERDATA");
-        console.log(serverData);
-        console.log("END SERVERDATA");
         if(serverData){
             switch(serverData.focusedOn){
                 case "front":
@@ -249,9 +256,14 @@ function(
 
     };
 
+    function updatePrice(){
+        renderer.getPrice().then(function(newPrice){
+            price.html("&euro;" + newPrice);
+        });
+    };
+
     function serverFocusedOnLeg(data){
         console.log("serverFocusedOnLeg()");
-        console.log(data);
         $('#menu').html('');
         var legPage = new LegPage({
             patterns: data.legPage.patterns,
@@ -278,6 +290,10 @@ function(
             engravePage.setEngraved.apply(engravePage, [data.engravePage.engraved]);
         }
 
+        if(!data.engravePage.sizes){
+            engravePage.disable();
+        }
+
         $(legPage).on('pattern-changed', function(event, side, pattern){
             try{
                 renderer.changePattern(side, pattern).then(function(serverResponse){
@@ -285,7 +301,14 @@ function(
                         return pattern.active;
                     });
                     var index = serverResponse.data.legPage.patterns.indexOf(activePattern);
+                    if(!serverResponse.data.engravePage.sizes){
+                        engravePage.disable();
+                    }else{
+                        engravePage.sizes = serverResponse.data.engravePage.sizes;
+                        engravePage.enable();
+                    }
                     legPage.setActiveIndex(index);
+                    updatePrice();
                 });
             }catch(err){
                 console.log(err.stack);
@@ -364,6 +387,7 @@ function(
                 nosePage.noses = serverResponse.data.nosePage.noses;
                 nosePage.activate();
                 nosePage.render();
+                updatePrice();
             })
         });
 
@@ -375,6 +399,7 @@ function(
             renderer.changeNose(replacementNose).then(function(newNoseObj){
                 nosePage.nose = newNoseObj;
                 nosePage.newNoseLoaded();
+                updatePrice();
             });
         });
 

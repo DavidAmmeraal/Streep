@@ -22,6 +22,10 @@ block content
                 button
                     |   BESTEL
     .column-left
+        .command-loading
+            |   Laden...
+        .command-error
+            |   Onze excuses, er is wat mis gegaan. Kunt u het a.u.b. later nog een keer proberen?
         .loading
             |   Montuur wordt ingeladen
         .contents
@@ -43,21 +47,6 @@ block content
 
 
 block js
-    script(src='http://code.createjs.com/easeljs-0.7.0.min.js')
-    script(src='http://code.createjs.com/tweenjs-0.5.0.min.js')
-    script(src='/javascripts/vendor/three/build/three.js')
-    script(src='/javascripts/vendor/csg.js')
-    script(src='/javascripts/vendor/ThreeBSP.js')
-    script(src='/javascripts/vendor/three/exporters/GeometryExporter.js')
-    script(src='/javascripts/vendor/three/exporters/BufferGeometryExporter.js')
-    script(src='/javascripts/vendor/three/exporters/MaterialExporter.js')
-    script(src='/javascripts/vendor/three/exporters/STLExporter.js')
-    script(src='/javascripts/vendor/three/exporters/ObjectExporter.js')
-    script(src='/javascripts/vendor/three/loaders/STLLoader.js')
-
-    //File saver
-    script(src='/javascripts/vendor/filesaver.js')
-
     //Bootstrap
     script(src='/javascripts/vendor/bootstrap-3.1.1-dist/js/bootstrap.min.js')
 

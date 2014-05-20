@@ -46,9 +46,6 @@ define([
             var offset = $(this).position();
             var comp = $(this).data('component');
             var position = "top";
-            console.log("COMPONENT");
-            console.log(comp);
-            console.log("END COMPONENT!");
             switch(comp.name){
                 case "poot_links":
                     contents = "Wijzig hier uw linkerpoot";
@@ -122,9 +119,6 @@ define([
             var element = findIndicatorElementForComponent(indicator.component);
             if(!element){
                 element = $("<div class='indicator'>&nbsp;</div>");
-                console.log("INDICATOR");
-                console.log(indicator.component);
-                console.log("END INDICATOR");
                 element.data('component', indicator.component);
                 self.element.append(element);
                 element.on('click', (function(comp){

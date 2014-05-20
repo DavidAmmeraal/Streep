@@ -83,12 +83,13 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     };
     EngravePage.prototype.disable = function(msg){
         var loadingEl = this.element.find('.loading');
+        loadingEl.find('.message').remove();
+        loadingEl.addClass('no-img');
         if(msg){
             loadingEl.append('<div class="message">' + msg + '</div>');
         }else{
             loadingEl.append('<div class="message">Deze poot kan niet gegraveerd worden, kies de standaard poot om wel te kunnen graveren!</div>');
         }
-        loadingEl.find('img').hide();
         loadingEl.show();
         this.disableButtons();
 
@@ -102,6 +103,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     };
     EngravePage.prototype.loading = function(loading){
         var loadingEl = this.element.find('.loading');
+        loadingEl.removeClass('no-img');
         if(loading){
             loadingEl.append('<div class="message">Bezig met graveren</div>');
             loadingEl.show();

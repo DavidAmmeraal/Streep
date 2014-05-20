@@ -75,13 +75,14 @@ app.get('/', frames.editFrame);
 app.get('/users', user.list);
 
 app.post('/server-rendering/command', serverRendering.command());
+/*
 app.post('/server-rendering/command', function(req, res){
     var uuid = require('node-uuid');
     var id = uuid.v1();
     req.body.commandID = id;
     waitingCommands[id] = res;
     socket.emit('command', req.body);
-});
+});*/
 
 app.get('/choose-frame', frames.chooseFrame);
 app.get('/edit-frame', frames.editFrame);
