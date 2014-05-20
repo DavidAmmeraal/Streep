@@ -11,7 +11,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://streep.nl:3000",
+        host: "http://local.streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,

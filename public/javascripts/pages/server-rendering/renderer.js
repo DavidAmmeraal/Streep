@@ -248,10 +248,13 @@ define([
     Renderer.prototype._handleLegFocused = function(comp){
         console.log("Renderer.prototype._handleLegFocused");
         var focusedStr;
+        console.log(comp);
         if(comp == this.frame.currentLeftLeg){
+            console.log("ITS THE LEFT LEG");
             var obj = this.frame.currentLeftLeg;
             focusedStr = "left_leg";
         }else{
+            console.log("ITS THE RIGHT LEG");
             var obj = this.frame.currentRightLeg;
             focusedStr = "right_leg";
         }
@@ -291,6 +294,7 @@ define([
             engravePageObj.engraved = true;
         }
 
+        console.log("WE'RE THERE");
         return {
             'focusedOn': focusedStr,
             'legPage': {
