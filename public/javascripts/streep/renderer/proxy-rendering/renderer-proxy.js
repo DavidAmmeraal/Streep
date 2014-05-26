@@ -105,7 +105,7 @@ define([
 
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
-                    $(self).trigger('preview-mode-entered');
+                    $(self).trigger('preview-mode-left');
                     self.indicators.show();
                     resolve();
                 })

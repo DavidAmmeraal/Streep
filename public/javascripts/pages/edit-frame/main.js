@@ -136,7 +136,11 @@ function(
     });
 
     previewButton.on('click', function(event){
+        $('.column-left > .command-loading').fadeIn(200);
         renderer.enterPreviewMode();
+        $(renderer).on('preview-mode-entered', function(){
+            $('.column-left > .command-loading').fadeOut(200);
+        });
         exitPreviewButton.show();
         previewButton.hide();
         $('#menu').hide();
@@ -144,6 +148,10 @@ function(
 
     exitPreviewButton.on('click', function(event){
         renderer.exitPreviewMode();
+        $('.column-left > .command-loading').fadeIn(200);
+        $(renderer).on('preview-mode-left', function(){
+            $('.column-left > .command-loading').fadeOut(200);
+        });
         exitPreviewButton.hide();
         previewButton.show();
     });
