@@ -1,9 +1,9 @@
 define([
     '../frame-renderer',
-    '../../../components/renderer/viewer',
-    '../../../components/renderer/component/frame'
+    '../../overlays/spin-overlay/spin-overlay'
 ], function(
-    FrameRenderer
+    FrameRenderer,
+    SpinOverlay
 ){
 
     var RendererProxy = function(){
@@ -16,6 +16,7 @@ define([
         sessionID: null,
         target: null,
         commandTimeOut: 60000,
+        spinner: null,
         doCommand: function(command){
             var self = this;
             return new Promise(function(resolve, reject){
@@ -47,6 +48,17 @@ define([
                 self.target = $('<div class="viewer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"></div>');
                 $(self.container).append(self.target);
                 FrameRenderer.prototype.init.apply(self).then(function(){
+                    try{
+                        self.spinner = new SpinOverlay({
+                            targetElement: self.container,
+                            className: 'spinner'
+                        });
+                        self.spinner.render();
+                        self._listenToSpinner();
+                    }catch(err){
+                        console.log(err);
+                        console.log(err.stack);
+                    }
                     if(!self.sessionID){
                         self.startSession().then(function(){
                             resolve();
@@ -56,6 +68,105 @@ define([
                     }
                 });
             })
+        },
+        _listenToSpinner: function(){
+            var self = this;
+            $(this.spinner).on('rotate-left-requested', function(){
+                self.rotateLeft();
+                console.log("ROTATE LEFT REQUESTED!!");
+            });
+
+            $(this.spinner).on('rotate-right-requested', function(){
+                self.rotateRight();
+                console.log("ROTATE RIGHT REQUESTED!");
+            });
+        },
+        exitPreviewMode: function(){
+            console.log("RendererProxy.enterPreviewMode()");
+            var self = this;
+            var container = $(self.container);
+            var command = {
+                'name': 'exitPreviewMode',
+                'sessionID' : this.sessionID,
+                'frame': this.frame.toJSON(),
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                self.doCommand(command).then(function(data){
+
+                    if(data.indicators){
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                    }else{
+                        self.indicators.hide();
+                    }
+
+                    self.spinner.hide();
+
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+                    $(self).trigger('preview-mode-entered');
+                    self.indicators.show();
+                    resolve();
+                })
+            });
+        },
+        enterPreviewMode: function(){
+            console.log("RendererProxy.enterPreviewMode()");
+            var self = this;
+            var container = $(self.container);
+            var command = {
+                'name': 'enterPreviewMode',
+                'sessionID' : this.sessionID,
+                'frame': this.frame.toJSON(),
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                self.doCommand(command).then(function(data){
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+                    self.spinner.show();
+                    $(self).trigger('preview-mode-entered');
+                    self.indicators.hide();
+                    resolve();
+                })
+            });
+        },
+        rotateLeft: function(){
+            var self = this;
+            var container = $(self.container);
+            var command = {
+                'name': 'rotateLeft',
+                'sessionID' : this.sessionID,
+                'frame': this.frame.toJSON(),
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                self.doCommand(command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+                    resolve();
+                })
+            });
+        },
+        rotateRight: function(){
+            var self = this;
+            var container = $(self.container);
+            var command = {
+                'name': 'rotateRight',
+                'sessionID' : this.sessionID,
+                'frame': this.frame.toJSON(),
+                'containerDimensions': [container.width(), container.height()]
+            };
+            return new Promise(function(resolve){
+                self.doCommand(command).then(function(data){
+                    console.log(data);
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+                    resolve();
+                })
+            });
         },
         startSession: function(){
             console.log("RendererProxy.prototype.startSession()");

@@ -17,6 +17,7 @@ define([
     ClientRenderer.prototype = $.extend(Object.create(FrameRenderer.prototype), {
         context: null,
         viewer: null,
+        spinOverlay: null,
         init: function(){
             console.log("ClientRenderer.init()");
             var self = this;

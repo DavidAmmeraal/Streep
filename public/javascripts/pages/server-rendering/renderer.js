@@ -64,6 +64,59 @@ define([
 
         return indicators;
     };
+    Renderer.prototype.exitPreviewMode = function(data){
+        var self = this;
+        return new Promise(function(resolve, reject){
+            self.viewer.focusTo(self.frame, 0);
+            var indicators = self.getIndicators();
+            resolve({
+                'commandID': data.commandID,
+                'img': self.viewer.getScreenshot(),
+                'indicators': indicators
+            });
+        });
+    };
+    Renderer.prototype.enterPreviewMode = function(data){
+        console.log("Renderer.prototype.enterPreviewMode()");
+        var self = this;
+        self.viewer.rotate(0, 0);
+
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                resolve({
+                    'commandID': data.commandID,
+                    'img': self.viewer.getScreenshot()
+                });
+            }, 1);
+        });
+    };
+    Renderer.prototype.rotateLeft = function(data){
+        console.log("Renderer.prototype.rotateLeft()");
+        var self = this;
+        self.viewer.rotate(-45, 0);
+
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                resolve({
+                    'commandID': data.commandID,
+                    'img': self.viewer.getScreenshot()
+                });
+            }, 1);
+        });
+    };
+    Renderer.prototype.rotateRight = function(data){
+        console.log("Renderer.prototype.rotateRight()");
+        var self = this;
+        self.viewer.rotate(45, 0);
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                resolve({
+                    'commandID': data.commandID,
+                    'img': self.viewer.getScreenshot()
+                });
+            }, 1);
+        });
+    };
     Renderer.prototype.changeFront = function(data){
         console.log("Renderer.prototype.changeFront()");
         console.log(data);

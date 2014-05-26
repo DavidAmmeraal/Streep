@@ -10,13 +10,14 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		// create a point light
 		this.light = new THREE.PointLight(0xFFFFFF);
 		this.components = [];
-		this.distance = 200;
+		this.distance = 250;
 		this.startPosition = new THREE.Vector3(0, 0, this.distance);
 		this.lookingAt = null;
         this.renderer = null;
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
         this.backgroundColo = 0x000000;
+        this.nonOffsetZPosition = this.distance;
         // this.backgroundColor = 0x363636;
         this.projector = new THREE.Projector();
         var currentHover = null;
@@ -159,17 +160,17 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 			
 		self.rotate = function(x, duration){
-			if(x > 0 || x < 0){
-				self.rotationUpTillNow += x;
-				var currentPosition = new THREE.Vector3(self.camera.position.x, self.camera.position.y, self.camera.position.z);
-				currentPosition.x = Math.sin(self.rotationUpTillNow * Math.PI / 180) * self.distance;
-				currentPosition.z = Math.cos(self.rotationUpTillNow * Math.PI / 180) * self.distance;
-				self.positionCamera(currentPosition, 500);
-			}
+            self.rotationUpTillNow += x;
+
+            var currentPosition = new THREE.Vector3(self.camera.position.x, self.camera.position.y, self.camera.position.z);
+            currentPosition.x = Math.sin(self.rotationUpTillNow * Math.PI / 180) * self.distance;
+            currentPosition.z = Math.cos(self.rotationUpTillNow * Math.PI / 180) * self.distance;
+
+            self.positionCamera(currentPosition, 0);
 		};
 		
 		self.resetCamera = function(){
-			rotationUpTillNow = 0;
+			self.rotationUpTillNow = 0;
 			self.positionCamera(self.startPosition);
 		};
 		

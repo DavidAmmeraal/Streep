@@ -82,6 +82,8 @@ function(
     var overviewLoading = $('#overview .loading');
     var infoButton = $('#buttons > .switch');
     var STLButton = $('#buttons > .download-stl');
+    var previewButton = $('#buttons > .preview-mode');
+    var exitPreviewButton = $('#buttons > .exit-preview-mode');
     var price = $('#overview > .price');
 
     STLButton.on('click', function(){
@@ -131,7 +133,20 @@ function(
         sizeChooser.show();
         frameChooser.hide();
         event.stopPropagation();
-    })
+    });
+
+    previewButton.on('click', function(event){
+        renderer.enterPreviewMode();
+        exitPreviewButton.show();
+        previewButton.hide();
+        $('#menu').hide();
+    });
+
+    exitPreviewButton.on('click', function(event){
+        renderer.exitPreviewMode();
+        exitPreviewButton.hide();
+        previewButton.show();
+    });
 
     facebookButton.on('click', function(event){
         overviewLoading.fadeIn(50);
