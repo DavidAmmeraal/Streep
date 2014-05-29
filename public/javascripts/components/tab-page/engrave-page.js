@@ -59,7 +59,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         this.html.find('.text').on('keyup', function(event){
             var length = self.html.find('.text').val().length;
-            self.html.find('.counter').text(12 - length);
+            self.html.find('.counter').text(8 - length);
         });
         this.element.html(this.html);
     };
