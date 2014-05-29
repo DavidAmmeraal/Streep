@@ -7,7 +7,6 @@
                 <% var leg = patterns[i]; %>
                 <li class="leg">
                     <img id="pattern-<%= leg._id %>" src="<%= leg.img %>" class="<% if(leg.default || leg.active) print(' active'); %>" data-number="<%= i %>"/>
-                    <% if(leg.priceExtra){ %><div class="price">&#43;&euro;<%= leg.priceExtra %></div><% } %>
                 </li>
                 <% } %>
             </ul>

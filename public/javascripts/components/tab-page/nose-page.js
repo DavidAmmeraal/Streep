@@ -7,8 +7,6 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
         var activated = false;
 
         var createNoseChooser = function(){
-            console.log("NosePage.createNoseChooser()");
-            console.log(self.noses);
             var html = self.element;
             if(noseChooser)
                 noseChooser.destroy();
@@ -22,7 +20,7 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
             }
 
             var noseSliderFrame = html.find('.noses > .frame');
-            var noseScrollbar = html.find('.fronts > .scrollbar');
+            var noseScrollbar = html.find('.noses > .scrollbar');
             var noseOptions = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
@@ -51,23 +49,16 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
                     self.element.find('.loading').show();
                 }
             });
-            var nosesSlidee = self.element.find('.noses ul');
-            if(nosesSlidee.width() <= nosesSlidee.parent().width()){
-                self.element.find('.noses .scrollbar').hide();
-            }
             noseChooser.init();
         };
 
         this.render = function(){
-            console.log("NosePage.render()");
             var self = this;
             var html = $(this.template({noses: self.noses}));
             this.element.html(html);
         };
 
         this.activate = function(){
-            console.log("NosePage.activate()");
-            console.log(this.noses);
             var self = this;
             setTimeout(function(){
                 self.parseNoses();

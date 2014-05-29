@@ -6,6 +6,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         var glassesChooser = null;
 
         var createGlassesChooser = function(){
+            self.firstActiveTriggered = false;
             var html = self.element;
             if(glassesChooser)
                 glassesChooser.destroy();
@@ -15,7 +16,6 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             var options = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
-                smart: 1,
                 activateOn: 'click',
                 mouseDragging: 1,
                 touchDragging: 1,
@@ -30,13 +30,45 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 clickBar: 1
             });
             glassesChooser = new Sly(sliderFrame, options);
-            glassesChooser.on('active', function(event, itemIndex){
-                var selectedGlasses = self.front.glasses[itemIndex];
-                $(self).trigger('glasses-changed', selectedGlasses);
-                self.element.find('.loading').append('<div class="message">Glazen worden ingeladen</div>');
-                self.element.find('.loading').show();
 
+            sliderFrame.find('li.glass').on('click', function(event){
+                event.stopPropagation();
+                var index = sliderFrame.find('li.glass').index(this);
+                var selectedGlasses = self.glasses[index];
+                selectedGlasses.index = index;
+                $(self).trigger('glasses-changed', selectedGlasses);
             });
+
+            sliderFrame.find('li.glass').on('mouseenter', function(event){
+                var index = sliderFrame.find('li.glass').index(this);
+                var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
+                tooltip.css('left', event.pageX);
+                tooltip.css('top', event.pageY);
+                tooltip.show();
+                tooltip.animate({
+                    opacity: 1
+                }, 100);
+                tooltip.css('margin-top', -(tooltip.height() + 10) + 'px');
+                self.activeTooltip = tooltip;
+            });
+
+            self.element.on('mousemove', function(event){
+                if(self.activeTooltip){
+                    self.activeTooltip.css('left', event.pageX);
+                    self.activeTooltip.css('top', event.pageY);
+                }
+            });
+
+            sliderFrame.find('li.glass').on('mouseleave', function(event){
+                var index = sliderFrame.find('li.glass').index(this);
+                var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
+                tooltip.hide();
+                self.activeTooltip = null;
+            });
+
+            glassesChooser.on('active', function(event, itemIndex){
+            });
+
             glassesChooser.init();
             var slidee = self.element.find('.glasses ul');
             if(slidee.width() < slidee.parent().width()){
@@ -44,17 +76,23 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             }
         };
 
-        this.activate = function(){
-            createGlassesChooser();
-        }
+        this.setActiveIndex = function(index){
+            this.element.find('li.glass img').removeClass('active');
+            this.element.find('li.glass:eq('+ index + ') img').addClass('active');
+            self.element.find('.loading .message').remove();
+            self.element.find('.loading').hide();
+        };
 
+        this.activate = function(){
+            setTimeout(function(){
+                createGlassesChooser();
+            }, 1);
+        };
 
         this.render = function(){
             try{
-                var id = self.front.currentGlasses._id;
-                var html = $(this.template({colors: self.colors, glasses: self.front.glasses}));
+                var html = $(this.template({glasses: self.glasses}));
                 this.element.html(html);
-                this.element.find('#glass-' + id).addClass('active');
             }catch(err){
                 console.log(err.stack);
             }
@@ -62,7 +100,6 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         };
 
         this.newGlassesLoaded = function(loadedGlasses){
-            console.log("GlassesPage.newGlassesLoaded()");
             this.element.find('.active').removeClass('active');
             this.element.find('#glass-' + loadedGlasses._id).addClass('active');
             self.element.find('.loading').hide();
@@ -72,10 +109,10 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
     GlassesPage.prototype = Object.create(TabPage.prototype);
     GlassesPage.prototype.id = "glasses";
     GlassesPage.prototype.tabTitle = "Glazen";
-    GlassesPage.prototype.leg = null;
-    GlassesPage.prototype.legs = [];
-    GlassesPage.prototype.colors = [];
     GlassesPage.prototype.template = _.template(GlassesPageTemplate);
+    GlassesPage.prototype.activeGlasses = null;
+    GlassesPage.prototype.firstActiveTriggered = false;
+    GlassesPage.prototype.activeTooltip = null;
 
 
     return GlassesPage;

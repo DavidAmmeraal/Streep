@@ -8,7 +8,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(45, self.width / self.height, 0.1, 1000);
 		// create a point light
-		this.light = new THREE.PointLight(0xFFFFFF);
+		//this.light = new THREE.PointLight(0xFFFFFF);
+        this.light = new THREE.DirectionalLight( 0xffffff, 1 );
 		this.components = [];
 		this.distance = 250;
 		this.startPosition = new THREE.Vector3(0, 0, this.distance);
@@ -16,9 +17,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
         this.renderer = null;
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
-        this.backgroundColo = 0x000000;
-        this.nonOffsetZPosition = this.distance;
-        // this.backgroundColor = 0x363636;
+        this.backgroundColor = 0x363636;
         this.projector = new THREE.Projector();
         var currentHover = null;
 
@@ -31,12 +30,11 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			self.setSize(self.width, self.height);
 			self.target.append(self.renderer.domElement);
 			self.scene.add(self.light);
+
 			$(self.context).on('changed', self.parseContext);
 			self.parseContext();
 			self.sceneReady = true;
 			self.render();
-            //listenToClicks();
-            //listenToMouseMovement();
 		};
 
         self.resize = function(){
@@ -48,55 +46,16 @@ define(['../../util/webgl-test'], function(WebGLTest){
             self.setSize(self.width, self.height);
             self.render()
         }
-
-        var listenToMouseMovement = function(event){
-            $(self.target).mousemove(function(event){
-                event.preventDefault();
-                var vector = new THREE.Vector3( ( event.clientX / self.target.width() ) * 2 - 1, - ( event.clientY / self.target.height() ) * 2 + 1, 0.5 );
-
-                self.projector.unprojectVector( vector, self.camera );
-
-                var raycaster = new THREE.Raycaster( self.camera.position, vector.sub( self.camera.position ).normalize() );
-                var intersects = raycaster.intersectObjects( self.scene.children );
-
-                if(intersects.length){
-                    self.hover($(intersects[0].object).data('streep-component'))
-                }else if(currentHover){
-                    self.unhover(currentHover);
-                }
-            });
-        }
-
-        var listenToClicks = function(){
-            $(self.target).on('click', function(event){
-                event.preventDefault();
-
-                var vector = new THREE.Vector3( ( event.clientX / self.target.width() ) * 2 - 1, - ( event.clientY / self.target.height() ) * 2 + 1, 0.5 );
-                self.projector.unprojectVector( vector, self.camera );
-
-                var raycaster = new THREE.Raycaster( self.camera.position, vector.sub( self.camera.position ).normalize() );
-
-                console.time("RAYCASTING ON OBJECTS!");
-                var intersects = raycaster.intersectObjects( self.scene.children );
-                console.timeEnd("RAYCASTING ON OBJECTS!");
-                intersects.length && self.focusTo($(intersects[0].object).data('streep-component'));
-            });
-        }
 		
 		var getRenderer = function(){
-            console.log("Viewer.getRenderer()");
-            console.log("Viewer: testing webgl support on browser!");
 		   	if(WebGLTest.test()){
-                console.log("Viewer.getRenderer(): browser has webgl!");
 		   		return new THREE.WebGLRenderer({
 		   			preserveDrawingBuffer: true ,
                     antialias: true
 		   		});
 		   	}else{
-                console.log("Viewer.getRenderer(): browser does not have webgl!");
 		   		return new THREE.CanvasRenderer();
 		   	}
-            console.log("finish Viewer.getRenderer()");
 	   };
 		
 		self.getScene = function(){
@@ -110,7 +69,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.positionCamera = function(position, duration){
-            console.log("Viewer.positionCamera(" + position + ", " + duration + ")");
 			var curPosition = {};
 			curPosition.x = self.camera.position.x;
 			curPosition.y = self.camera.position.y;
@@ -119,8 +77,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			newPosition.x = position.x;
 			newPosition.y = position.y;
 			newPosition.z = position.z;
-
-            console.log("DURATION: " + duration);
 
 			var onComplete = function(){
 				createjs.Ticker.removeEventListener("tick", tick);
@@ -148,8 +104,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 					self.render();
 				}
 			};
-            console.log("DURATION: " + duration);
-            console.log("WEBGL: " + WebGLTest.test());
+
 			if(duration && WebGLTest.test()){
 				createjs.Tween.get(curPosition).to(newPosition, duration).call(onComplete);
 				createjs.Ticker.addEventListener("tick", tick);
@@ -175,13 +130,11 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.parseContext = function(){
-            console.log("Viewer.parseContext()");
 			var components = self.context.get('components');
 			for(var key in components){
 				var comp = components[key];
 				self.addComponent(comp);
 			}
-            console.log("END Viewer.parseContext()");
 		};
 		
 		self.setBackgroundColor = function(color){
@@ -238,9 +191,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
                     self.render();
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
-                    console.log("REQUEST REMOVAL RECEIVED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    console.log("REQUEST REMOVAL OFF!");
                     self.scene.remove(requester.mesh);
-                    console.log(self.scene.children.length);
                     delete requester;
                     self.render();
                 });
@@ -260,7 +212,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.focusTo = function(comp, length){
-            console.log("self.viewer.focusTo(" + length + ")");
             if(self.lookingAt)
                 self.lookingAt.focused = false;
 
@@ -268,7 +219,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			self.lookingAt = comp;
 			//self.resetCamera();
 			if(comp.focusPerspective){
-                console.log("HOI HOI HOI HOI");
 				self.positionCamera(comp.focusPerspective.cameraPosition, length);
 			}
             $(self).trigger('viewer.focus', comp);
@@ -290,29 +240,28 @@ define(['../../util/webgl-test'], function(WebGLTest){
             currentHover = null;
             self.render();
         };
-		
-		initialize();
-	};
 
-	Viewer.prototype = {
-        getScreenshot: function(){
-            return this.renderer.domElement.toDataURL();
-        },
-        destroy: function(){
-            this.scene = new THREE.Scene();
-            this.scene.add(this.light);
-        },
-        get2DPositions: function(position){
-            var self = this;
+        self.getScreenshot = function(){
+            return self.renderer.domElement.toDataURL();
+        };
+
+        self.destroy = function(){
+            console.log("DESTROY()");
+            self.scene = new THREE.Scene();
+            self.scene.add(self.light);
+        };
+
+        self.get2DPositions = function(position){
             var pos = position.clone();
             var projScreenMat = new THREE.Matrix4();
-            projScreenMat.multiplyMatrices( this.camera.projectionMatrix, this.camera.matrixWorldInverse );
+            projScreenMat.multiplyMatrices( self.camera.projectionMatrix, self.camera.matrixWorldInverse );
             pos.applyProjection(projScreenMat);
 
             return { x: ( pos.x + 1 ) * self.target.width() / 2,
                 y: ( - pos.y + 1) * self.target.height() / 2 };
-        },
-        getComponents: function(){
+        }
+
+        self.getComponents = function(){
             var findCompsIn = function(comp){
                 var comps = [];
                 for(var i = 0; i < comp.children.length; i++){
@@ -328,25 +277,19 @@ define(['../../util/webgl-test'], function(WebGLTest){
 
             var comps = [];
 
-            for(var i = 0; i < this.context.properties.components.length; i++){
-                var comp = this.context.properties.components[i];
+            for(var i = 0; i < self.context.properties.components.length; i++){
+                var comp = self.context.properties.components[i];
                 if(comp.children){
                     comps.push.apply(comps, findCompsIn(comp));
                 }else{
                     comps.push(comp);
                 }
-
-                /*
-
-                if(comp.children){
-                    comps.push.apply(comps, findCompsIn(comp));
-                }else{
-                    comps.push(comp);
-                }*/
             }
 
             return comps;
         }
-    };
+		
+		initialize();
+	};
 	return Viewer;
 });

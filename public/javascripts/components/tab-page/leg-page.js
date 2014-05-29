@@ -36,12 +36,13 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
                 clickBar: 1
             });
             patternChooser = new Sly(patternSliderFrame, patternOptions);
-            patternChooser.on('active', function(event, itemIndex){
-                if(self.activePattern != self.patterns[itemIndex]){
-                    $(self).trigger('pattern-changed', [self.side, self.patterns[itemIndex]]);
-                    self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
-                    self.element.find('.loading').show();
-                }
+
+            patternSliderFrame.find('li.leg').on('click', function(event){
+                var index = patternSliderFrame.find('li.leg').index(this);
+                $(self).trigger('pattern-changed', [self.side, self.patterns[index]]);
+                self.element.find('.loading .message').remove();
+                self.element.find('.loading').append('<div class="message">Poot wordt ingeladen</div>');
+                self.element.find('.loading').show();
             });
 
             patternChooser.init();
@@ -49,7 +50,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
             if(patternSlidee.width() < patternSlidee.parent().width()){
                 self.element.find('.legs .scrollbar').hide();
             }
-            console.log("END CREATE PATTERN CHOOSER!");
         };
 
         var createColorChooser = function(){

@@ -1,4 +1,13 @@
 <div class="glasses-page">
+    <div class="glasses-tooltips">
+        <% for(var i = 0; i < glasses.length; i++){ %>
+        <% var glass = glasses[i]; %>
+        <div class="glass-tooltip">
+            <h4><%= glass.title %></h4>
+            <p><%= glass.description %></p>
+        </div>
+        <% } %>
+    </div>
     <div class="loading"><img src="/images/ajax-loader.gif"></div>
     <div class="slider glasses">
         <div class="frame">
@@ -6,7 +15,7 @@
                 <% for(var i = 0; i < glasses.length; i++){ %>
                 <% var glass = glasses[i]; %>
                 <li class="glass">
-                    <img id="glass-<%= glass._id %>" src="<%= glass.img %>" data-number="<%= i %>"/>
+                    <img id="glass-<%= glass._id %>" src="<%= glass.img %>" data-number="<%= i %>" class="<% if(glass.default || glass.active) print(' active'); %>"/>
                     <% if(glass.priceExtra){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
                 </li>
                 <% } %>

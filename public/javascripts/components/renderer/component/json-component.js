@@ -25,7 +25,19 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         break;
                 }
                 loader.load(self.src, function(geo, material){
-                    self.material = new THREE.MeshLambertMaterial({shading: THREE.FlatShading});
+                    var materialArgs = {
+                        shading: THREE.FlatShading
+                    };
+                    if(self.opacity){
+                        console.log("THIS OBJECT HAS OPACITY");
+                        materialArgs.transparent = true;
+                        materialArgs.opacity = parseFloat(self.opacity);
+                    };
+                    if(self.color){
+                        console.log("THIS OBJECT HAS COLOR");
+                        materialArgs.color = self.color;
+                    }
+                    self.material = new THREE.MeshPhongMaterial(materialArgs);
                     self.geo = geo;
                     self.redraw();
                     self.loaded = true;
@@ -58,12 +70,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
             if(data.indicator)
                 data.indicator = new THREE.Vector3(data.indicator.x, data.indicator.y, data.indicator.z);
 
-            switch(data.material){
-                case "MeshLambertMaterial":
-                    data.material = new THREE.MeshLambertMaterial();
-                case "MeshPhongMaterial":
-                    data.material = new THREE.MeshPhongMaterial();
-            }
             return new JSONComponent(data);
         }catch(err){
             console.log(err);

@@ -18,7 +18,6 @@ define(['./component'], function(Component){
     LeafComponent.prototype.geo = null;
     LeafComponent.prototype.mesh = null;
     LeafComponent.prototype.hoverColor = "0x3333FF";
-    LeafComponent.prototype.color = "0x28affc";
     LeafComponent.prototype.material = null;
     LeafComponent.prototype.loaded = false;
     LeafComponent.prototype.connectors = {};

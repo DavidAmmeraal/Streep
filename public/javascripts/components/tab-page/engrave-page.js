@@ -1,9 +1,7 @@
 define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/component/modification/csg-text-modification'], function(TabPage, EngravePageTemplate, CSGTextModification){
     var EngravePage = function(options){
         console.log("new EngravePage()");
-        var self = this;
         TabPage.apply(this, [options]);
-
     };
 
     EngravePage.prototype = Object.create(TabPage.prototype);
@@ -11,21 +9,23 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.currentTarget = null;
     EngravePage.prototype.side = null;
     EngravePage.prototype.tabTitle = "Graveren";
+    EngravePage.prototype.font = "";
     EngravePage.prototype.size = null;
     EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Slackey', 'UnifrakturMaguntia'];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.side = null;
     EngravePage.prototype.engraved = false;
+    EngravePage.prototype.maxEngraveLength = 8;
     EngravePage.prototype.activate = function(){
-        console.log("ACTIVATE");
-
     };
     EngravePage.prototype.render = function(){
-        console.log("RENDERE!!!!");
         var self = this;
 
         var html = $(this.template({fonts: this.fonts, sizes: this.sizes}));
         this.html = html;
+
+        var fontChooser = this.html.find('.font-chooser');
+        var sizeChooser = this.html.find('.size-chooser');
 
         this.html.find('button.engrave').on('click', function(event){
             self.engraveClicked.apply(self, [event]);
@@ -37,9 +37,22 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             self.resetClicked.apply(self, [event])
         });
 
+        this.html.find('.dropdown-menu.font li').on('click', function(){
+            self.font = $(this).text();
+            fontChooser.html(self.font + '<span class="caret"></span>');
+        });
+
+        this.html.find('.dropdown-menu.size li').on('click', function(){
+            self.size = $(this).text();
+            sizeChooser.html(self.size + '<span class="caret"></span>');
+        });
+
+        self.font = self.fonts[0];
+        self.size = self.sizes[0];
+
         this.html.find('.text').on('keydown', function(event){
             var length = self.html.find('.text').val().length;
-            if(length == 12 && event.keyCode != 8){
+            if(length == self.maxEngraveLength && event.keyCode != 8){
                 event.preventDefault();
             }
         });
@@ -61,9 +74,9 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.engraveClicked = function(event){
         var self = this;
 
-        var size = this.element.find('select.size > :selected').val().toLowerCase();
+        var size = self.size.toLowerCase();
         var text = this.element.find('input.text').val();
-        var font = this.element.find('select.font > :selected').val().toLowerCase();
+        var font = self.font.toLowerCase();
 
         if(text.length > 0){
             this.loading(true);

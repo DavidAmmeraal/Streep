@@ -1,5 +1,10 @@
 /** Bootstrap overwrites **/
 
+.no-padding{
+    padding-left: 0;
+    padding-right: 0;
+}
+
 body{
     font-family: Allerta, Helvetica, Arial;
     overflow: hidden;
@@ -290,7 +295,7 @@ body{
 }
 
 .column-left #buttons{
-   z-index: 9998;
+   z-index: 9997;
    position: absolute;
    height: 100%;
    padding-top: 60px;
@@ -340,6 +345,10 @@ body{
     position: absolute;
     height: 250px;
     bottom: 0;
+}
+
+#menu button.back{
+    float: left;
 }
 
 #menu .contents{
@@ -476,7 +485,7 @@ body{
     font-size: 20px;
     text-align: center;
     padding: 10px 20px;
-    z-index: 9997;
+    z-index: 9996;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .loading{
@@ -487,7 +496,7 @@ body{
 
 #menu .contents .tab-content #engrave .engrave-page .loading.no-img{
     background: none;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 #menu .contents .tab-content #engrave .engrave-page .loading .message{
@@ -498,9 +507,6 @@ body{
 }
 #menu .contents .tab-content #engrave .engrave-page .disabled .message button{
     height: 30px;
-}
-#menu .contents .tab-content #engrave .engrave-page .disabled, .loading .message{
-    background-color: white;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .disabled, .loading img{
@@ -514,12 +520,6 @@ body{
 
 #menu .contents .tab-content #engrave .engrave-page .fields select{
     float: left;
-}
-
-#menu .contents .tab-content #engrave .engrave-page .fields input.text{
-    border-right: 1px solid #dcdcdc;
-    float: left;
-    width: 300px;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .buttons{
@@ -663,6 +663,27 @@ body{
     float: left;
 }
 
+#menu .contents .tab-content #glasses .glasses-page .glasses-tooltips{
+    height: 0;
+}
+
+#menu .contents .tab-content #glasses .glasses-page .glasses-tooltips .glass-tooltip{
+    padding: 10px;
+    display: none;
+    background-color: #ededed;
+    z-index: 9998;
+    position: fixed;
+    width: 180px;
+    margin-left: 20px;
+    height: auto;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    -webkit-box-shadow: -1px 3px 8px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    -1px 3px 8px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         -1px 3px 8px 0px rgba(50, 50, 50, 0.75);
+}
+
 #menu .contents .tab-content #glasses .glasses-page .loading{
     font-weight: bold;
     position: absolute;
@@ -753,7 +774,7 @@ body{
     position: absolute;
     top: 50%;
     left: 0;
-    z-index: 9997;
+    z-index: 9996;
 }
 
 .overlay.spinner .arrow_right{
@@ -761,7 +782,7 @@ body{
     position: absolute;
     top: 50%;
     right: 0;
-    z-index: 9997;
+    z-index: 9996;
 }
 
 .streep-tooltip{

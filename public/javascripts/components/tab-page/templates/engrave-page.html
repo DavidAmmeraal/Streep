@@ -2,23 +2,33 @@
     <div class="loading"></div>
     <div class="disabled"></div>
     <div class="fields">
-        <input type="text" class="text">
-        <select class="font">
-            <% _.each(fonts, function(font){ %>
-            <option value="<%= font %>"><%= font %></option>
-            <% }); %>
-        </select>
-        <select class="size">
-            <% for(var i = 0; i < sizes.length; i++){%>
-            <% var size = sizes[i]; %>
-            <option value="<%= size %>"><%= size %></option>
-            <% }; %>
-        </select>
+        <div class="col-md-12 no-padding">
+            <div class="input-group">
+                <input type="text" class="form-control text" placeholder="text die je wilt graveren">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle font-chooser" data-toggle="dropdown"><%= fonts[0] %> <span class="caret"></span></button>
+                    <ul class="dropdown-menu font">
+                        <% _.each(fonts, function(font){ %>
+                        <li><a href="#"><%= font %></a></li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle size-chooser" data-toggle="dropdown"><%= sizes[0] %> <span class="caret"></span></button>
+                    <ul class="dropdown-menu size">
+                        <% for(var i = 0; i < sizes.length; i++){%>
+                        <% var size = sizes[i]; %>
+                        <li><a href="#"><%= size %></a></li>
+                        <% }; %>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="buttons">
         <button class="reset">Reset</button>
         <button class="engrave">Halverwege</button>
-        <div class="counter">12</div>
+        <div class="counter">8</div>
         <button class="carve">Doorheen</button>
     </div>
 </div>

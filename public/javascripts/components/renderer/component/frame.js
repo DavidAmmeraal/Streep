@@ -119,6 +119,12 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }
 
                 self.removeChild(self.currentFront.currentNose);
+                self.removeChild(self.currentLeftLeg);
+                self.removeChild(self.currentRightLeg);
+                if(self.currentFront.currentGlasses){
+                    self.currentFront.currentGlasses.trigger('request-removal',  self.currentFront.currentGlasses);
+                    self.removeChild(self.currentFront.currentGlasses);
+                }
 
                 if(self.currentFront.focused)
                     newFront.focused = true;
@@ -130,7 +136,6 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                 }catch(err){
                     console.log(err);
                 }
-
                 if(self.currentFront.glasses && self.currentFront.glasses.length > 0){
                     Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[0])]).then(function(){
                         resolve(self.currentFront);
@@ -258,6 +263,33 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.prototype.changeGlasses = function(newGlasses){
+        console.log("Frame.prototype.changeGlasses()");
+        newGlasses = JSONComponent.parseFromDB(newGlasses);
+        var self = this;
+        return new Promise(function(resolve, reject){
+            newGlasses.load().then(function(){
+                console.log(newGlasses);
+                try{
+                    function finalize(){
+                        self.currentFront.currentGlasses = newGlasses;
+                        self.currentFront.currentGlasses.active = true;
+                        self.addChild(self.currentFront.currentGlasses);
+                        self.currentFront.currentGlasses.trigger('request-render', newGlasses);
+                        resolve(newGlasses)
+                    }
+                    if(self.currentFront.currentGlasses){
+                        self.currentFront.currentGlasses.trigger('request-removal', self.currentFront.currentGlasses);
+                    }
+                    finalize();
+
+
+                }catch(err){
+                    console.log(err);
+                }
+            });
+        });
+        /*
+        console.log("Frame.prototype.changeGlasses()");
         var self = this;
         this.cancelModifications();
 
@@ -265,7 +297,9 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             var glassesObj = JSONComponent.parseFromDB(newGlasses);
 
             var finalize = function(){
+                console.log("FINSALIZE IT DFSDFSDFSDF");
                 try{
+                    console.log(glassesObj);
                     glassesObj.active = true;
                     self.currentFront.priceExtra = glassesObj.priceExtra;
                     self.currentFront.currentGlasses.setTransparancy(glassesObj.opacity);
@@ -276,19 +310,24 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
             };
 
             if(!self.currentFront.currentGlasses || (glassesObj.src != self.currentFront.currentGlasses.src)){
+                if(self.currentFront.currentGlasses){
+                    self.removeChild(self.currentFront.currentGlasses);
+                }
                 glassesObj.load().then(function(){
-                    if(self.currentFront.currentGlasses){
-                        self.removeChild(self.currentFront.currentGlasses);
-                    }
                     self.currentFront.currentGlasses = glassesObj;
                     self.addChild(self.currentFront.currentGlasses);
-                    finalize();
+                    glassesObj.trigger('request-render', glassesObj);
+                    setTimeout(function(){
+                        finalize();
+                    },10);
+
                 });
             }else{
                 finalize();
             }
 
         });
+        */
     };
     Frame.prototype.toJSON = function(data){
         return {

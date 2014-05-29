@@ -4,7 +4,7 @@ define(['./util/observable'], function(Observable){
 		this.properties = {
 			'components': []
 		};
-		
+
 		this.add = function(comp){
 			var comps = self.get('components');
 			comps.push(comp);
@@ -25,6 +25,6 @@ define(['./util/observable'], function(Observable){
             self.updateObservers();
         }
 	};
-	ComponentContext.prototype = new Observable();
+	ComponentContext.prototype = Object.create(new Observable());
 	return ComponentContext;
 });

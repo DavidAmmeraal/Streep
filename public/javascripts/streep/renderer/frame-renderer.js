@@ -11,7 +11,7 @@ define([
 
     FrameRenderer.prototype = {
         container: null,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#000000",
         frame: null,
         renderedFrame: null,
         container: null,

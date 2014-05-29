@@ -16,6 +16,9 @@ define([
     IndicatorOverlay.prototype.setIndicators = function(indicators){
         this.indicators = indicators;
     };
+    IndicatorOverlay.prototype.clear = function(){
+        this.element.find('.indicator, .streep-tooltip').remove();
+    };
     IndicatorOverlay.prototype.render = function(){
         this.renderIndicators();
         this.renderTooltips();
@@ -40,7 +43,6 @@ define([
         this.element.show();
     }
     IndicatorOverlay.prototype.renderTooltips = function(){
-        console.log("IndicatorOverlay.prototpye.renderTooltips()");
         var self = this;
         this.element.find('.indicator').each(function(){
             var offset = $(this).position();

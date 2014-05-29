@@ -11,8 +11,10 @@ define(['text!./templates/menu.html'], function(MenuTemplate){
        };
 
        var render = function(){
-           console.log("Menu.render()");
            self.element.html(template({pages: self.pages}));
+           self.element.find('button.back').on('click', function(){
+               $(self).trigger('back');
+           });
            for(var i = 0; i < self.pages.length; i++){
                var page = self.pages[i];
                var pageElement = self.element.find('#' + page.id);

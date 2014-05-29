@@ -34,7 +34,13 @@ define([
     Renderer.prototype.getIndicators = function(){
         console.log("Renderer.getIndicators()");
         var self = this;
-        var comps = this.viewer.getComponents();
+
+        var comps = [];
+        comps.push(self.frame.currentFront.currentNose);
+        comps.push(self.frame.currentLeftLeg);
+        comps.push(self.frame.currentRightLeg);
+
+        console.log("HOI2");
 
         function toScreenXY( position, camera, div ){
             var pos = position.clone();
@@ -50,13 +56,12 @@ define([
 
         for(var c = 0; c < comps.length; c++){
             var comp = comps[c];
+            console.log(comp);
             if(comp.indicator){
                 var indicator = {
                     position: toScreenXY(comp.indicator, self.viewer.camera, self.viewer.renderer.domElement),
                     component: comp.toJSON()
                 };
-
-                console.log(indicator);
 
                 indicators.push(indicator);
             }
@@ -117,6 +122,43 @@ define([
             }, 1);
         });
     };
+    Renderer.prototype.changeGlasses = function(data){
+        console.log("Renderer.prototype.changeGlasses()");
+        console.log(data);
+
+        var self = this;
+
+        return new Promise(function(resolve, reject){
+            var actualGlasses = self.frame.currentFront.glasses[data.glasses.index];
+            self.frame.changeGlasses(actualGlasses).then(function(newGlasses){
+                var glasses = _.map(self.frame.currentFront.glasses, function(glass){
+                    var returnObj = {
+                        img: glass.img,
+                        priceExtra: glass.priceExtra,
+                        active: false,
+                        title: glass.title,
+                        description: glass.description
+                    }
+
+                    if(glass._id == self.frame.currentFront.currentGlasses._id){
+                        returnObj.active = true;
+                    }
+                    return returnObj;
+                });
+
+                resolve({
+                    'commandID': data.commandID,
+                    'img': self.viewer.getScreenshot(),
+                    'indicators': false,
+                    'data': {
+                        'glassesPage': {
+                            glasses: glasses
+                        }
+                    }
+                })
+            });
+        });
+    }
     Renderer.prototype.changeFront = function(data){
         console.log("Renderer.prototype.changeFront()");
         console.log(data);
@@ -132,24 +174,42 @@ define([
                     }
                 });
 
+                var glasses = [];
+                if(self.frame.currentFront.glasses){
+                    glasses = _.map(self.frame.currentFront.glasses, function(glass){
+                        return {
+                            img: glass.img,
+                            priceExtra: glass.priceExtra,
+                            active: glass.active,
+                            title: glass.title,
+                            description: glass.description
+                        }
+                    })
+                }
+
                 var finish = function(){
+                    console.log("finished()");
+                    var resolveData = {
+                        'frontPage': {
+                            fronts: fronts
+                        },
+                        'nosePage': {
+                            noses: self.frame.currentFront.noses
+                        },
+                        'glassesPage':{
+                            glasses: glasses
+                        }
+                    };
+
                     resolve({
                         'commandID': data.commandID,
                         'img': self.viewer.getScreenshot(),
                         'indicators': false,
-                        'data': {
-                            'frontPage': {
-                                fronts: fronts
-                            },
-                            'nosePage': {
-                                noses: self.frame.currentFront.noses
-                            }
-                        }
+                        'data': resolveData
                     });
                 }
 
                 if(self.appliedModificationArguments){
-                    console.log("THERE WHERE MODIFICATIONS ON THIS LEG!!!!");
                     var modsToDo = [];
                     for(var legStr in self.appliedModificationArguments){
                         if(self.appliedModificationArguments[legStr].text){
@@ -161,10 +221,6 @@ define([
                             }else if(self.appliedModificationArguments[legStr].text){
                                 leg = self.frame.currentLeftLeg;
                             }
-
-                            console.log("LEG");
-                            console.log(leg);
-                            console.log("END LEG");
 
                             if(leg.connectors && leg.connectors[0] && leg.connectors[0].modifications){
                                 var mod = _.find(leg.connectors[0].modifications, function(mod){
@@ -233,8 +289,6 @@ define([
         })
     };
     Renderer.prototype.changePattern = function(data){
-        console.log("Renderer.prototype.changePattern");
-        console.log(data);
         var self = this;
         var leg;
         switch(data.side){
@@ -283,7 +337,6 @@ define([
                 var sizes = [];
                 try{
                     if(obj.connectors && obj.connectors[0] && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
-                        console.log(obj.connectors[0].modifications[0].sizes);
                         for(var size in obj.connectors[0].modifications[0].sizes){
                             sizes.push(size);
                         }
@@ -295,7 +348,10 @@ define([
                     console.log(err.stack);
                 }
 
-                console.log(sizes);
+                self.appliedModificationArguments.left_leg = {};
+                self.appliedModificationArguments.right_leg = {};
+                self.appliedModifications.left_leg = {};
+                self.appliedModifications.right_leg = {};
 
                 var engravePageObj = {};
                 engravePageObj.side = data.side;
@@ -317,7 +373,6 @@ define([
     };
     Renderer.prototype.changeNose = function(data){
         console.log("Renderer.prototype.changeNose()");
-        console.log(data);
         var self = this;
         return new Promise(function(resolve, reject){
            var actualNose = self.frame.currentFront.noses[data.nose.index];
@@ -367,7 +422,6 @@ define([
         if(comp == this.frame.currentFront.currentNose){
             return this._handleFrontFocused(comp);
         }else if(comp == this.frame.currentLeftLeg || comp == this.frame.currentRightLeg){
-            console.log("HAI DI HO ITS A FUCKING LEG!");
             return this._handleLegFocused(comp);
         }else{
             console.log("ITS NEITHER!");
@@ -375,6 +429,7 @@ define([
 
     };
     Renderer.prototype._handleFrontFocused = function(comp){
+        var self = this;
         var fronts = _.map(this.frame.fronts, function(front){
             return {
                 img: front.img,
@@ -383,7 +438,25 @@ define([
             }
         });
 
-        return{
+        var glasses = [];
+
+        if(this.frame.currentFront.glasses){
+            glasses = _.map(this.frame.currentFront.glasses, function(glass){
+                var active = false;
+                if(glass._id == self.frame.currentFront.currentGlasses._id){
+                    active = true;
+                }
+                return {
+                   img: glass.img,
+                   priceExtra: glass.priceExtra,
+                   active: active,
+                   title: glass.title,
+                   description: glass.description
+                }
+            });
+        }
+
+        var returnObject = {
             'focusedOn': 'front',
             'frontPage':{
                 fronts: fronts,
@@ -391,19 +464,21 @@ define([
             },
             'nosePage': {
                 noses: this.frame.currentFront.noses
+            },
+            'glassesPage': {
+                glasses: glasses
             }
-        };
+        }
+
+        return returnObject;
     };
     Renderer.prototype._handleLegFocused = function(comp){
         console.log("Renderer.prototype._handleLegFocused");
         var focusedStr;
-        console.log(comp);
         if(comp == this.frame.currentLeftLeg){
-            console.log("ITS THE LEFT LEG");
             var obj = this.frame.currentLeftLeg;
             focusedStr = "left_leg";
         }else{
-            console.log("ITS THE RIGHT LEG");
             var obj = this.frame.currentRightLeg;
             focusedStr = "right_leg";
         }
@@ -428,9 +503,7 @@ define([
         var sizes = [];
         try{
             if(obj.connectors && obj.connectors[0] && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
-                console.log(obj.connectors[0].modifications[0].sizes);
                 for(var size in obj.connectors[0].modifications[0].sizes){
-                    console.log("SIZE: " + size);
                     sizes.push(size);
                 }
             }else{
@@ -440,8 +513,6 @@ define([
             console.log(err);
             console.log(err.stack);
         }
-
-        console.log(sizes);
 
         var engravePageObj = {};
         engravePageObj.side = focusedStr;
@@ -464,7 +535,6 @@ define([
         console.log("Renderer.prototype.focus()");
         var self = this;
         return new Promise(function(resolve, reject){
-            console.log(data.comp.name);
             var actualComp = self._getActualComp(data.comp);
             self.focusedComp = actualComp;
             self.viewer.focusTo(self._getActualComp(data.comp), 0);
@@ -597,14 +667,16 @@ define([
                     });
                 }
 
-                if(!self.viewer){
-                    self.viewer = new Viewer(self.container, self.context, {
-                        backgroundColor: self.backgroundColor,
-                        startPosition: new THREE.Vector3(-100, 20, 400)
-                    });
-                }else{
+                if(self.viewer){
                     self.viewer.destroy();
                 }
+
+                self.context = new ComponentContext();
+                self.viewer = new Viewer(self.container, self.context, {
+                    backgroundColor: self.backgroundColor,
+                    startPosition: new THREE.Vector3(-100, 20, 400)
+                });
+
                 if(self.frame){
                     self.frame.remove();
                     setTimeout(function(){
@@ -640,7 +712,6 @@ define([
     Renderer.prototype.resize = function(data){
         var self = this;
         console.log("Renderer.prototype.resize()");
-        console.log(data);
         self.container.width(data.containerDimensions[0]);
         self.container.height(data.containerDimensions[1]);
         self.viewer.resize();
@@ -662,11 +733,8 @@ define([
         var objects = self.frame.exportSTL();
 
         $.post('http://localhost:3000/server-rendering/receive-stl/' + data.commandID, {amount: objects.length}).then(function(){
-            console.log("FIRST REQUEST SEND!");
             for(key in objects){
-                $.post('http://localhost:3000/server-rendering/receive-stl/' + data.commandID, {name: key, stl: objects[key]}).then(function(){
-                    console.log("SEND SEND SEND");
-                });
+                $.post('http://localhost:3000/server-rendering/receive-stl/' + data.commandID, {name: key, stl: objects[key]});
             }
         });
 
@@ -675,8 +743,6 @@ define([
         });
     };
     Renderer.prototype.getPrice = function(data){
-        console.log("GET PRICE!!!!");
-        console.log(this.frame.getPrice());
         return Promise.resolve({'commandID': data.commandID, 'price': this.frame.getPrice()});
     };
 

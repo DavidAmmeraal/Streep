@@ -11,7 +11,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://streep.nl:3000",
+        host: "http://local.streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -35,7 +35,6 @@ define([
                         resolve(data);
                     },
                     error: function(){
-                        console.log(arguments);
                         $(self).trigger('commandError');
                     }
                 });
@@ -73,16 +72,13 @@ define([
             var self = this;
             $(this.spinner).on('rotate-left-requested', function(){
                 self.rotateLeft();
-                console.log("ROTATE LEFT REQUESTED!!");
             });
 
             $(this.spinner).on('rotate-right-requested', function(){
                 self.rotateRight();
-                console.log("ROTATE RIGHT REQUESTED!");
             });
         },
         exitPreviewMode: function(){
-            console.log("RendererProxy.enterPreviewMode()");
             var self = this;
             var container = $(self.container);
             var command = {
@@ -112,7 +108,6 @@ define([
             });
         },
         enterPreviewMode: function(){
-            console.log("RendererProxy.enterPreviewMode()");
             var self = this;
             var container = $(self.container);
             var command = {
@@ -143,7 +138,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
                     resolve();
@@ -161,7 +155,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
                     resolve();
@@ -169,7 +162,6 @@ define([
             });
         },
         startSession: function(){
-            console.log("RendererProxy.prototype.startSession()");
             var self = this;
             return new Promise(function(resolve){
                 $.get(self.host + '/' + self.uri + '/start-session').then(function(data){
@@ -183,7 +175,6 @@ define([
 
         },
         loadFrame: function(frame){
-            console.log("RendererProxy.prototype.loadFrame()");
             var self = this;
             var container = $(self.container);
             this.frame = frame;
@@ -195,9 +186,9 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
+                    self.indicators.clear();
                     self.indicators.setIndicators(data.indicators);
                     self.indicators.render();
                     resolve();
@@ -224,7 +215,6 @@ define([
                     }else{
                         self.indicators.hide();
                     }
-                    console.log(data.data);
                     $(self).trigger('focus-changed', [comp, data.data]);
                 });
             });
@@ -239,8 +229,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log("ZOOMOUT COMPLETED ON SERVER");
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -251,7 +239,6 @@ define([
                     }else{
                         self.indicators.hide();
                     }
-                    console.log(data.data);
                     $(self).trigger('focus-changed');
                 });
             });
@@ -267,7 +254,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -290,19 +276,22 @@ define([
                 front: front,
                 'containerDimensions': [container.width(), container.height()]
             };
-            return new Promise(function(resolve){
+            return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
-                    var img = $('<img src="' + data.img + '" />');
-                    self.target.html(img);
+                    try{
+                        var img = $('<img src="' + data.img + '" />');
+                        self.target.html(img);
 
-                    if(data.indicators){
-                        self.indicators.setIndicators(data.indicators);
-                        self.indicators.render();
-                    }else{
-                        self.indicators.hide();
+                        if(data.indicators){
+                            self.indicators.setIndicators(data.indicators);
+                            self.indicators.render();
+                        }else{
+                            self.indicators.hide();
+                        }
+                        resolve(data);
+                    }catch(err){
+                        reject(err);
                     }
-                    resolve(data);
                 });
             });
         },
@@ -318,7 +307,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -328,6 +316,25 @@ define([
                     }else{
                         self.indicators.hide();
                     }
+                    resolve(data);
+                });
+            });
+        },
+        changeGlasses: function(glasses){
+            var self = this;
+            var container = $(container);
+            var command = {
+                name: 'changeGlasses',
+                sessionID: this.sessionID,
+                glasses: glasses,
+                'containerDimensions': [container.width(), container.height()]
+            };
+
+            return new Promise(function(resolve){
+                self.doCommand(command).then(function(data){
+                    var img = $('<img src="' + data.img + '" />');
+                    self.target.html(img);
+
                     resolve(data);
                 });
             });
@@ -343,7 +350,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -368,7 +374,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -396,7 +401,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -424,7 +428,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -449,7 +452,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -473,7 +475,6 @@ define([
             };
             return new Promise(function(resolve){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
 
@@ -499,7 +500,6 @@ define([
             };
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    console.log(data);
                     if(data.price){
                         resolve(data.price);
                     }
