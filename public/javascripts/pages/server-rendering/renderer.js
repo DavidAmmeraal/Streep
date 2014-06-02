@@ -17,7 +17,7 @@ define([
     };
 
     Renderer.prototype.sessions = {};
-    Renderer.prototype.backgroundColor = "#FFFFFF";
+    Renderer.prototype.backgroundColor = "#f3f1f1";
     Renderer.prototype.container = null;
     Renderer.prototype.context = null;
     Renderer.prototype.viewer = null;
@@ -39,8 +39,6 @@ define([
         comps.push(self.frame.currentFront.currentNose);
         comps.push(self.frame.currentLeftLeg);
         comps.push(self.frame.currentRightLeg);
-
-        console.log("HOI2");
 
         function toScreenXY( position, camera, div ){
             var pos = position.clone();

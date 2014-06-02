@@ -32,7 +32,7 @@ define([
         $.extend(self, options);
     };
 
-    Renderer.prototype.backgroundColor = "#FFFFFF";
+    Renderer.prototype.backgroundColor = "#f3f1f1";
     Renderer.prototype.frame = null;
     Renderer.prototype.renderedFrame = null;
     Renderer.prototype.container = null;
