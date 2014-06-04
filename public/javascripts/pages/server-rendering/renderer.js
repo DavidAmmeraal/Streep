@@ -782,10 +782,14 @@ define([
             frame_name: frame.name,
             frame_base_price: frame.basePrice,
             nose_name: nose.name,
-            nose_price_extra: nose.priceExtra
+            nose_price_extra: nose.priceExtra,
+            nose_color: nose.color,
+            legs_color: legs.color
         };
 
         if(glasses){
+            checkoutParams.glasses_color = glasses.color;
+            checkoutParams.glasses_opacity = glasses.opacity;
             checkoutParams.glasses_name = glasses.name;
             checkoutParams.glasses_price_extra = glasses.priceExtra;
         }
