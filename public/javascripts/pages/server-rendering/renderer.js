@@ -743,6 +743,73 @@ define([
     Renderer.prototype.getPrice = function(data){
         return Promise.resolve({'commandID': data.commandID, 'price': this.frame.getPrice()});
     };
+    Renderer.prototype.finalize = function(data){
+        console.log("Renderer.prototype.finalize()");
+        console.log(this.frame);
+        var commandID = data.commandID;
+        var self = this;
+        var frame = {
+            id: this.frame.id,
+            name: this.frame.name,
+            basePrice: this.frame.basePrice
+        };
+        var nose = {
+            name: this.frame.currentFront.currentNose.name,
+            priceExtra: this.frame.currentFront.currentNose.priceExtra,
+            color: this.frame.currentFront.currentNose.color
+        };
+        var glasses;
+        if(this.frame.currentFront.currentGlasses){
+            glasses = {
+                name: this.frame.currentFront.currentGlasses.name,
+                color: this.frame.currentFront.currentGlasses.color,
+                opacity: this.frame.currentFront.currentGlasses.opacity,
+                priceExtra: this.frame.currentFront.currentGlasses.priceExtra
+            }
+        };
+        var legs = {
+            color: this.frame.currentLeftLeg.color
+        };
+
+        var creation = {
+            "frame": frame,
+            "nose": nose,
+            "glasses": glasses,
+            "legs": legs
+        };
+
+        var checkoutParams = {
+            frame_name: frame.name,
+            frame_base_price: frame.basePrice,
+            nose_name: nose.name,
+            nose_price_extra: nose.priceExtra
+        };
+
+        if(glasses){
+            checkoutParams.glasses_name = glasses.name;
+            checkoutParams.glasses_price_extra = glasses.priceExtra;
+        }
+
+        return new Promise(function(resolve, reject){
+            $.post('http://localhost:3000/creations/add', {creation: creation}).then(function(data){
+                var objects = self.frame.exportSTL();
+                var creationId = data.creationId;
+
+                $.post('http://localhost:3000/creations/receive-stl/' + creationId, {amount: objects.length}).then(function(){
+                    var i = 1;
+                    for(key in objects){
+                        $.post('http://localhost:3000/creations/receive-stl/' + creationId, {name: key, stl: objects[key]}).then(function(data){
+                            i++;
+                            if(i == objects.length){
+                                checkoutParams.stl_file = creationId + ".stl";
+                                resolve({'commandID': commandID, 'creationID': creationId, 'checkoutParams': checkoutParams});
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    };
 
     return Renderer;
 });

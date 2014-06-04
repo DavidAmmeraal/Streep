@@ -871,7 +871,7 @@ body{
 }
 
 #overview .order button{
-    width: 190px;
+    width: 100%;
 }
 
 #overview .loading{

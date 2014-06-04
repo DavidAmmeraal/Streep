@@ -53,7 +53,6 @@ exports.getSTL = function(req, res){
             var zip = new AdmZip();
             for(var i = 0; i < waitingForSTL[commandID]['parts'].length; i++){
                 var part = waitingForSTL[commandID]['parts'][i];
-                console.log("NAME: " + part.name);
                 zip.addFile(part.name + ".stl", new Buffer(part.stl), "Part for STREEP glasses");
             }
             var toSend = zip.toBuffer();
@@ -102,7 +101,6 @@ exports.keepAlive = function(){
 
 exports.startSession = function(){
     return function(req, res){
-        console.log(io);
         var webdriver = require('selenium-webdriver');
         console.log("HOI WEBDRIVER");
         var caps = webdriver.Capabilities.firefox();
@@ -135,8 +133,7 @@ exports.startSession = function(){
 
 exports.command = function(){
     return function(req, res){
-        console.log("ServerRendering.command()");
-        console.log(req);
+
         var socket = sockets[req.body.sessionID];
         var commandID = uuid.v4();
         req.body.commandID = commandID;

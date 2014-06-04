@@ -280,7 +280,7 @@ THREE.Shape.Utils = {
 			tmpHole1 = hole.slice( holeIndex );
 			tmpHole2 = hole.slice( 0, holeIndex );
 
-			// Should check orders here again?
+			// Should check creations here again?
 
 			var trianglea = [
 

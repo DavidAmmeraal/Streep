@@ -11,7 +11,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://renderer.streep.nl",
+        host: "http://streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -504,6 +504,32 @@ define([
                         resolve(data.price);
                     }
                 });
+            });
+        },
+        finalize: function(){
+            var self = this;
+            var command = {
+                name: 'finalize',
+                sessionID: this.sessionID
+            };
+
+            var serialize = function(obj, prefix) {
+                var str = [];
+                for(var p in obj) {
+                    var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+                    str.push(typeof v == "object" ?
+                        serialize(v, k) :
+                        encodeURIComponent(k) + "=" + encodeURIComponent(v));
+                }
+                return str.join("&");
+            }
+
+            return new Promise(function(resolve, reject){
+                self.doCommand(command).then(function(data){
+                    console.log(data);
+                    window.location = "http://streep.nl/ideal/?" + serialize(data.checkoutParams);
+                    resolve();
+                })
             });
         }
     });

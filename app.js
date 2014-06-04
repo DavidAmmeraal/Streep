@@ -8,6 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var frames = require('./routes/frames');
 var fronts = require('./routes/fronts');
+var creations = require('./routes/creations');
 var sizes = require('./routes/sizes');
 var screenshot = require('./routes/screenshot');
 var serverRendering = require('./routes/server-rendering');
@@ -98,6 +99,8 @@ app.get('/server-rendering/renderer/:id', serverRendering.renderer);
 app.get('/server-rendering/get-stl/:sessionId', serverRendering.getSTL);
 app.post('/server-rendering/keep-alive/:sessionID', serverRendering.keepAlive());
 app.post('/screenshot/save', screenshot.save);
+app.post('/creations/add', creations.add);
+app.post('/creations/receive-stl/:creationID', creations.receiveSTL());
 app.get('/fill-test-data', fillTestData.start);
 app.post('/server-rendering/receive-stl/:commandID', serverRendering.receiveSTL());
 

@@ -83,7 +83,15 @@ function(
     var STLButton = $('#buttons > .download-stl');
     var previewButton = $('#buttons > .preview-mode');
     var exitPreviewButton = $('#buttons > .exit-preview-mode');
+    var orderButton = $('button.order');
     var price = $('#overview > .price');
+
+    orderButton.on('click', function(){
+        if(confirm("Weet u zeker dat u wilt bestellen? Hierna kunt u uw bril niet meer wijzigen!")){
+            renderer.finalize();
+            $('.column-left > .command-loading').fadeIn(200);
+        }
+    });
 
     STLButton.on('click', function(){
         renderer.getSTL();
