@@ -527,7 +527,7 @@ define([
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
                     console.log(data);
-                    window.location = "http://streep.nl/ideal/?" + serialize(data.checkoutParams);
+                    window.parent.location.href= "http://streep.nl/ideal/?" + serialize(data.checkoutParams);
                     resolve();
                 })
             });
