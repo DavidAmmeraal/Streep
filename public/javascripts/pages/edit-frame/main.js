@@ -1,3 +1,5 @@
+$('body').height($(window).height());
+
 requirejs.config({
     //By default load any module IDs from js/lib
     //except, if the module ID starts with "app",
@@ -54,7 +56,6 @@ function(
     RendererProxy
 ){
     var renderer = null;
-    $('body').height($(window).height());
 
     var url = document.URL;
     var urlParts = url.split("/");
@@ -190,6 +191,8 @@ function(
 
     $(sizeChooser).on('size-changed', function(event){
         $('.column-left > .loading').fadeIn(200);
+        $('.indicator').remove();
+        $('.streep-tooltip').remove();
         loadFrame();
     });
 

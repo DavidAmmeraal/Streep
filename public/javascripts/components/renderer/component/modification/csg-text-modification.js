@@ -29,7 +29,7 @@ define([
             style: "normal",
             font: font
         });
-    }
+    };
 
     //Static
     CSGTextModification.parseFromDB = function(data){

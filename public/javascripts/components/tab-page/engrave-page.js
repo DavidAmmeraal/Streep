@@ -11,7 +11,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.font = "";
     EngravePage.prototype.size = null;
-    EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Slackey', 'UnifrakturMaguntia'];
+    EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Blackout'];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.side = null;
     EngravePage.prototype.engraved = false;
@@ -148,9 +148,9 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.carveClicked = function(event){
         var self = this;
 
-        var size = this.element.find('select.size > :selected').val().toLowerCase();
+        var size = self.size.toLowerCase();
         var text = this.element.find('input.text').val();
-        var font = this.element.find('select.font > :selected').val().toLowerCase();
+        var font = self.font.toLowerCase();
 
         if(text.length > 0){
             this.loading(true);
