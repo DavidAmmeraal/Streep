@@ -516,7 +516,7 @@ define([
             function writeCookie(cname, cvalue, cexpire) {
                 document.cookie = cname + '=' + cvalue +
                     (typeof cexpire == 'date' ? 'expires=' + cexpire.toGMTString() : '') +
-                    ',path=/;domain=streep.nl';
+                    ';path=/;domain=streep.nl';
             }
 
             var serialize = function(obj, prefix) {
