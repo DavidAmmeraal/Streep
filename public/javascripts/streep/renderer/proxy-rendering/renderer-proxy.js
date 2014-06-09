@@ -533,6 +533,9 @@ define([
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
                     writeCookie("order", JSON.stringify(data.checkoutParams), 1);
+                    console.log("COOKIES!");
+                    console.log(document.cookie);
+                    console.log("END COOKIES!");
                     window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
