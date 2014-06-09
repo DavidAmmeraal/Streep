@@ -517,7 +517,7 @@ define([
                 var d = new Date();
                 d.setTime(d.getTime() + (exdays*24*60*60*1000));
                 var expires = "expires="+d.toGMTString();
-                document.cookie = cname + "=" + cvalue + "; " + expires;
+                window.parent.document.cookie = cname + "=" + cvalue + "; " + expires;
             }
 
             var serialize = function(obj, prefix) {
@@ -534,7 +534,8 @@ define([
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
                     setCookie("order", JSON.stringify(data.checkoutParams), 1);
-                    window.parent.location.href= "http://streep.nl/ideal";
+                    console.log("HOI HOI HOI");
+                    //window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });
