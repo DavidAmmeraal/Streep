@@ -519,7 +519,7 @@ define([
                     var d = new Date();
                     d.setTime(d.getTime() + (exdays*24*60*60*1000));
                     var expires = "expires="+d.toGMTString();
-                    window.parent.document.cookie = cname + "=" + cvalue + "; " + expires;
+                    document.cookie = cname + "=" + cvalue + "; " + expires;
                 }catch(err){
                     console.log(err);
                 }
