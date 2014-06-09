@@ -513,6 +513,13 @@ define([
                 sessionID: this.sessionID
             };
 
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+d.toGMTString();
+                document.cookie = cname + "=" + cvalue + "; " + expires;
+            }
+
             var serialize = function(obj, prefix) {
                 var str = [];
                 for(var p in obj) {
@@ -526,8 +533,8 @@ define([
 
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    var order = md5(JSON.stringify(data.checkoutParams));
-                    window.parent.location.href= "http://streep.nl/ideal?order=" + order;
+                    setCookie("order", JSON.stringify(data.checkoutParams), 1);
+                    window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });
