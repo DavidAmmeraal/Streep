@@ -541,7 +541,7 @@ define([
                     setCookie("order", JSON.stringify(data.checkoutParams), 1);
                     console.log("COOKIE");
                     console.log(document.cookie);
-                    //window.parent.location.href= "http://streep.nl/ideal";
+                    window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });
