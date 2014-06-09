@@ -513,18 +513,6 @@ define([
                 sessionID: this.sessionID
             };
 
-            function setCookie(cname, cvalue, exdays) {
-                console.log("SET COOKIE!");
-                try{
-                    var d = new Date();
-                    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                    var expires = "expires="+d.toGMTString();
-                    document.cookie = cname + "=" + cvalue + "; " + expires;
-                }catch(err){
-                    console.log(err);
-                }
-            }
-
             var serialize = function(obj, prefix) {
                 var str = [];
                 for(var p in obj) {
@@ -538,10 +526,8 @@ define([
 
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    setCookie("order", JSON.stringify(data.checkoutParams), 1);
-                    console.log("COOKIE");
-                    console.log(document.cookie);
-                    window.parent.location.href= "http://streep.nl/ideal";
+                    var order = md5(JSON.stringify(data.checkoutParams));
+                    window.parent.location.href= "http://streep.nl/ideal?order=" + order;
                     resolve();
                 })
             });
