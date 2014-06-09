@@ -513,11 +513,10 @@ define([
                 sessionID: this.sessionID
             };
 
-            function setCookie(cname, cvalue, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                var expires = "expires="+d.toGMTString();
-                document.cookie = cname + "=" + cvalue + "; " + expires;
+            function writeCookie(cname, cvalue, cexpire) {
+                document.cookie = cname + '=' + cvalue +
+                    (typeof cexpire == 'date' ? 'expires=' + cexpire.toGMTString() : '') +
+                    ',path=/;domain=streep.nl';
             }
 
             var serialize = function(obj, prefix) {
@@ -533,7 +532,7 @@ define([
 
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    setCookie("order", JSON.stringify(data.checkoutParams), 1);
+                    writeCookie("order", JSON.stringify(data.checkoutParams), 1);
                     window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
