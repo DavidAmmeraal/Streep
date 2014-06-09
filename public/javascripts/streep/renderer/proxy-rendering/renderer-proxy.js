@@ -536,7 +536,7 @@ define([
                     console.log("COOKIES!");
                     console.log(document.cookie);
                     console.log("END COOKIES!");
-                    window.parent.location.href= "http://streep.nl/ideal";
+                    //window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });
