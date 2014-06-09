@@ -514,10 +514,15 @@ define([
             };
 
             function setCookie(cname, cvalue, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                var expires = "expires="+d.toGMTString();
-                window.parent.document.cookie = cname + "=" + cvalue + "; " + expires;
+                console.log("SET COOKIE!");
+                try{
+                    var d = new Date();
+                    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                    var expires = "expires="+d.toGMTString();
+                    window.parent.document.cookie = cname + "=" + cvalue + "; " + expires;
+                }catch(err){
+                    console.log(err);
+                }
             }
 
             var serialize = function(obj, prefix) {
