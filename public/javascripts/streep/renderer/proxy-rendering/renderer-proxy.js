@@ -534,7 +534,7 @@ define([
                 self.doCommand(command).then(function(data){
                     console.log(data.checkoutParams);
                     writeCookie("order", JSON.stringify(data.checkoutParams), 1);
-                    window.parent.location.href= "http://streep.nl/ideal";
+                    //window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });
