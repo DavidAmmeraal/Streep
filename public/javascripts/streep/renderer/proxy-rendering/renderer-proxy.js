@@ -11,7 +11,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://renderer.streep.nl",
+        host: "http://local.streep.nl:3000",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -532,9 +532,8 @@ define([
 
             return new Promise(function(resolve, reject){
                 self.doCommand(command).then(function(data){
-                    console.log(data.checkoutParams);
                     writeCookie("order", JSON.stringify(data.checkoutParams), 1);
-                    //window.parent.location.href= "http://streep.nl/ideal";
+                    window.parent.location.href= "http://streep.nl/ideal";
                     resolve();
                 })
             });

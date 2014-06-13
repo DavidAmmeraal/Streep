@@ -8,7 +8,7 @@
                 <li class="nose">
                     <div class="activated"></div>
                     <img src="<%= nose.img %>" data-number="<%= i %>"/>
-                    <% if(nose.priceExtra){ %><div class="price">&#43;&euro;<%= nose.priceExtra %></div><% } %>
+                    <% if(nose.priceExtra && nose.priceExtra > 0){ %><div class="price">&#43;&euro;<%= nose.priceExtra %></div><% } %>
                 </li>
                 <% }; %>
             </ul>
