@@ -678,6 +678,8 @@ define([
                     startPosition: new THREE.Vector3(-100, 20, 400)
                 });
 
+                window['globalviewer'] = self.viewer;
+
                 if(self.frame){
                     self.frame.remove();
                     setTimeout(function(){

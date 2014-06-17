@@ -120,8 +120,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
             self.rotationUpTillNow += x;
 
             var currentPosition = new THREE.Vector3(self.camera.position.x, self.camera.position.y, self.camera.position.z);
-            currentPosition.x = Math.sin(self.rotationUpTillNow * Math.PI / 180) * self.distance;
-            currentPosition.z = Math.cos(self.rotationUpTillNow * Math.PI / 180) * self.distance;
+            currentPosition.x = Math.sin(self.rotationUpTillNow * Math.PI / 180) * self.distance + self.lookingAt.z;
+            currentPosition.z = Math.cos(self.rotationUpTillNow * Math.PI / 180) * self.distance + self.lookingAt.z;
 
             self.positionCamera(currentPosition, 0);
 		};
