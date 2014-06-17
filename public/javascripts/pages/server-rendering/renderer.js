@@ -82,7 +82,10 @@ define([
     Renderer.prototype.enterPreviewMode = function(data){
         console.log("Renderer.prototype.enterPreviewMode()");
         var self = this;
-        self.viewer.rotate(0, 0);
+
+        self.viewer.focusTo(self.frame.previewPerspective.lookAt);
+        self.viewer.setDistance(self.frame.previewPerspective.cameraPosition.z);
+        self.viewer.positionCamera(self.frame.previewPerspective.cameraPosition);
 
         return new Promise(function(resolve, reject){
             setTimeout(function(){

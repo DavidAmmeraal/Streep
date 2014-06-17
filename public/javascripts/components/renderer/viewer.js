@@ -11,10 +11,10 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		//this.light = new THREE.PointLight(0xFFFFFF);
         this.light = new THREE.DirectionalLight( 0xffffff, 1 );
 		this.components = [];
-		this.distance = 250;
 		this.startPosition = new THREE.Vector3(0, 0, this.distance);
 		this.lookingAt = null;
         this.renderer = null;
+        this.distance = 0;
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
         this.backgroundColor = 0x363636;
@@ -96,9 +96,11 @@ define(['../../util/webgl-test'], function(WebGLTest){
 				if(self.sceneReady){
                     if(self.lookingAt.focusPerspective){
                         self.camera.lookAt(self.lookingAt.focusPerspective.lookAt);
-                    }else if(self.lookingAt.mesh.position){
+                    }else if(self.lookingAt.mesh && self.lookingAt.mesh.position){
 						self.camera.lookAt(self.lookingAt.mesh.position);
-					}else{
+					}else if(self.lookingAt.x){
+                        self.camera.lookAt(self.lookingAt);
+                    }else{
 						self.camera.lookAt({x: 0, y: 0, z: 0});
 					}
 					self.render();
@@ -123,6 +125,10 @@ define(['../../util/webgl-test'], function(WebGLTest){
 
             self.positionCamera(currentPosition, 0);
 		};
+
+        self.setDistance = function(distance){
+            self.distance = distance;
+        };
 		
 		self.resetCamera = function(){
 			self.rotationUpTillNow = 0;
