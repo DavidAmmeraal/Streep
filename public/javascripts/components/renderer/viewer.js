@@ -197,7 +197,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
                     self.render();
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
-                    console.log("REQUEST REMOVAL OFF!");
                     self.scene.remove(requester.mesh);
                     delete requester;
                     self.render();

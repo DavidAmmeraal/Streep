@@ -197,6 +197,8 @@ function(
     });
 
     var loadFrame = function(){
+        $('button.preview-mode').show();
+        $('button.exit-preview-mode').hide();
         var chosenSize = sizeChooser.getSelectedSize();
         var frameId = sizes.get('frames')[chosenSize];
         frame = new Frame({

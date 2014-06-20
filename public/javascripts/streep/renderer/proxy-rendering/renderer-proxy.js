@@ -17,6 +17,7 @@ define([
         target: null,
         commandTimeOut: 60000,
         spinner: null,
+        inPreviewMode: false,
         doCommand: function(command){
             var self = this;
             return new Promise(function(resolve, reject){
@@ -46,6 +47,7 @@ define([
             return new Promise(function(resolve, reject){
                 self.target = $('<div class="viewer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"></div>');
                 $(self.container).append(self.target);
+                $('.overlay.spinner').remove();
                 FrameRenderer.prototype.init.apply(self).then(function(){
                     try{
                         self.spinner = new SpinOverlay({
@@ -97,7 +99,7 @@ define([
                         self.indicators.hide();
                     }
 
-                    self.spinner.hide();
+                    self.inPreviewMode = false;
 
                     var img = $('<img src="' + data.img + '" />');
                     self.target.html(img);
@@ -123,6 +125,7 @@ define([
                     self.spinner.show();
                     $(self).trigger('preview-mode-entered');
                     self.indicators.hide();
+                    self.inPreviewMode = true;
                     resolve();
                 })
             });
@@ -185,14 +188,30 @@ define([
                 'containerDimensions': [container.width(), container.height()]
             };
             return new Promise(function(resolve){
-                self.doCommand(command).then(function(data){
-                    var img = $('<img src="' + data.img + '" />');
-                    self.target.html(img);
-                    self.indicators.clear();
-                    self.indicators.setIndicators(data.indicators);
-                    self.indicators.render();
-                    resolve();
-                })
+                if(self.inPreviewMode){
+                    console.log("IN PREVIEW MODE!!!");
+                    self.exitPreviewMode().then(function(){
+                        console.log("EXIT PREVIEW MODE DONE!!!");
+                        self.doCommand(command).then(function(data){
+                            var img = $('<img src="' + data.img + '" />');
+                            self.target.html(img);
+                            self.indicators.clear();
+                            self.indicators.setIndicators(data.indicators);
+                            self.indicators.render();
+                            resolve();
+                        })
+                    })
+                }else{
+                    self.doCommand(command).then(function(data){
+                        var img = $('<img src="' + data.img + '" />');
+                        self.target.html(img);
+                        self.indicators.clear();
+                        self.indicators.setIndicators(data.indicators);
+                        self.indicators.render();
+                        resolve();
+                    })
+                }
+
             });
         },
         focus: function(comp){
