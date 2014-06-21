@@ -884,6 +884,10 @@ body{
     background: url('/images/ajax-loader.gif') rgba(243, 241, 241, 0.8) center no-repeat;
 }
 
+#overview .shipping{
+    text-align: center;
+}
+
 .overlay .indicator:hover, .overlay .indicator.selected{
     background: url('/images/indicator_hover.png') no-repeat;
     background-size: 25px 25px;
