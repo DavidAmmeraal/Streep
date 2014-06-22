@@ -11,6 +11,7 @@ var fronts = require('./routes/fronts');
 var creations = require('./routes/creations');
 var sizes = require('./routes/sizes');
 var screenshot = require('./routes/screenshot');
+var bodyParser = require('body-parser');
 var serverRendering = require('./routes/server-rendering');
 var fillTestData = require('./routes/fill-test-data');
 var http = require('http');
