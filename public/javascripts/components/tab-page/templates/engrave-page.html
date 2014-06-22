@@ -4,21 +4,23 @@
     <div class="fields">
         <div class="col-md-12 no-padding">
             <div class="input-group">
-                <input type="text" class="form-control text" placeholder="tekst die je wilt graveren">
+                <input type="text" class="form-control text" placeholder="tekst die je wilt graveren" id="engrave-text-input">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle font-chooser" data-toggle="dropdown"><%= fonts[0] %> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle font-chooser" data-toggle="dropdown"><%= fonts[0].readable %> <span class="caret"></span></button>
                     <ul class="dropdown-menu font">
-                        <% _.each(fonts, function(font){ %>
-                        <li><a href="#"><%= font %></a></li>
-                        <% }); %>
+                        <% for(var i = 0; i < fonts.length; i ++){ %>
+                        <% var font = fonts[i] %>
+                        <li a href="#" data-font="<%= font.name %>"><%= font.readable %></li>
+                        <% } %>
                     </ul>
                 </div>
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle size-chooser" data-toggle="dropdown"><%= sizes[0] %> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle size-chooser" data-toggle="dropdown"><%= sizeMappings[sizes[0]] %> <span class="caret"></span></button>
                     <ul class="dropdown-menu size">
                         <% for(var i = 0; i < sizes.length; i++){%>
                         <% var size = sizes[i]; %>
-                        <li><a href="#"><%= size %></a></li>
+                        <% var readable = sizeMappings[size] %>
+                        <li><a href="#" data-size="<%= size %>"><%= readable %></a></li>
                         <% }; %>
                     </ul>
                 </div>

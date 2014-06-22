@@ -10,13 +10,18 @@
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
-        <%
-            for(var i = 0; i < pages.length; i++){
-            var page = pages[i];
-        %>
-        <div class="tab-pane <% if(!i){ print('active') } %>" id="<%= page.id %>">PLACEHOLDER TEXT</div>
-        <% }; %>
+    <div class="tab-content-wrapper">
+        <div class="tab-content">
+            <%
+                for(var i = 0; i < pages.length; i++){
+                var page = pages[i];
+            %>
+            <div class="tab-pane <% if(!i){ print('active') } %>" id="<%= page.id %>">PLACEHOLDER TEXT</div>
+            <% }; %>
+        </div>
+        <div class="buttons">
+            <button class="back">Terug naar overzicht</button>
+        </div>
     </div>
-    <button class="back">Terug</button>
+
 </div>

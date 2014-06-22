@@ -11,7 +11,32 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.font = "";
     EngravePage.prototype.size = null;
-    EngravePage.prototype.fonts = ['Audiowide', 'HelveticaNeue', 'Playball', 'Rosewood', 'Blackout'];
+    EngravePage.prototype.sizeMappings = {
+        "s": "Grootte S",
+        "m": "Grootte M"
+    };
+    EngravePage.prototype.fonts = [
+        {
+            'readable': "Lettertype 1",
+            'name': "Audiowide"
+        },
+        {
+            'readable': "Lettertype 2",
+            'name': "HelveticaNeue"
+        },
+        {
+            'readable': "Lettertype 3",
+            'name': "Playball"
+        },
+        {
+            'readable': "Lettertype 4",
+            'name': "Rosewood"
+        },
+        {
+            'readable': "Lettertype 5",
+            'name': "Blackout"
+        }
+    ];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
     EngravePage.prototype.side = null;
     EngravePage.prototype.engraved = false;
@@ -21,7 +46,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.render = function(){
         var self = this;
 
-        var html = $(this.template({fonts: this.fonts, sizes: this.sizes}));
+        var html = $(this.template({fonts: this.fonts, sizes: this.sizes, sizeMappings: this.sizeMappings}));
         this.html = html;
 
         var fontChooser = this.html.find('.font-chooser');
@@ -38,16 +63,16 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         });
 
         this.html.find('.dropdown-menu.font li').on('click', function(){
-            self.font = $(this).text();
+            self.font = $(this).data('font');
             fontChooser.html(self.font + '<span class="caret"></span>');
         });
 
         this.html.find('.dropdown-menu.size li').on('click', function(){
-            self.size = $(this).text();
+            self.size = $(this).data('size');
             sizeChooser.html(self.size + '<span class="caret"></span>');
         });
 
-        self.font = self.fonts[0];
+        self.font = self.fonts[0].name;
         self.size = self.sizes[0];
 
         this.html.find('.text').on('keydown', function(event){
@@ -135,7 +160,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         if(engraved){
             this.loading(false);
             disabledEl.html('');
-            disabledEl.append('<div class="message">Deze poot is al gegraveerd, druk op reset om opnieuw te graveren<br /><button class="reset">RESET</button></div>');
+            disabledEl.append('<div class="message">Deze poot is al gegraveerd.<br /><button class="reset">OPNIEUW GRAVEREN</button></div>');
             disabledEl.find('button.reset').on('click', function(){
                 $(self).trigger('reset-requested', self.side);
             });
