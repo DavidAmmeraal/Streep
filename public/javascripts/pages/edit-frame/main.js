@@ -81,7 +81,6 @@ function(
     var facebookButton = $('a.facebook');
     var overviewLoading = $('#overview .loading');
     var infoButton = $('#buttons > .switch');
-    var STLButton = $('#buttons > .download-stl');
     var previewButton = $('#buttons > .preview-mode');
     var exitPreviewButton = $('#buttons > .exit-preview-mode');
     var orderButton = $('button.order');
@@ -92,10 +91,6 @@ function(
             renderer.finalize();
             $('.column-left > .command-loading').fadeIn(200);
         }
-    });
-
-    STLButton.on('click', function(){
-        renderer.getSTL();
     });
 
     $(window).on('click', function(event){
