@@ -363,9 +363,8 @@ body{
     float: left;
 }
 
-#menu .contents .tab-content-wrapper .buttons{
+#menu .contents .tab-content-wrapper > .buttons{
     width: 100%;
-    height: 25px;
     text-align: right;
     margin: 5px 0 0 0;
 }
@@ -458,7 +457,6 @@ body{
 #menu .contents .tab-content #engrave .engrave-page{
     position: relative;
     width: 500px;
-    float: left;
 }
 
 #menu .contents .tab-content #engrave .engrave-page .fields{
