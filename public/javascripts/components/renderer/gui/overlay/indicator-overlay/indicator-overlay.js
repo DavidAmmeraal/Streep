@@ -36,6 +36,7 @@ define([
         this.element.show();
     }
     IndicatorOverlay.prototype.renderTooltips = function(){
+        console.log("RENDER TOOLTIPS!");
         var self = this;
         this.element.find('.indicator').each(function(){
             var offset = $(this).position();
@@ -82,6 +83,7 @@ define([
 
     };
     IndicatorOverlay.prototype.renderIndicators = function(){
+        console.log("RENDER INDICATORS!!!!");
         var self = this;
         var comps = this.viewer.getComponents();
         var indicators = self.element.find('.indicator');

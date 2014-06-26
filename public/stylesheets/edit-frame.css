@@ -377,6 +377,7 @@ body{
 #menu .contents .tab-content #color .leg-page{
     position: relative;
     width: 500px;
+    float: left;
 }
 
 #menu .contents .tab-content #color .leg-page .loading{
@@ -439,6 +440,7 @@ body{
     border-top: 1px solid #dcdcdc;
     padding: 8px 0 8px 0;
     width: 480px;
+    float: left;
 }
 
 #menu .contents .tab-content #color .leg-page .colors .color{
@@ -456,6 +458,7 @@ body{
 
 #menu .contents .tab-content #engrave .engrave-page{
     position: relative;
+    float: left;
     width: 500px;
 }
 

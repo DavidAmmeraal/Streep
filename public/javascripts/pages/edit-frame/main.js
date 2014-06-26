@@ -231,10 +231,13 @@ function(
                         $(renderer).off('focus-changed').on('focus-changed', handleFocusChanged);
                         $('#overview > .price').html('&euro;' + frame.get('basePrice'));
 
-                        $('.streep-tooltip').fadeIn(500);
                         setTimeout(function(){
-                            $('.streep-tooltip').fadeOut(1000);
-                        }, 9000)
+                            $('.streep-tooltip').fadeIn(500);
+                            setTimeout(function(){
+                                $('.streep-tooltip').fadeOut(1000);
+                            }, 9000)
+                        }, 10);
+
                     }).catch(function(err){
                         console.log(err);
                         console.log(err.stack);

@@ -87,9 +87,9 @@ define(['../../util/webgl-test'], function(WebGLTest){
                 var y = parseInt(curPosition.y);
                 var z = parseInt(curPosition.z);
 				self.camera.position.x = x;
-				self.light.position.x = x + 20;
+				self.light.position.x = x;
 				self.camera.position.y = y;
-				self.light.position.y = y + 100;
+				self.light.position.y = y;
 				self.camera.position.z = z;
 				self.light.position.z = z;
 

@@ -20,8 +20,12 @@ define([
         this.element.find('.indicator, .streep-tooltip').remove();
     };
     IndicatorOverlay.prototype.render = function(){
+        var self = this;
         this.renderIndicators();
-        this.renderTooltips();
+        setTimeout(function(){
+            self.renderTooltips();
+        }, 1)
+
     };
     IndicatorOverlay.prototype.hideIndicators = function(){
       this.element.find('.indicator, .streep-tooltip').animate({
@@ -43,6 +47,7 @@ define([
         this.element.show();
     }
     IndicatorOverlay.prototype.renderTooltips = function(){
+        console.log("RENDER TOOLTIPS!!!");
         var self = this;
         this.element.find('.indicator').each(function(){
             var offset = $(this).position();
@@ -89,6 +94,7 @@ define([
 
     };
     IndicatorOverlay.prototype.renderIndicators = function(){
+        console.log("RENDER INDICATORS!!");
         var self = this;
 
         var elements = this.element.find('.indicator');
@@ -136,6 +142,8 @@ define([
             if(!self.indicatorsVisible){
                 element.css('opacity', 0);
             }
+
+            console.log("INDICATORS RENDERED!");
         }
     };
     return IndicatorOverlay;
