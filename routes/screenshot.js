@@ -11,6 +11,6 @@ exports.save = function(req, res){
     var fileName = 'images/screenshots/' + uuid.v1() + '.' + ext;
     var localName = '/home/streep/apps/Streep/public/' + fileName;
     fs.writeFileSync(localName, buffer);
-    var fullUrl = req.protocol + '://' + req.get('host') + '/' + fileName;
+    var fullUrl = "http://renderer.streep.nl" + '/' + fileName;
     res.send(JSON.stringify({screenshot: fullUrl}));
 };
