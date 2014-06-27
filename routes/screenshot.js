@@ -9,9 +9,8 @@ exports.save = function(req, res){
     var buffer = new Buffer(data, 'base64');
     var uuid = require('node-uuid');
     var fileName = 'images/screenshots/' + uuid.v1() + '.' + ext;
-    var localName = '/home/streep/apps/Streep/public/' + fileName;
+    var localName = '/home/david/workspace/streep-service/public/' + fileName;
     fs.writeFileSync(localName, buffer);
     var fullUrl = req.protocol + '://' + req.get('host') + '/' + fileName;
-    console.log(fullUrl);
     res.send(JSON.stringify({screenshot: fullUrl}));
 };

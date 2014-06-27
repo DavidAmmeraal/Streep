@@ -820,5 +820,22 @@ define([
         });
     };
 
+    Renderer.prototype.createScreenshot = function(data){
+        console.log("Renderer.prototype.createScreenshot()");
+        var self = this;
+        var focusedAt = self.viewer.lookingAt;
+        self.viewer.focusTo(self.frame);
+        var commandID = data.commandID;
+        return new Promise(function(resolve, reject){
+            $.post('http://localhost:3000/screenshot/save', {data: self.viewer.getScreenshot()}).then(function(data){
+               data = JSON.parse(data);
+               self.viewer.focusTo(focusedAt);
+               var resolveData = {'commandID': commandID, 'screenshot': data.screenshot};
+               resolve(resolveData);
+            });
+        });
+
+    };
+
     return Renderer;
 });

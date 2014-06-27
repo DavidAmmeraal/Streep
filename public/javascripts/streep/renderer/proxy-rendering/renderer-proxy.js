@@ -11,7 +11,7 @@ define([
     };
 
     RendererProxy.prototype = $.extend(Object.create(FrameRenderer.prototype), {
-        host: "http://renderer.streep.nl",
+        host: "http://streep.nl",
         uri: "server-rendering",
         sessionID: null,
         target: null,
@@ -511,6 +511,21 @@ define([
         getSTL: function(){
             var self = this;
             window.open(self.host + '/' + self.uri + '/get-stl/' + this.sessionID);
+        },
+        getScreenshot: function(){
+            var self = this;
+            var command = {
+                name: 'createScreenshot',
+                sessionID: this.sessionID
+            };
+
+            return new Promise(function(resolve, reject){
+                self.doCommand(command).then(function(data){
+                    if(data.screenshot){
+                        resolve(data.screenshot);
+                    }
+                });
+            });
         },
         getPrice: function(){
             var self = this;

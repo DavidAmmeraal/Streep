@@ -164,14 +164,15 @@ function(
         $('.column-left > .loading').fadeOut(50);
         event.preventDefault();
         renderer.getScreenshot().then(function(screenshot){
+            console.log(screenshot);
             overviewLoading.fadeOut(50);
             $('.column-left > .loading').fadeOut(50);
             FB.ui({
                 method: 'feed',
-                link: 'http://local.streep.nl:3000',
-                caption: 'Create your own 3D printed glasses!',
+                link: 'http://streep.nl',
+                caption: 'STREEP - 3D geprinte zonnebrillen',
                 picture: screenshot,
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eu venenatis tellus. Aliquam fermentum, mi sit amet elementum molestie, justo nibh hendrerit purus, a hendrerit risus nulla quis ipsum. Aenean et tortor sed purus molestie bibendum sit amet at tellus. Aenean egestas vulputate velit, sit amet commodo augue tincidunt sed. Aliquam nec metus imperdiet, semper nunc ac, laoreet est. Morbi in mattis diam. Vivamus eget nulla sed purus pulvinar posuere. Duis vitae turpis arcu. Curabitur rhoncus quis ligula eget fringilla. Maecenas eget turpis dapibus, tempus nulla nec, sodales tortor. Nam sodales, massa in tristique mattis, libero ipsum fermentum quam, eget lobortis nisl elit tincidunt eros. Sed a ligula non nibh venenatis laoreet. ers.'
+                description: 'Ik heb zojuist mijn eigen zonnebril ontworpen! Deze zal 3D geprint worden door streep.nl'
             });
         });
 

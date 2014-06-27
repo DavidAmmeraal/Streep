@@ -63,13 +63,14 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         });
 
         this.html.find('.dropdown-menu.font li').on('click', function(){
-            self.font = $(this).data('font');
-            fontChooser.html(self.font + '<span class="caret"></span>');
+            self.font = $(this).find('a').data('font');
+            var readable = $(this).find('a').text();
+            fontChooser.html(readable + '<span class="caret"></span>');
         });
 
         this.html.find('.dropdown-menu.size li').on('click', function(){
-            self.size = $(this).data('size');
-            sizeChooser.html(self.size + '<span class="caret"></span>');
+            self.size = $(this).find('a').data('size');
+            sizeChooser.html($(this).find('a').text() + '<span class="caret"></span>');
         });
 
         self.font = self.fonts[0].name;
@@ -137,6 +138,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         loadingEl.find('.message').remove();
         loadingEl.find('img').show();
         loadingEl.hide();
+        this.element.find('.disabled').hide();
         this.enableButtons();
     };
     EngravePage.prototype.loading = function(loading){

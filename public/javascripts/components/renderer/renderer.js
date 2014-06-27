@@ -160,6 +160,9 @@ define([
     Renderer.prototype.getSTL = function(){
         return this.renderedFrame.exportSTL();
     };
+    Renderer.prototype.createScreenshot = function(){
+
+    };
     Renderer.prototype.getScreenshot = function(){
         var self = this;
         return new Promise(function(resolve, reject){

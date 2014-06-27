@@ -19,6 +19,8 @@ require(['./renderer'], function(Renderer){
         console.log("COMMAND RECEIVED!");
         if(data.sessionID == id){
             renderer.handleCommand(data).then(function(data){
+                console.log("COMMAND DONE: ");
+                console.log(data);
                 socket.emit('commandDone', data);
             })
         }
