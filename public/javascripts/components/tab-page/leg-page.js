@@ -7,7 +7,6 @@ define(['./tab-page', 'text!./templates/leg-page.html'], function(TabPage, LegPa
         var colorChooser = null;
 
         var createPatternChooser = function(){
-            console.log("CREATE PATTERN CHOOSER");
             var html = self.element;
             if(patternChooser)
                 patternChooser.destroy();

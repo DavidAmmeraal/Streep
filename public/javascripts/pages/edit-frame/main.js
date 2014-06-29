@@ -85,12 +85,42 @@ function(
     var exitPreviewButton = $('#buttons > .exit-preview-mode');
     var orderButton = $('button.order');
     var price = $('#overview > .price');
+    var changeFrontButton = $('#buttons > .change-front');
+    var changeLeftButton = $('#buttons > .change-left');
+    var changeRightButton = $('#buttons > .change-right');
 
     orderButton.on('click', function(){
         if(confirm("Weet u zeker dat u wilt bestellen? Hierna kunt u uw bril niet meer wijzigen!")){
             renderer.finalize();
             $('.column-left > .command-loading').fadeIn(200);
         }
+    });
+
+    changeFrontButton.on('click', function(){
+        _.find($('.indicator'), function(element){
+            var data = $(element).data('component');
+            if(data.name != "poot_links" && data.name != "poot_rechts"){
+                element.click();
+            }
+        });
+    });
+
+    changeLeftButton.on('click', function(){
+        _.find($('.indicator'), function(element){
+            var data = $(element).data('component');
+            if(data.name == "poot_links"){
+                element.click();
+            }
+        });
+    });
+
+    changeRightButton.on('click', function(){
+        _.find($('.indicator'), function(element){
+            var data = $(element).data('component');
+            if(data.name == "poot_rechts"){
+                element.click();
+            }
+        });
     });
 
     $(window).on('click', function(event){
@@ -394,7 +424,8 @@ function(
         pages.push(frontPage);
 
         var nosePage = new NosePage({
-            noses: data.nosePage.noses
+            noses: data.nosePage.noses,
+            activeNoseIndex: data.nosePage.noseIndex
         });
         pages.push(nosePage);
 
@@ -439,7 +470,9 @@ function(
 
         $(nosePage).on('nose-changed', function(event, newNose){
             renderer.changeNose(newNose).then(function(newNoseObj){
+                console.log(newNoseObj);
                 nosePage.nose = newNoseObj;
+                console.log(nosePage);
                 nosePage.newNoseLoaded();
                 updatePrice();
             });

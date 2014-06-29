@@ -1,5 +1,6 @@
 define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NosePageTemplate){
     var NosePage = function(options){
+        console.log("NosePage()");
         var self = this;
         TabPage.apply(this, [options]);
 
@@ -11,9 +12,15 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
             if(noseChooser)
                 noseChooser.destroy();
 
-            var activeNoseIndex = self.noses.indexOf(_.find(self.noses, function(nose){
-               return nose.active
-            }));
+            var activeNoseIndex;
+
+            if(!self.activeNoseIndex){
+                activeNoseIndex = self.noses.indexOf(_.find(self.noses, function(nose){
+                   return nose.active
+                }));
+            }else{
+                activeNoseIndex = self.activeNoseIndex;
+            }
 
             if(activeNoseIndex == -1){
                 activeNoseIndex = 0;
@@ -43,6 +50,7 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
             noseChooser = new Sly(noseSliderFrame, noseOptions);
             noseChooser.on('active', function(event, itemIndex){
                 if(self.nose != self.noses[itemIndex]){
+                    self.activeNoseIndex = itemIndex;
                     self.noses[itemIndex].index = itemIndex;
                     $(self).trigger('nose-changed', self.noses[itemIndex]);
                     self.element.find('.loading').append('<div class="message">Neusbrug wordt ingeladen</div>')
@@ -79,6 +87,7 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
     NosePage.prototype.tabTitle = "Neusbruggen";
     NosePage.prototype.nose = null;
     NosePage.prototype.noses = [];
+    NosePage.prototype.activeIndex = null;
     NosePage.prototype.parseNoses = function(){
         this.nose = _.find(this.noses, function(nose){
             return nose.active;

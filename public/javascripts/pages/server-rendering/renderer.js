@@ -381,7 +381,8 @@ define([
                resolve({
                    'commandID': data.commandID,
                    'img': self.viewer.getScreenshot(),
-                   'indicators': false
+                   'indicators': false,
+                   'newNose': newNose
                });
            })
         });
@@ -457,6 +458,10 @@ define([
             });
         }
 
+        var noseIndex = this.frame.currentFront.noses.indexOf(_.find(this.frame.currentFront.noses, function(nose){
+            return nose.active;
+        }));
+
         var returnObject = {
             'focusedOn': 'front',
             'frontPage':{
@@ -464,7 +469,8 @@ define([
                 colors: this.frame.fronts[0].availableColors
             },
             'nosePage': {
-                noses: this.frame.currentFront.noses
+                noses: this.frame.currentFront.noses,
+                noseIndex: noseIndex
             },
             'glassesPage': {
                 glasses: glasses

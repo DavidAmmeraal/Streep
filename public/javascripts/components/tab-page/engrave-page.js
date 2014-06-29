@@ -12,29 +12,29 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.font = "";
     EngravePage.prototype.size = null;
     EngravePage.prototype.sizeMappings = {
-        "s": "Grootte S",
-        "m": "Grootte M"
+        "s": "Klein",
+        "m": "Groot"
     };
     EngravePage.prototype.fonts = [
         {
             'readable': "Lettertype 1",
-            'name': "Audiowide"
+            'name': "Blackout",
+            'carve': true
         },
         {
             'readable': "Lettertype 2",
-            'name': "HelveticaNeue"
+            'name': "Audiowide",
+            'carve': false
         },
         {
             'readable': "Lettertype 3",
-            'name': "Playball"
-        },
-        {
-            'readable': "Lettertype 4",
-            'name': "Rosewood"
+            'name': "HelveticaNeue",
+            'carve': false
         },
         {
             'readable': "Lettertype 5",
-            'name': "Blackout"
+            'name': "Rosewood",
+            'carve': false
         }
     ];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
@@ -64,6 +64,18 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
         this.html.find('.dropdown-menu.font li').on('click', function(){
             self.font = $(this).find('a').data('font');
+
+            var fontObj = _.find(self.fonts, function(font){
+                return font.name == self.font;
+            });
+
+            console.log(fontObj);
+
+            if(fontObj.carve){
+                self.html.find('button.carve').show();
+            }else{
+                self.html.find('button.carve').hide()
+            }
             var readable = $(this).find('a').text();
             fontChooser.html(readable + '<span class="caret"></span>');
         });
