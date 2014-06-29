@@ -31,7 +31,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             });
             glassesChooser = new Sly(sliderFrame, options);
 
-            sliderFrame.find('li.glass').on('click', function(event){
+            sliderFrame.find('li.glass').on('click touchend', function(event){
                 event.stopPropagation();
                 var index = sliderFrame.find('li.glass').index(this);
                 var selectedGlasses = self.glasses[index];
