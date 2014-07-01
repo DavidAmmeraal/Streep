@@ -2,6 +2,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     var EngravePage = function(options){
         console.log("new EngravePage()");
         TabPage.apply(this, [options]);
+
     };
 
     EngravePage.prototype = Object.create(TabPage.prototype);
@@ -11,6 +12,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.tabTitle = "Graveren";
     EngravePage.prototype.font = "";
     EngravePage.prototype.size = null;
+    EngravePage.prototype.frameSize = null;
     EngravePage.prototype.sizeMappings = {
         "s": "Klein",
         "m": "Groot"
@@ -19,22 +21,59 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         {
             'readable': "Lettertype 1",
             'name': "Blackout",
-            'carve': true
+            'sizes': {
+                'm': {
+                    'carve': true,
+                    'engrave': true
+                },
+                's':{
+                    'carve': true,
+                    'engrave': true
+                }
+            }
         },
         {
             'readable': "Lettertype 2",
             'name': "Audiowide",
-            'carve': false
+            'sizes': {
+                'm': {
+                    'carve': false,
+                    'engrave': true
+                },
+                's': {
+                    'carve': false,
+                    'engrave': true
+                }
+            }
+
         },
         {
             'readable': "Lettertype 3",
             'name': "HelveticaNeue",
-            'carve': false
+            'sizes': {
+                'm': {
+                    'carve': true,
+                    'engrave': true
+                },
+                's': {
+                    'carve': false,
+                    'engrave': true
+                }
+            }
         },
         {
-            'readable': "Lettertype 5",
+            'readable': "Lettertype 4",
             'name': "Rosewood",
-            'carve': false
+            'sizes': {
+                'm': {
+                    'carve': false,
+                    'engrave': true
+                },
+                's': {
+                    'carve': false,
+                    'engrave': true
+                }
+            }
         }
     ];
     EngravePage.prototype.template = _.template(EngravePageTemplate);
@@ -46,7 +85,14 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     EngravePage.prototype.render = function(){
         var self = this;
 
-        var html = $(this.template({fonts: this.fonts, sizes: this.sizes, sizeMappings: this.sizeMappings}));
+        console.log(this.sizes);
+        if(this.sizes.length > 1){
+            this.frameSize = 'm';
+        }else{
+            this.frameSize = 's';
+        }
+
+        var html = $(this.template({fonts: this.fonts, sizes: this.sizes, sizeMappings: this.sizeMappings, 'frameSize': this.frameSize}));
         this.html = html;
 
         var fontChooser = this.html.find('.font-chooser');
@@ -71,11 +117,20 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
 
             console.log(fontObj);
 
-            if(fontObj.carve){
+            console.log(self.frameSize);
+
+            if(fontObj.sizes[self.frameSize].engrave){
+                self.html.find('button.engrave').show();
+            }else{
+                self.html.find('button.engrave').hide();
+            }
+
+            if(fontObj.sizes[self.frameSize].carve){
                 self.html.find('button.carve').show();
             }else{
-                self.html.find('button.carve').hide()
+                self.html.find('button.carve').hide();
             }
+
             var readable = $(this).find('a').text();
             fontChooser.html(readable + '<span class="caret"></span>');
         });
