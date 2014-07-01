@@ -45,9 +45,13 @@ define([
         init: function(){
             var self = this;
             return new Promise(function(resolve, reject){
+                var container = $(self.container);
+                container.find('.viewer').remove();
+                container.find('.overlay.indicators').remove();
+                container.find('.overlay.spinner').remove();
+
                 self.target = $('<div class="viewer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"></div>');
-                $(self.container).append(self.target);
-                $('.overlay.spinner').remove();
+                container.append(self.target);
                 FrameRenderer.prototype.init.apply(self).then(function(){
                     try{
                         self.spinner = new SpinOverlay({
@@ -283,7 +287,7 @@ define([
                     }else{
                         self.indicators.hide();
                     }
-                    resolve();
+                    resolve(data.newNose);
                 });
             });
         },

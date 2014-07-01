@@ -79,6 +79,7 @@ function(
     var sizeButton = $('#buttons > .change-size');
     var changeButton = $('#buttons > .change-frame');
     var facebookButton = $('a.facebook');
+    var twitterButton = $('a.twitter');
     var overviewLoading = $('#overview .loading');
     var infoButton = $('#buttons > .switch');
     var previewButton = $('#buttons > .preview-mode');
@@ -207,6 +208,30 @@ function(
         });
 
     });
+
+    twitterButton.on('click', function(event){
+        overviewLoading.fadeIn(50);
+        $('.column-left > .loading').fadeOut(50);
+        event.preventDefault();
+        renderer.getScreenshot().then(function(screenshot){
+            var width  = 575,
+                height = 400,
+                left   = ($(window).width()  - width)  / 2,
+                top    = ($(window).height() - height) / 2,
+                url    = twitterButton.attr('href'),
+                opts   = 'status=1' +
+                    ',width='  + width  +
+                    ',height=' + height +
+                    ',top='    + top    +
+                    ',left='   + left;
+
+            var text = "Ik heb zojuist mijn eigen zonnebril ontworpen! Deze zal 3D geprint worden door streep.nl";
+
+            window.open(url + '?url=' + screenshot + '&text=' + encodeURI(text), 'twitter', opts);
+            overviewLoading.fadeOut(50);
+            return false;
+        });
+    })
 
     $(frameChooser).on('frame-chosen', function(event, chosenSizesId){
         $('.column-left > .loading').fadeIn(200);

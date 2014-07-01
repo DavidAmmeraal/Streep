@@ -251,9 +251,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
         };
 
         self.destroy = function(){
-            console.log("DESTROY()");
-            self.scene = new THREE.Scene();
-            self.scene.add(self.light);
+            jQuery(self.renderer.domElement).remove();
         };
 
         self.get2DPositions = function(position){
