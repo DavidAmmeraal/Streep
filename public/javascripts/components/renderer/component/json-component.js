@@ -5,6 +5,11 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 		
 		LeafComponent.apply(this, arguments);
 
+        $(self).on('request-render', function(){
+            console.log("RENDER FOR THIS COMPONENT REQUESTED!");
+            console.log(self.name);
+        });
+
         console.log(this._id);
 	};
 
@@ -28,19 +33,24 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                     var materialArgs = {
                         shading: THREE.FlatShading
                     };
+
                     if(self.opacity){
-                        console.log("THIS OBJECT HAS OPACITY");
                         materialArgs.transparent = true;
                         materialArgs.opacity = parseFloat(self.opacity);
                     };
                     if(self.color){
-                        console.log("THIS OBJECT HAS COLOR");
                         materialArgs.color = self.color;
                     }
+                    try{
                     self.material = new THREE.MeshPhongMaterial(materialArgs);
                     self.geo = geo;
                     self.redraw();
                     self.loaded = true;
+                    }
+                    catch(err){
+                        alert("ERROR!!!!!");
+                    }
+                    console.log("LOADED!");
                     resolve(self);
 
                 });

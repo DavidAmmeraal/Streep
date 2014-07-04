@@ -84,7 +84,7 @@ define(['./tab-page', 'text!./templates/nose-page.html'], function(TabPage,NoseP
 
     NosePage.prototype = Object.create(TabPage.prototype);
     NosePage.prototype.id = "front_nose";
-    NosePage.prototype.tabTitle = "Neusbruggen";
+    NosePage.prototype.tabTitle = "Stijl";
     NosePage.prototype.nose = null;
     NosePage.prototype.noses = [];
     NosePage.prototype.activeIndex = null;

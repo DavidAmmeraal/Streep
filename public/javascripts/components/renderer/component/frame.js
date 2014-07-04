@@ -268,9 +268,8 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         newGlasses = JSONComponent.parseFromDB(newGlasses);
         var self = this;
         return new Promise(function(resolve, reject){
-            console.log("LOAD")
+            newGlasses.mesh = null;
             newGlasses.load().then(function(){
-                console.log("LOADED!");
                 try{
                     function finalize(){
                         self.currentFront.currentGlasses = newGlasses;
@@ -278,6 +277,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                         self.addChild(self.currentFront.currentGlasses);
                         newGlasses.trigger('request-render', newGlasses);
                         resolve(newGlasses)
+
                     }
                     if(self.currentFront.currentGlasses){
                         self.currentFront.currentGlasses.trigger('request-removal', self.currentFront.currentGlasses);
@@ -286,6 +286,7 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
 
 
                 }catch(err){
+                    console.log("ERROR!!!!!");
                     console.log(err);
                 }
             });

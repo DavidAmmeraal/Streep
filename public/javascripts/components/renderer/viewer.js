@@ -191,10 +191,12 @@ define(['../../util/webgl-test'], function(WebGLTest){
 					self.focusTo(requester);
 				});
 				$(comp).off("request-render").on("request-render", function(event, requester){
+                    console.log("RENDER");
                     self.scene.remove(requester.mesh);
                     requester.redraw();
                     self.scene.add(requester.mesh);
                     self.render();
+                    console.log("RENDERED!");
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
                     self.scene.remove(requester.mesh);
