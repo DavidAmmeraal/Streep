@@ -1,4 +1,4 @@
-define(['../transformation/transformation', './modification', '../../util/geometry-helper'], function(Transformation, Modification, GeometryHelper){
+define(['../transformation/transformation', '../transformation/translate', './modification', '../../util/geometry-helper'], function(Transformation, Translate, Modification, GeometryHelper){
 	var CSGModification = function(options){
 		var self = this;
 		this.type = null;
@@ -45,13 +45,6 @@ define(['../transformation/transformation', './modification', '../../util/geomet
             }
         };
 
-        /*
-        var mesh = new THREE.Mesh(self.geo, self.component.material);
-        console.log(mesh);
-        globalviewer.getScene().add(mesh);
-        globalviewer.render();
-        */
-
         return new Promise(function(resolve, reject){
             try{
                 self.worker = new Worker('/javascripts/components/renderer/workers/csg-worker.js');
@@ -78,7 +71,24 @@ define(['../transformation/transformation', './modification', '../../util/geomet
 
     CSGModification.prototype.executeTransformations = function(){
         console.log("CSGModification.prototype.executeTransformations()");
+
         var self = this;
+
+
+        if(self.inverseAlignment){
+            self.geo.computeBoundingBox();
+            var width = self.geo.boundingBox.max.x - self.geo.boundingBox.min.x;
+
+            var alignmentTranslation = new Translate({
+                x: -width,
+                y: 0,
+                z: 0
+            });
+
+            alignmentTranslation.apply(self.geo);
+
+        }
+
         for(var i = 0; i < self.transformations.length; i++){
             var transformation = self.transformations[i];
             transformation.apply(self.geo);
