@@ -34,24 +34,42 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         shading: THREE.FlatShading
                     };
 
-                    if(self.opacity){
+                    function createMaterial(){
+                        try{
+                            self.material = new THREE.MeshPhongMaterial(materialArgs);
+                            self.geo = geo;
+                            self.redraw();
+                            self.loaded = true;
+                        }
+                        catch(err){
+                            alert("ERROR!!!!!");
+                        }
+                        console.log("LOADED!");
+                        setTimeout(function(){
+                            self.redraw();
+                            resolve(self);
+                        }, 250);
+
+                    }
+
+
+
+                    if(self.src == "/3dmodels/fronts/casual/glasses/casual_m_middel.js"){
+                        materialArgs.map = THREE.ImageUtils.loadTexture('/images/textures/bluesmoke.png', undefined, function(){
+                            createMaterial();
+                        });
                         materialArgs.transparent = true;
-                        materialArgs.opacity = parseFloat(self.opacity);
-                    };
-                    if(self.color){
-                        materialArgs.color = self.color;
+                        materialArgs.opacity = 1;
+                    }else{
+                        if(self.opacity){
+                            materialArgs.transparent = true;
+                            materialArgs.opacity = parseFloat(self.opacity);
+                        };
+                        if(self.color){
+                            materialArgs.color = self.color;
+                        }
+                        createMaterial();
                     }
-                    try{
-                    self.material = new THREE.MeshPhongMaterial(materialArgs);
-                    self.geo = geo;
-                    self.redraw();
-                    self.loaded = true;
-                    }
-                    catch(err){
-                        alert("ERROR!!!!!");
-                    }
-                    console.log("LOADED!");
-                    resolve(self);
 
                 });
             }
