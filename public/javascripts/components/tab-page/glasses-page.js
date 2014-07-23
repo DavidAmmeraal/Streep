@@ -6,6 +6,8 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         var glassesChooser = null;
 
         var createGlassesChooser = function(){
+
+            console.log("CREATE GLASS CHOOSER");
             self.firstActiveTriggered = false;
             var html = self.element;
             if(glassesChooser)
@@ -13,6 +15,12 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
 
             var sliderFrame = html.find('.glasses > .frame');
             var scrollbar = html.find('.glasses > .scrollbar');
+
+            var activeIndex = self.glasses.indexOf(_.find(self.glasses, function(glass){
+                return glass.active;
+            }));
+
+            console.log(activeIndex);
             var options = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
@@ -22,6 +30,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 releaseSwing: 1,
                 scrollBar: scrollbar,
                 scrollBy: 1,
+                startAt: activeIndex,
                 activatePageOn: 'click',
                 speed: 300,
                 elasticBounds: 1,
@@ -36,6 +45,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 var index = sliderFrame.find('li.glass').index(this);
                 var selectedGlasses = self.glasses[index];
                 selectedGlasses.index = index;
+                self.setActiveIndex(index);
                 $(self).trigger('glasses-changed', selectedGlasses);
             });
 
@@ -77,6 +87,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         };
 
         this.setActiveIndex = function(index){
+            self.activeIndex = index;
             this.element.find('li.glass img').removeClass('active');
             this.element.find('li.glass:eq('+ index + ') img').addClass('active');
             self.element.find('.loading .message').remove();

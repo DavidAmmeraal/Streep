@@ -506,8 +506,6 @@ function(
         $(glassesPage).on('glasses-changed', function(event, newGlasses){
             renderer.changeGlasses(newGlasses).then(function(serverResponse){
                 glassesPage.glasses = serverResponse.data.glassesPage.glasses;
-                glassesPage.activate();
-                glassesPage.render();
                 updatePrice();
             });
         });

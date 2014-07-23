@@ -54,12 +54,13 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 
 
 
-                    if(self.src == "/3dmodels/fronts/casual/glasses/casual_m_middel.js"){
-                        materialArgs.map = THREE.ImageUtils.loadTexture('/images/textures/bluesmoke.png', undefined, function(){
+                    if(self.texture){
+                        materialArgs.map = THREE.ImageUtils.loadTexture(self.texture, undefined, function(){
                             createMaterial();
                         });
+                        materialArgs.reflectivity = 0.25
                         materialArgs.transparent = true;
-                        materialArgs.opacity = 1;
+                        materialArgs.opacity = parseFloat(self.opacity);
                     }else{
                         if(self.opacity){
                             materialArgs.transparent = true;
