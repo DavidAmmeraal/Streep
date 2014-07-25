@@ -102,6 +102,8 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
 
         this.render = function(){
             try{
+                console.log(self.glasses);
+
                 var html = $(this.template({glasses: self.glasses}));
                 this.element.html(html);
             }catch(err){

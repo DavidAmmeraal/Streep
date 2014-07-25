@@ -66,7 +66,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		   	if(WebGLTest.test()){
 		   		return new THREE.WebGLRenderer({
 		   			preserveDrawingBuffer: true ,
-                    antialias: true
+                    antialias: true,
+                    alpha: true
 		   		});
 		   	}else{
 		   		return new THREE.CanvasRenderer();

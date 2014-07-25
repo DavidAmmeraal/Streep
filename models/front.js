@@ -5,9 +5,10 @@ var Glass = require('./glass');
 
 var schema = new mongoose.Schema({
     name: String,
+    fileselector: String,
     noses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Nose'}],
     legs: [{type: mongoose.Schema.Types.ObjectId, ref: 'Legs'}],
-    glasses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Glass'}]
+    glasses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Glasses'}]
 });
 
 var model = mongoose.model("Front", schema);

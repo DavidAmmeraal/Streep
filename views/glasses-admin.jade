@@ -1,0 +1,11 @@
+extends layout
+block head
+
+block content
+    h1
+        | Upload new glasses
+
+    form(action="glasses/upload", method="post", enctype="multipart/form-data")
+        input(type="file", name="glasses")
+        input(type="submit", value="upload")
+block js

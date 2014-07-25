@@ -138,7 +138,8 @@ define([
                         priceExtra: glass.priceExtra,
                         active: false,
                         title: glass.title,
-                        description: glass.description
+                        description: glass.description,
+                        order: glass.order
                     }
 
                     if(glass._id == self.frame.currentFront.currentGlasses._id){
@@ -183,7 +184,8 @@ define([
                             priceExtra: glass.priceExtra,
                             active: glass.active,
                             title: glass.title,
-                            description: glass.description
+                            description: glass.description,
+                            order: glass.order
                         }
                     })
                 }
@@ -453,7 +455,8 @@ define([
                    priceExtra: glass.priceExtra,
                    active: active,
                    title: glass.title,
-                   description: glass.description
+                   description: glass.description,
+                   order: glass.order
                 }
             });
         }

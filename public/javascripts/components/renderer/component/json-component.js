@@ -15,6 +15,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 
 	JSONComponent.prototype = Object.create(LeafComponent.prototype);
     JSONComponent.prototype.load = function(){
+        console.log("JSONComponent.load()");
         var self = this;
         return new Promise(function(resolve, reject){
             if(self.src){
@@ -29,10 +30,15 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         loader = new THREE.STLLoader();
                         break;
                 }
+
                 loader.load(self.src, function(geo, material){
+                    console.log("LOADED LEWL LEWL LEWL");
+                    console.log(self.src);
                     var materialArgs = {};
 
                     function createMaterial(){
+                        console.log("CREATING MATERIAL LEWL LEWL");
+                        console.log(self.src);
                         try{
                             self.material = new THREE.MeshPhongMaterial(materialArgs);
                             self.geo = geo;
@@ -42,7 +48,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         catch(err){
                             alert("ERROR!!!!!");
                         }
-                        console.log("LOADED!");
                         setTimeout(function(){
                             self.redraw();
                             resolve(self);
@@ -50,12 +55,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 
                     }
 
-
                     if(self.reflective){
-                        console.log("REFLECTIVE");
-                        console.log("CUBEMAP");
-                        console.log(window.cubeMap);
-                        console.log("END CUBEMAP");
                         materialArgs.color = self.color;
                         materialArgs.ambient = 0xaaaaaa;
                         materialArgs.envMap = window.cubeMap;
@@ -64,8 +64,8 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         createMaterial();
                     }else{
                         materialArgs.shading = THREE.FlatShading;
-
                         if(self.texture){
+                            console.log(self.texture);
                             materialArgs.map = THREE.ImageUtils.loadTexture(self.texture, undefined, function(){
                                 createMaterial();
                             });
@@ -82,8 +82,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                             createMaterial();
                         }
                     }
-
-
 
                 });
             }

@@ -264,14 +264,16 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         });
     };
     Frame.prototype.changeGlasses = function(newGlasses){
-        console.log("Frame.prototype.changeGlasses()");
         newGlasses = JSONComponent.parseFromDB(newGlasses);
+        console.log(newGlasses.src);
         var self = this;
         return new Promise(function(resolve, reject){
             newGlasses.mesh = null;
             newGlasses.load().then(function(){
+                console.log("NEW GLASSES LOADED!!!");
                 try{
                     function finalize(){
+                        console.log("FINALIZE!!");
                         self.currentFront.currentGlasses = newGlasses;
                         self.currentFront.currentGlasses.active = true;
                         self.addChild(self.currentFront.currentGlasses);
@@ -343,6 +345,13 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         data.currentFront = front;
         data.focusPerspective.cameraPosition = new THREE.Vector3(data.focusPerspective.cameraPosition.x, data.focusPerspective.cameraPosition.y, data.focusPerspective.cameraPosition.z);
         data.focusPerspective.lookAt = new THREE.Vector3(data.focusPerspective.lookAt.x, data.focusPerspective.lookAt.y, data.focusPerspective.lookAt.z);
+
+        for(var i = 0; i < data.fronts.length; i++){
+            var front = data.fronts[i];
+            front.glasses = _.sortBy(front.glasses, function(glass){
+                return parseInt(glass.order);
+            });
+        }
         return new Frame(data);
     };
 

@@ -16,7 +16,8 @@ var schema = new mongoose.Schema({
 */
 var schema = new mongoose.Schema({
    name: String,
-   fronts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Front'}]
+   fronts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Front'}],
+   fileselector: String
 });
 
 var model = mongoose.model("Frame", schema);
