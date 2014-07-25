@@ -30,9 +30,7 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                         break;
                 }
                 loader.load(self.src, function(geo, material){
-                    var materialArgs = {
-                        shading: THREE.FlatShading
-                    };
+                    var materialArgs = {};
 
                     function createMaterial(){
                         try{
@@ -53,24 +51,39 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                     }
 
 
-
-                    if(self.texture){
-                        materialArgs.map = THREE.ImageUtils.loadTexture(self.texture, undefined, function(){
-                            createMaterial();
-                        });
-                        materialArgs.reflectivity = 0.25
-                        materialArgs.transparent = true;
-                        materialArgs.opacity = parseFloat(self.opacity);
+                    if(self.reflective){
+                        console.log("REFLECTIVE");
+                        console.log("CUBEMAP");
+                        console.log(window.cubeMap);
+                        console.log("END CUBEMAP");
+                        materialArgs.color = self.color;
+                        materialArgs.ambient = 0xaaaaaa;
+                        materialArgs.envMap = window.cubeMap;
+                        materialArgs.shading = THREE.SmoothShading;
+                        materialArgs.reflectivity = 1;
+                        createMaterial();
                     }else{
-                        if(self.opacity){
+                        materialArgs.shading = THREE.FlatShading;
+
+                        if(self.texture){
+                            materialArgs.map = THREE.ImageUtils.loadTexture(self.texture, undefined, function(){
+                                createMaterial();
+                            });
                             materialArgs.transparent = true;
                             materialArgs.opacity = parseFloat(self.opacity);
-                        };
-                        if(self.color){
-                            materialArgs.color = self.color;
+                        }else{
+                            if(self.opacity){
+                                materialArgs.transparent = true;
+                                materialArgs.opacity = parseFloat(self.opacity);
+                            };
+                            if(self.color){
+                                materialArgs.color = self.color;
+                            }
+                            createMaterial();
                         }
-                        createMaterial();
                     }
+
+
 
                 });
             }

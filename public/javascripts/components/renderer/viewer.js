@@ -31,7 +31,22 @@ define(['../../util/webgl-test'], function(WebGLTest){
 			self.target.append(self.renderer.domElement);
 			self.scene.add(self.light);
 
-			$(self.context).on('changed', self.parseContext);
+            // urls of the images, one per half axis
+            var urls = [
+                '/images/cubemap/pos-x_old.png',
+                '/images/cubemap/neg-x_old.png',
+                '/images/cubemap/pos-y_old.png',
+                '/images/cubemap/neg-y_old.png',
+                '/images/cubemap/pos-z_old.png',
+                '/images/cubemap/neg-z_old.png'
+            ];
+
+            var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
+            reflectionCube.format = THREE.RGBFormat;
+
+            window.cubeMap = reflectionCube;
+
+            $(self.context).on('changed', self.parseContext);
 			self.parseContext();
 			self.sceneReady = true;
 			self.render();
