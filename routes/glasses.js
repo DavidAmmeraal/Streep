@@ -91,7 +91,7 @@ exports.upload = function(req, res){
                                             if (err) return handleError(err);
                                             console.log('The number of updated documents was %d', numberAffected);
                                             console.log('The raw response from Mongo was ', raw);
-                                            res.send("Finished importing!");
+                                            res.send({"ok": "OK"});
                                         });
                                     }
                                 }
