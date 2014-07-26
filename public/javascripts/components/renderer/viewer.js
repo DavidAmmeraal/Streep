@@ -26,7 +26,7 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		var initialize = function(){
 			self.renderer = getRenderer();
 			self.positionCamera(self.startPosition);
-			self.setBackgroundColor(self.backgroundColor);
+			//self.setBackgroundColor(self.backgroundColor);
 			self.setSize(self.width, self.height);
 			self.target.append(self.renderer.domElement);
 			self.scene.add(self.light);
