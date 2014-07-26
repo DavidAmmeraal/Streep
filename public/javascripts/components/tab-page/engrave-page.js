@@ -21,6 +21,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         {
             'readable': "Lettertype 1",
             'name': "Blackout",
+            'image': "/images/font_blackout.png",
             'sizes': {
                 'm': {
                     'carve': true,
@@ -35,6 +36,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         {
             'readable': "Lettertype 2",
             'name': "Audiowide",
+            'image': "/images/font_audiowide.png",
             'sizes': {
                 'm': {
                     'carve': false,
@@ -50,6 +52,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         {
             'readable': "Lettertype 3",
             'name': "HelveticaNeue",
+            'image': "/images/font_helvetica.png",
             'sizes': {
                 'm': {
                     'carve': true,
@@ -64,6 +67,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         {
             'readable': "Lettertype 4",
             'name': "Rosewood",
+            'image': "/images/font_rosewood.png",
             'sizes': {
                 'm': {
                     'carve': false,
@@ -131,7 +135,7 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
                 self.html.find('button.carve').hide();
             }
 
-            var readable = $(this).find('a').text();
+            var readable = $(this).find('a').html();
             fontChooser.html(readable + '<span class="caret"></span>');
         });
 

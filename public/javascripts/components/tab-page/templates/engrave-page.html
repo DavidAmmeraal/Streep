@@ -6,11 +6,11 @@
             <div class="input-group">
                 <input type="text" class="form-control text" placeholder="tekst die je wilt graveren" id="engrave-text-input">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle font-chooser" data-toggle="dropdown"><%= fonts[0].readable %> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle font-chooser" data-toggle="dropdown"><img src="<%= fonts[0].image %>" /> <span class="caret"></span></button>
                     <ul class="dropdown-menu font">
                         <% for(var i = 0; i < fonts.length; i ++){ %>
                         <% var font = fonts[i] %>
-                        <li><a href="#" data-font="<%= font.name %>" ><%= font.readable %></a></li>
+                        <li><a href="#" data-font="<%= font.name %>" ><img src="<%= font.image %>" /></a></li>
                         <% } %>
                     </ul>
                 </div>

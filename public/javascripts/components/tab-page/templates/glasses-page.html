@@ -16,7 +16,7 @@
                 <% var glass = glasses[i]; %>
                 <li class="glass">
                     <img id="glass-<%= glass._id %>" src="<%= glass.img %>" data-number="<%= i %>" class="<% if(glass.default || glass.active) print(' active'); %>"/>
-                    <% if(glass.priceExtra){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
+                    <% if(glass.priceExtra > 0){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
                 </li>
                 <% } %>
             </ul>

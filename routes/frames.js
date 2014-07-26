@@ -115,7 +115,7 @@ exports.chooseFrame = function(req, res){
 }
 
 exports.editFrame = function(req, res){
-    res.render('edit-frame', { title: 'Edit your frame'});
+    res.render('edit-frame', { title: 'STREEP | ZONNEBRILLEN'});
 }
 
 exports.editMenu = function(req, res){
