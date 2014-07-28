@@ -17,7 +17,6 @@ var textureFolder = "textures/glasses";
 var texturePath = imagePath + "/" + textureFolder;
 
 var baseObject = {
-    "img" : "/images/vrouwelijk_glasses_normal.png",
     "material" : "MeshLambertMaterial"
 };
 
