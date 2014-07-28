@@ -20,12 +20,13 @@ define([
         var self = this;
         var actualSize = self.sizes[size].fontSize;
         var actualDepth = self.sizes[size].depth;
+        var weight = "normal";
         self.transformations = self.sizes[size].transformations;
         this.geo = new THREE.TextGeometry(text, {
             height: actualDepth,
             size: actualSize,
             curveSegments: 2,
-            weight: "normal",
+            weight: weight,
             style: "normal",
             font: font
         });
