@@ -91,10 +91,8 @@ function(
     var changeRightButton = $('#buttons > .change-right');
 
     orderButton.on('click', function(){
-        if(confirm("Weet u zeker dat u wilt bestellen? Hierna kunt u uw bril niet meer wijzigen!")){
-            renderer.finalize();
-            $('.column-left > .command-loading').fadeIn(200);
-        }
+        renderer.finalize();
+        $('.column-left > .command-loading').fadeIn(200);
     });
 
     changeFrontButton.on('click', function(){
