@@ -655,12 +655,29 @@ define([
         });
     };
     Renderer.prototype.loadFrame = function(data){
+        console.log("------------------------------");
+        console.log("Renderer.prototype.loadFrame()")
         var self = this;
         return new Promise(function(resolve){
             try{
 
                 function doTheRest(){
+                    if(self.viewer){
+                        self.viewer.destroy();
+                    }
+
+                    self.context = new ComponentContext();
+                    self.viewer = new Viewer(self.container, self.context, {
+                        backgroundColor: self.backgroundColor,
+                        startPosition: new THREE.Vector3(-100, 20, 400)
+                    });
+
+                    window['globalviewer'] = self.viewer;
+
                     self.frame = Frame.parseFromDB(data.frame);
+                    console.log("FRAME: ");
+                    console.log(self.frame);
+                    console.log("END FRAME");
                     self.container.width(data.containerDimensions[0]);
                     self.container.height(data.containerDimensions[1]);
                     self.viewer.resize();
@@ -676,27 +693,20 @@ define([
                             'commandID': data.commandID,
                             'img': self.viewer.getScreenshot(),
                             'indicators': self.getIndicators()
-                        })
+                        });
+                        console.log("END Renderer.prototype.loadFrame()")
+                        console.log("------------------------------");
                     });
                 }
 
-                if(self.viewer){
-                    self.viewer.destroy();
-                }
 
-                self.context = new ComponentContext();
-                self.viewer = new Viewer(self.container, self.context, {
-                    backgroundColor: self.backgroundColor,
-                    startPosition: new THREE.Vector3(-100, 20, 400)
-                });
-
-                window['globalviewer'] = self.viewer;
 
                 if(self.frame){
+                    console.log("FRAME REMOVE!!!!!");
                     self.frame.remove();
                     setTimeout(function(){
                         doTheRest();
-                    }, 1);
+                    }, 200);
                 }else{
                     doTheRest();
                 }

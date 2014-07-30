@@ -1,6 +1,8 @@
 define(['./parent-component', './json-component'], function(ParentComponent, JSONComponent){
 	var Frame = function(){
 		var self = this;
+
+        ParentComponent.apply(this);
 		$.extend(self, arguments[0]);
 
         var initialize = function(){
@@ -294,8 +296,9 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     if(self.currentFront.currentGlasses){
                         self.currentFront.currentGlasses.trigger('request-removal', self.currentFront.currentGlasses);
                     }
-                    finalize();
-
+                    setTimeout(function(){
+                        finalize();
+                    }, 50);
 
                 }catch(err){
                     console.log("ERROR!!!!!");

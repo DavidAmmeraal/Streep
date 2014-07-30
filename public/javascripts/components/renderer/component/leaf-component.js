@@ -9,18 +9,18 @@ define(['./component'], function(Component){
 				self.connectors[key].setComponent(self);
 			}
 		};
-		
+
+        this.geo = null;
+        this.mesh = null;
+        this.material = null;
+        this.loaded = false;
+        this.connectors = {};
 		initialize();
 		
 	};
 	
 	LeafComponent.prototype = Object.create(Component.prototype);
-    LeafComponent.prototype.geo = null;
-    LeafComponent.prototype.mesh = null;
     LeafComponent.prototype.hoverColor = "0x3333FF";
-    LeafComponent.prototype.material = null;
-    LeafComponent.prototype.loaded = false;
-    LeafComponent.prototype.connectors = {};
     LeafComponent.prototype.translate = function(directions){
         this.geo.applyMatrix(new THREE.Matrix4().makeTranslation(directions.x, directions.y, directions.z));
     };

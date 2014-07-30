@@ -5,11 +5,10 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		this.width = self.target.width();
 		this.height = self.target.height();
 		this.context = context;
-		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera(45, self.width / self.height, 0.1, 1000);
+		this.camera = null;
 		// create a point light
 		//this.light = new THREE.PointLight(0xFFFFFF);
-        this.light = new THREE.DirectionalLight( 0xffffff, 1 );
+        this.light = null;
 		this.components = [];
 		this.startPosition = new THREE.Vector3(0, 0, this.distance);
 		this.lookingAt = null;
@@ -18,12 +17,18 @@ define(['../../util/webgl-test'], function(WebGLTest){
         this.rotationUpTillNow = 0;
         this.sceneReady = false;
         this.backgroundColor = 0x363636;
-        this.projector = new THREE.Projector();
+        this.projector = null;
         var currentHover = null;
 
         $.extend(this, options);
 
 		var initialize = function(){
+            console.log("Viewer.initialize()");
+            self.scene = new THREE.Scene();
+            console.log(self.getComponents());
+            self.camera = new THREE.PerspectiveCamera(45, self.width / self.height, 0.1, 1000);
+            self.light =  new THREE.DirectionalLight( 0xffffff, 1 );
+            self.projet = new THREE.Projector();
 			self.renderer = getRenderer();
 			self.positionCamera(self.startPosition);
 			//self.setBackgroundColor(self.backgroundColor);
@@ -215,17 +220,27 @@ define(['../../util/webgl-test'], function(WebGLTest){
                     console.log("RENDERED!");
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
-                    self.scene.remove(requester.mesh);
-                    delete requester;
-                    self.render();
+                    try{
+                        console.log("THIS ONE IS REQUESTING REMOVAL");
+                        console.log(requester);
+                        self.scene.remove(requester.mesh);
+                        delete requester;
+                        self.render();
+                    }catch(err){
+                        console.log(err);
+                    }
                 });
 			}
 		};
 		
 		self.render = function(){
+            console.log("RENDER");
             self.renderer.render(self.scene, self.camera);
 
+            console.log(self.getComponents());
+
             $(self).trigger('viewer.render');
+            console.log("END RENDER");
 		};
 		
 		self.remove = function(comp){
@@ -269,6 +284,18 @@ define(['../../util/webgl-test'], function(WebGLTest){
         };
 
         self.destroy = function(){
+            for(var i = 0; i < self.components.length; i++){
+                var comp = self.components[i];
+                $(comp).off();
+                console.log("CHILDREN");
+                console.log(self.scene.children.length);
+                console.log(self.scene.children);
+                console.log("END CHILDREN")
+            }
+
+            self.components = [];
+
+            self.scene = null;
             jQuery(self.renderer.domElement).remove();
         };
 

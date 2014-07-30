@@ -9,12 +9,12 @@ define(['./component', './json-component'], function(Component, JSONComponent){
             }
         }
 
+        this.children = [];
+        this.mesh = [];
         initialize();
     };
 
     ParentComponent.prototype = Object.create(Component.prototype);
-    ParentComponent.prototype.children = [];
-    ParentComponent.prototype.mesh = [];
     ParentComponent.prototype.load = function(){
         var self = this;
 

@@ -83,7 +83,6 @@ define([
 
     };
     IndicatorOverlay.prototype.renderIndicators = function(){
-        console.log("RENDER INDICATORS!!!!");
         var self = this;
         var comps = this.viewer.getComponents();
         var indicators = self.element.find('.indicator');
