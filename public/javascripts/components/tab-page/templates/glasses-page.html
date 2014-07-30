@@ -1,7 +1,7 @@
 <div class="glasses-page">
     <div class="glasses-tooltips">
-        <% for(var i = 0; i < glasses.length; i++){ %>
-        <% var glass = glasses[i]; %>
+        <% for(var i = 0; i < allGlasses.length; i++){ %>
+        <% var glass = allGlasses[i]; %>
         <div class="glass-tooltip">
             <h4><%= glass.title %></h4>
             <p><%= glass.description %></p>
@@ -14,8 +14,26 @@
             <ul>
                 <% for(var i = 0; i < glasses.length; i++){ %>
                 <% var glass = glasses[i]; %>
-                <li class="glass">
-                    <img id="glass-<%= glass._id %>" src="<%= glass.img %>" data-number="<%= i %>" class="<% if(glass.default || glass.active) print(' active'); %>"/>
+                <li class="glass" data-order="<%= glass.order %>">
+                    <img src="<%= glass.img %>" data-number="<%= i %>" class="<% if(glass.default || glass.active) print(' active'); %>"/>
+                    <% if(glass.priceExtra > 0){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+        <div class="scrollbar">
+            <div class="handle">
+                <div class="mousearea"></div>
+            </div>
+        </div>
+    </div>
+    <div class="slider reflective-glasses">
+        <div class="frame">
+            <ul>
+                <% for(var i = 0; i < reflectiveGlasses.length; i++){ %>
+                <% var glass = reflectiveGlasses[i]; %>
+                <li class="glass" data-order="<%= glass.order %>">
+                    <img src="<%= glass.img %>" data-number="<%= i %>" class="<% if(glass.default || glass.active) print(' active'); %>"/>
                     <% if(glass.priceExtra > 0){ %><div class="price">&#43;&euro;<%= glass.priceExtra %></div><% } %>
                 </li>
                 <% } %>

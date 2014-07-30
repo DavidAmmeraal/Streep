@@ -139,6 +139,7 @@ define([
                         active: false,
                         title: glass.title,
                         description: glass.description,
+                        reflective: glass.reflective,
                         order: glass.order
                     }
 
@@ -185,6 +186,7 @@ define([
                             active: glass.active,
                             title: glass.title,
                             description: glass.description,
+                            reflective: glass.reflective,
                             order: glass.order
                         }
                     })
@@ -456,6 +458,7 @@ define([
                    active: active,
                    title: glass.title,
                    description: glass.description,
+                   reflective: glass.reflective,
                    order: glass.order
                 }
             });

@@ -719,14 +719,14 @@ body{
     margin: 10px 0 10px 0;
 }
 
-#menu .contents .tab-content #glasses .glasses-page .glasses .glass{
+#menu .contents .tab-content #glasses .glasses-page .glass{
     position: relative;
     width: 118px;
     height: 65px;
     overflow: hidden;
 }
 
-#menu .contents .tab-content #glasses .glasses-page .glasses .glass img{
+#menu .contents .tab-content #glasses .glasses-page  .glass img{
     position: absolute;
     display: block;
     cursor: pointer;
@@ -735,12 +735,12 @@ body{
 
 }
 
-#menu .contents .tab-content #glasses .glasses-page .glasses img.active{
+#menu .contents .tab-content #glasses .glasses-page img.active{
     border-top: 3px solid #60e5a5;
     height: 65px;
 }
 
-#menu .contents .tab-content #glasses .glasses-page .glasses .glass .price{
+#menu .contents .tab-content #glasses .glasses-page .glass .price{
     position: absolute;
     background-color: #60e5a5;
     font-weight: bold;

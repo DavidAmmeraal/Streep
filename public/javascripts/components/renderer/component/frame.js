@@ -92,6 +92,10 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
         if(self.currentFront.currentNose){
             currentColor = self.currentFront.currentNose.color;
         }
+        var currentGlassesOrder = -1;
+        if(self.currentFront.currentGlasses){
+            currentGlassesOrder = self.currentFront.currentGlasses.order;
+        }
         _.each(this.fronts, function(front){
             if(front.active)
                 front.active = false;
@@ -138,7 +142,13 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                     console.log(err);
                 }
                 if(self.currentFront.glasses && self.currentFront.glasses.length > 0){
-                    Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[0])]).then(function(){
+                    var glassesIndex = 0;
+                    if(currentGlassesOrder != -1){
+                        glassesIndex = self.currentFront.glasses.indexOf(_.find(self.currentFront.glasses, function(glass){
+                            return glass.order == currentGlassesOrder;
+                        }));
+                    }
+                    Promise.all([self.changeLegs(self.currentFront.legs[0]), self.changeGlasses(self.currentFront.glasses[glassesIndex])]).then(function(){
                         resolve(self.currentFront);
                     })
                 }else{

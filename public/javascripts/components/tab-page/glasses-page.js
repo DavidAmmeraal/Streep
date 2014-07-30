@@ -4,10 +4,106 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         TabPage.apply(this, [options]);
 
         var glassesChooser = null;
+        var reflectiveGlassesChooser = null;
+
+        var createReflectiveGlassesChooser = function(){
+            self.firstActiveTriggered = false;
+            var html = self.element;
+            if(reflectiveGlassesChooser)
+                reflectiveGlassesChooser.destroy();
+
+            var sliderFrame = html.find('.reflective-glasses > .frame');
+            var scrollbar = html.find('.reflective-glasses > .scrollbar');
+
+            var glasses = _.filter(self.glasses, function(glass){
+                if(!glass.reflective){
+                    return false;
+                }
+                return true;
+            });
+
+            var activeIndex = glasses.indexOf(_.find(self.glasses, function(glass){
+                return glass.active;
+            }));
+
+            var options = $.extend(Sly.defaults, {
+                horizontal: 1,
+                itemNav: 'basic',
+                activateOn: 'click',
+                mouseDragging: 1,
+                touchDragging: 1,
+                releaseSwing: 1,
+                scrollBar: scrollbar,
+                scrollBy: 1,
+                startAt: activeIndex,
+                activatePageOn: 'click',
+                speed: 300,
+                elasticBounds: 1,
+                dragHandle: 1,
+                dynamicHandle: 1,
+                clickBar: 1
+            });
+            reflectiveGlassesChooser = new Sly(sliderFrame, options);
+
+            sliderFrame.find('li.glass').on('click touchend', function(event){
+                event.stopPropagation();
+                var order = $(this).data('order');
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == order;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
+                selectedGlasses.index = index;
+                var relativeIndex = glasses.indexOf(_.find(glasses, function(glass){ return glass.order == order}));
+                self.setActiveIndex(relativeIndex, true);
+                $(self).trigger('glasses-changed', selectedGlasses);
+            });
+
+            sliderFrame.find('li.glass').on('mouseenter', function(event){
+                var order = $(this).data('order');
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == order;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
+                var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
+                tooltip.css('left', event.pageX);
+                tooltip.css('top', event.pageY);
+                tooltip.show();
+                tooltip.animate({
+                    opacity: 1
+                }, 100);
+                tooltip.css('margin-top', -(tooltip.height() + 10) + 'px');
+                self.activeTooltip = tooltip;
+            });
+
+            self.element.on('mousemove', function(event){
+                if(self.activeTooltip){
+                    self.activeTooltip.css('left', event.pageX);
+                    self.activeTooltip.css('top', event.pageY);
+                }
+            });
+
+            sliderFrame.find('li.glass').on('mouseleave', function(event){
+                var order = $(this).data('order');
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == order;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
+                var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
+                tooltip.hide();
+                self.activeTooltip = null;
+            });
+
+            reflectiveGlassesChooser.on('active', function(event, itemIndex){
+            });
+
+            reflectiveGlassesChooser.init();
+            var slidee = self.element.find('.glasses ul');
+            if(slidee.width() < slidee.parent().width()){
+                self.element.find('.glasses .scrollbar').hide();
+            }
+        };
 
         var createGlassesChooser = function(){
-
-            console.log("CREATE GLASS CHOOSER");
             self.firstActiveTriggered = false;
             var html = self.element;
             if(glassesChooser)
@@ -16,11 +112,14 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             var sliderFrame = html.find('.glasses > .frame');
             var scrollbar = html.find('.glasses > .scrollbar');
 
-            var activeIndex = self.glasses.indexOf(_.find(self.glasses, function(glass){
+            var glasses = _.filter(self.glasses, function(glass){
+                return !glass.reflective;
+            });
+
+            var activeIndex = self.glasses.indexOf(_.find(glasses, function(glass){
                 return glass.active;
             }));
 
-            console.log(activeIndex);
             var options = $.extend(Sly.defaults, {
                 horizontal: 1,
                 itemNav: 'basic',
@@ -42,15 +141,23 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
 
             sliderFrame.find('li.glass').on('click touchend', function(event){
                 event.stopPropagation();
-                var index = sliderFrame.find('li.glass').index(this);
-                var selectedGlasses = self.glasses[index];
+                var order = parseInt($(this).data('order'));
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == order;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
+                var relativeIndex = glasses.indexOf(_.find(glasses, function(glass){ return glass.order == order}));
                 selectedGlasses.index = index;
-                self.setActiveIndex(index);
+                self.setActiveIndex(relativeIndex);
                 $(self).trigger('glasses-changed', selectedGlasses);
             });
 
             sliderFrame.find('li.glass').on('mouseenter', function(event){
-                var index = sliderFrame.find('li.glass').index(this);
+                var order = $(this).data('order');
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == order;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
                 var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
                 tooltip.css('left', event.pageX);
                 tooltip.css('top', event.pageY);
@@ -70,7 +177,11 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             });
 
             sliderFrame.find('li.glass').on('mouseleave', function(event){
-                var index = sliderFrame.find('li.glass').index(this);
+                var index = parseInt($(this).data('order'));
+                var selectedGlasses = _.find(self.glasses, function(glass){
+                    return glass.order == index;
+                });
+                var index = self.glasses.indexOf(selectedGlasses);
                 var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
                 tooltip.hide();
                 self.activeTooltip = null;
@@ -86,10 +197,16 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             }
         };
 
-        this.setActiveIndex = function(index){
-            self.activeIndex = index;
-            this.element.find('li.glass img').removeClass('active');
-            this.element.find('li.glass:eq('+ index + ') img').addClass('active');
+        this.setActiveIndex = function(index, reflective){
+            this.element.find('.glasses li.glass img').removeClass('active');
+            this.element.find('.reflective-glasses li.glass img').removeClass('active');
+            if(!reflective){
+                self.activeIndex = index;
+                this.element.find('.glasses li.glass:eq('+ index + ') img').addClass('active');
+            }else{
+                self.activeReflectiveIndex = index;
+                this.element.find('.reflective-glasses li.glass:eq('+ index + ') img').addClass('active');
+            }
             self.element.find('.loading .message').remove();
             self.element.find('.loading').hide();
         };
@@ -97,14 +214,24 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
         this.activate = function(){
             setTimeout(function(){
                 createGlassesChooser();
+                createReflectiveGlassesChooser();
             }, 1);
         };
 
         this.render = function(){
             try{
-                console.log(self.glasses);
+                var glasses = _.filter(self.glasses, function(glass){
+                    if(glass.reflective)
+                        return false;
+                    return true;
+                });
+                var reflectiveGlasses = _.filter(self.glasses, function(glass){
+                    if(glass.reflective)
+                        return true;
+                    return false;
+                });
 
-                var html = $(this.template({glasses: self.glasses}));
+                var html = $(this.template({allGlasses: self.glasses, glasses: glasses, reflectiveGlasses: reflectiveGlasses}));
                 this.element.html(html);
             }catch(err){
                 console.log(err.stack);

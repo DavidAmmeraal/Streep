@@ -5,12 +5,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 		
 		LeafComponent.apply(this, arguments);
 
-        $(self).on('request-render', function(){
-            console.log("RENDER FOR THIS COMPONENT REQUESTED!");
-            console.log(self.name);
-        });
-
-        console.log(this._id);
 	};
 
 	JSONComponent.prototype = Object.create(LeafComponent.prototype);
@@ -32,13 +26,9 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                 }
 
                 loader.load(self.src, function(geo, material){
-                    console.log("LOADED LEWL LEWL LEWL");
-                    console.log(self.src);
                     var materialArgs = {};
 
                     function createMaterial(){
-                        console.log("CREATING MATERIAL LEWL LEWL");
-                        console.log(self.src);
                         try{
                             self.material = new THREE.MeshPhongMaterial(materialArgs);
                             self.geo = geo;
@@ -65,7 +55,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
                     }else{
                         materialArgs.shading = THREE.FlatShading;
                         if(self.texture){
-                            console.log(self.texture);
                             materialArgs.map = THREE.ImageUtils.loadTexture(self.texture, undefined, function(){
                                 createMaterial();
                             });
