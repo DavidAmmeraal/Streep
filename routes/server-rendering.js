@@ -9,7 +9,6 @@ var waitingForSTL = {};
 var openSeleniumSessions = [];
 
 var checkSeleniumSessions = function(){
-    console.log("checkSeleniumSessions()");
     var now = new Date().getTime();
     for(var i = 0; i < openSeleniumSessions.length; i++){
         var session = openSeleniumSessions[i];
@@ -22,7 +21,6 @@ var checkSeleniumSessions = function(){
 }
 
 var purgeClosedSessions = function(){
-    console.log("purgeClosedSessions()");
     openSeleniumSessions = openSeleniumSessions.filter(function(session){
         return !session.closed;
     });
@@ -102,7 +100,6 @@ exports.keepAlive = function(){
 exports.startSession = function(){
     return function(req, res){
         var webdriver = require('selenium-webdriver');
-        console.log("HOI WEBDRIVER");
         var caps = webdriver.Capabilities.firefox();
         /*
         caps.caps_.chromeOptions = {
