@@ -52,7 +52,9 @@ exports.upload = function(req, res){
 
     console.log(configFileEntry);
     //Parse the text of the config file into a JSON object;
+    console.log("OPENING: " + configFileEntry.entryName);
     var configFile = JSON.parse(zip.readAsText(configFileEntry.entryName));
+    console.log("FINISHED OPENING: " + configFileEntry.entryName);
 
     for(var i = 0; i < zipEntries.length; i++){
         var entry = zipEntries[i];
