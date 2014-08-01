@@ -45,6 +45,7 @@ exports.upload = function(req, res){
 
     //Get the file entry of the config file
     var configFileEntry = zipEntries.filter(function(entry){
+        console.log(entry.entryName);
         return entry.entryName == "glasses/glasses.json";
     })[0];
 
