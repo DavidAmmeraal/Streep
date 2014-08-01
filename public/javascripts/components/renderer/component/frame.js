@@ -293,7 +293,9 @@ define(['./parent-component', './json-component'], function(ParentComponent, JSO
                         resolve(newGlasses)
 
                     }
+                    console.log(self.currentFront.glasses);
                     if(self.currentFront.currentGlasses){
+                        console.log("CURRENT GLASSES: " + self.currentFront.currentGlasses);
                         self.currentFront.currentGlasses.trigger('request-removal', self.currentFront.currentGlasses);
                     }
                     setTimeout(function(){

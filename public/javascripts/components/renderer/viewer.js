@@ -212,17 +212,13 @@ define(['../../util/webgl-test'], function(WebGLTest){
 					self.focusTo(requester);
 				});
 				$(comp).off("request-render").on("request-render", function(event, requester){
-                    console.log("RENDER");
                     self.scene.remove(requester.mesh);
                     requester.redraw();
                     self.scene.add(requester.mesh);
                     self.render();
-                    console.log("RENDERED!");
 				});
                 $(comp).off("request-removal").on("request-removal", function(event, requester){
                     try{
-                        console.log("THIS ONE IS REQUESTING REMOVAL");
-                        console.log(requester);
                         self.scene.remove(requester.mesh);
                         delete requester;
                         self.render();
@@ -234,13 +230,8 @@ define(['../../util/webgl-test'], function(WebGLTest){
 		};
 		
 		self.render = function(){
-            console.log("RENDER");
             self.renderer.render(self.scene, self.camera);
-
-            console.log(self.getComponents());
-
             $(self).trigger('viewer.render');
-            console.log("END RENDER");
 		};
 		
 		self.remove = function(comp){
@@ -287,10 +278,6 @@ define(['../../util/webgl-test'], function(WebGLTest){
             for(var i = 0; i < self.components.length; i++){
                 var comp = self.components[i];
                 $(comp).off();
-                console.log("CHILDREN");
-                console.log(self.scene.children.length);
-                console.log(self.scene.children);
-                console.log("END CHILDREN")
             }
 
             self.components = [];

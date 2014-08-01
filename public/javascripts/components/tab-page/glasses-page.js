@@ -45,7 +45,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             });
             reflectiveGlassesChooser = new Sly(sliderFrame, options);
 
-            sliderFrame.find('li.glass').on('click touchend', function(event){
+            sliderFrame.find('li.glass').off('click touchend').on('click touchend', function(event){
                 event.stopPropagation();
                 var order = $(this).data('order');
                 var selectedGlasses = _.find(self.glasses, function(glass){
@@ -58,7 +58,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 $(self).trigger('glasses-changed', selectedGlasses);
             });
 
-            sliderFrame.find('li.glass').on('mouseenter', function(event){
+            sliderFrame.find('li.glass').off('mouseenter').on('mouseenter', function(event){
                 var order = $(this).data('order');
                 var selectedGlasses = _.find(self.glasses, function(glass){
                     return glass.order == order;
@@ -75,14 +75,14 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 self.activeTooltip = tooltip;
             });
 
-            self.element.on('mousemove', function(event){
+            self.element.off('mousemove').on('mousemove', function(event){
                 if(self.activeTooltip){
                     self.activeTooltip.css('left', event.pageX);
                     self.activeTooltip.css('top', event.pageY);
                 }
             });
 
-            sliderFrame.find('li.glass').on('mouseleave', function(event){
+            sliderFrame.find('li.glass').off('mouseleave').on('mouseleave', function(event){
                 var order = $(this).data('order');
                 var selectedGlasses = _.find(self.glasses, function(glass){
                     return glass.order == order;
@@ -91,9 +91,6 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
                 tooltip.hide();
                 self.activeTooltip = null;
-            });
-
-            reflectiveGlassesChooser.on('active', function(event, itemIndex){
             });
 
             reflectiveGlassesChooser.init();
@@ -139,7 +136,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
             });
             glassesChooser = new Sly(sliderFrame, options);
 
-            sliderFrame.find('li.glass').on('click touchend', function(event){
+            sliderFrame.find('li.glass').off('click touchend').on('click touchend', function(event){
                 event.stopPropagation();
                 var order = parseInt($(this).data('order'));
                 var selectedGlasses = _.find(self.glasses, function(glass){
@@ -152,7 +149,7 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 $(self).trigger('glasses-changed', selectedGlasses);
             });
 
-            sliderFrame.find('li.glass').on('mouseenter', function(event){
+            sliderFrame.find('li.glass').off('mouseenter').on('mouseenter', function(event){
                 var order = $(this).data('order');
                 var selectedGlasses = _.find(self.glasses, function(glass){
                     return glass.order == order;
@@ -169,14 +166,14 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 self.activeTooltip = tooltip;
             });
 
-            self.element.on('mousemove', function(event){
+            self.element.off('mousemove').on('mousemove', function(event){
                 if(self.activeTooltip){
                     self.activeTooltip.css('left', event.pageX);
                     self.activeTooltip.css('top', event.pageY);
                 }
             });
 
-            sliderFrame.find('li.glass').on('mouseleave', function(event){
+            sliderFrame.find('li.glass').off('mousemove').on('mouseleave', function(event){
                 var index = parseInt($(this).data('order'));
                 var selectedGlasses = _.find(self.glasses, function(glass){
                     return glass.order == index;
@@ -185,9 +182,6 @@ define(['./tab-page', 'text!./templates/glasses-page.html'], function(TabPage, G
                 var tooltip = self.element.find('.glass-tooltip:eq(' + index + ')');
                 tooltip.hide();
                 self.activeTooltip = null;
-            });
-
-            glassesChooser.on('active', function(event, itemIndex){
             });
 
             glassesChooser.init();
