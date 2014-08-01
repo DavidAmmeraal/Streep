@@ -193,7 +193,6 @@ function(
         $('.column-left > .loading').fadeOut(50);
         event.preventDefault();
         renderer.getScreenshot().then(function(screenshot){
-            console.log(screenshot);
             overviewLoading.fadeOut(50);
             $('.column-left > .loading').fadeOut(50);
             FB.ui({
@@ -493,9 +492,7 @@ function(
 
         $(nosePage).on('nose-changed', function(event, newNose){
             renderer.changeNose(newNose).then(function(newNoseObj){
-                console.log(newNoseObj);
                 nosePage.nose = newNoseObj;
-                console.log(nosePage);
                 nosePage.newNoseLoaded();
                 updatePrice();
             });

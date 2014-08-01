@@ -1,6 +1,5 @@
 define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/component/modification/csg-text-modification'], function(TabPage, EngravePageTemplate, CSGTextModification){
     var EngravePage = function(options){
-        console.log("new EngravePage()");
         TabPage.apply(this, [options]);
 
     };
@@ -88,8 +87,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
     };
     EngravePage.prototype.render = function(){
         var self = this;
-
-        console.log(this.sizes);
         if(this.sizes.length > 1){
             this.frameSize = 'm';
         }else{
@@ -118,10 +115,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
             var fontObj = _.find(self.fonts, function(font){
                 return font.name == self.font;
             });
-
-            console.log(fontObj);
-
-            console.log(self.frameSize);
 
             if(fontObj.sizes[self.frameSize].engrave){
                 self.html.find('button.engrave').show();
@@ -226,7 +219,6 @@ define(['./tab-page', 'text!./templates/engrave-page.html', '../renderer/compone
         }
     };
     EngravePage.prototype.setEngraved = function(engraved){
-        console.log("setEngraved(" + engraved + ")");
         var self = this;
         var disabledEl = this.html.find('.disabled');
         this.engraved = engraved;

@@ -4,7 +4,6 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
 		this.src = null;
 		
 		LeafComponent.apply(this, arguments);
-
 	};
 
 	JSONComponent.prototype = Object.create(LeafComponent.prototype);
@@ -86,9 +85,13 @@ define(['./leaf-component', './connector/connector'], function(LeafComponent, Co
     JSONComponent.parseFromDB = function(data){
         try{
             if(data.connectors){
+                console.log("CONNECTORS:");
                 for(var i = 0; i < data.connectors.length; i++){
-                    data.connectors[i] = Connector.parseFromDB(data.connectors[i]);
+                    var connector = Connector.parseFromDB(data.connectors[i]);
+                    console.log(connector);
+                    data.connectors[i] = connector;
                 }
+                console.log("END CONNECTORS");
             }
 
             if(data.focusPerspective){

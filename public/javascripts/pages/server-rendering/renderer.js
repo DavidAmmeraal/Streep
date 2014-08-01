@@ -514,6 +514,9 @@ define([
         });
 
         var sizes = [];
+        console.log("LEG");
+        console.log(obj);
+        console.log("END LEG");
         try{
             if(obj.connectors && obj.connectors[0] && obj.connectors[0].modifications && obj.connectors[0].modifications[0]){
                 for(var size in obj.connectors[0].modifications[0].sizes){

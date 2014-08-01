@@ -1,7 +1,12 @@
 define(['./component'], function(Component){
 	var LeafComponent = function(){
 		var self = this;
-		
+
+        this.geo = null;
+        this.mesh = null;
+        this.material = null;
+        this.loaded = false;
+
 		$.extend(self, arguments[0]);
 		
 		var initialize = function(){
@@ -10,11 +15,8 @@ define(['./component'], function(Component){
 			}
 		};
 
-        this.geo = null;
-        this.mesh = null;
-        this.material = null;
-        this.loaded = false;
-        this.connectors = {};
+
+
 		initialize();
 		
 	};
