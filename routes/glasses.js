@@ -57,11 +57,13 @@ exports.upload = function(req, res){
     for(var i = 0; i < zipEntries.length; i++){
         var entry = zipEntries[i];
         if(entry.entryName.indexOf(".png") != -1){
+            console.log("moving: " + entry.entryName + " to "  + texturePath);
             zip.extractEntryTo(entry.entryName, texturePath, false, true);
         }
     }
 
     Glasses.remove().exec(function(){
+        console.log("Glasses are removed!");
         //Lets start parsing the frames.
         getFrames(function(frames){
             for(var i = 0; i < frames.length; i++){
@@ -71,7 +73,7 @@ exports.upload = function(req, res){
                     var front = frame.fronts[c];
                     front.glasses = [];
                     var fileSelector = frameFileSelector + "_" + front.fileselector;
-
+                    console.log("fileSelector: " + fileSelector);
                     zip.extractEntryTo( "glasses/" + fileSelector + ".js", objectPath, false, true);
 
                     for(var s = 0; s < configFile.textures.length; s++){
