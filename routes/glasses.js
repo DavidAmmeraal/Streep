@@ -40,7 +40,6 @@ exports.admin = function(req, res){
 
 exports.upload = function(req, res){
     console.log("glasses.upload()");
-    console.log(req);
     var zip = new AdmZip(req.files.glasses.path);
     var zipEntries = zip.getEntries();
 
