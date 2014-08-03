@@ -122,7 +122,7 @@ function(
         });
     });
 
-    $(window).on('click', function(event){
+    $(window).on('click touchstart', function(event){
         if(frameChooser.$el.is(':visible')){
             var box = frameChooser.getVisibleBox();
             if(!(event.clientX > box.x[0] &&
