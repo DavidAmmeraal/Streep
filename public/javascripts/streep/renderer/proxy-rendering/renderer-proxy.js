@@ -18,12 +18,15 @@ define([
         commandTimeOut: 60000,
         spinner: null,
         inPreviewMode: false,
+        queue: [],
         doCommand: function(command){
             var self = this;
             return new Promise(function(resolve, reject){
+
                 var commandTimeout = setTimeout(function(){
                     $(self).trigger('commandLoading');
                 }, 2000);
+
                 $.ajax({
                     type: "POST",
                     url: self.host + '/' + self.uri + '/command',
@@ -39,6 +42,7 @@ define([
                         $(self).trigger('commandError');
                     }
                 });
+
             });
 
         },
@@ -490,27 +494,29 @@ define([
             });
         },
         resize: function(){
-            var self = this;
-            var container = $(self.container);
-            var command = {
-                name: 'resize',
-                sessionID: this.sessionID,
-                'containerDimensions': [container.width(), container.height()]
-            };
-            return new Promise(function(resolve){
-                self.doCommand(command).then(function(data){
-                    var img = $('<img src="' + data.img + '" />');
-                    self.target.html(img);
+            if(this.sessionID){
+                var self = this;
+                var container = $(self.container);
+                var command = {
+                    name: 'resize',
+                    sessionID: this.sessionID,
+                    'containerDimensions': [container.width(), container.height()]
+                };
+                return new Promise(function(resolve){
+                    self.doCommand(command).then(function(data){
+                        var img = $('<img src="' + data.img + '" />');
+                        self.target.html(img);
 
-                    if(data.indicators){
-                        self.indicators.setIndicators(data.indicators);
-                        self.indicators.render();
-                    }else{
-                        self.indicators.hide();
-                    }
-                    resolve();
+                        if(data.indicators){
+                            self.indicators.setIndicators(data.indicators);
+                            self.indicators.render();
+                        }else{
+                            self.indicators.hide();
+                        }
+                        resolve();
+                    });
                 });
-            });
+            }
         },
         getSTL: function(){
             var self = this;

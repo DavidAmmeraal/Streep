@@ -156,6 +156,7 @@ function(
     });
 
     changeButton.on('click', function(event){
+        
         frameChooser.show();
         sizeChooser.hide();
         event.stopPropagation();

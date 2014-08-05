@@ -68,7 +68,6 @@ exports.getSTL = function(req, res){
 exports.receiveSTL = function(){
     return function(req, res){
         var commandID = req.params.commandID;
-        console.log("commandID:" + commandID);
         if(req.body.stl){
             if(req.body.name != "length"){
                 waitingForSTL[commandID]['parts'].push(req.body);
@@ -130,15 +129,18 @@ exports.startSession = function(){
 
 exports.command = function(){
     return function(req, res){
-
         var socket = sockets[req.body.sessionID];
         var commandID = uuid.v4();
         req.body.commandID = commandID;
-        socket.emit('command', req.body);
-        socket.on('commandDone', function(data){
-            if(data.commandID == commandID){
-                res.send(data);
-            }
-        });
+        if(socket){
+            socket.emit('command', req.body);
+            socket.on('commandDone', function(data){
+                if(data.commandID == commandID){
+                    res.send(data);
+                }
+            });
+        }else{
+            res.send({failed: true});
+        }
     };
 };
