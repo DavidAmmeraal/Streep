@@ -814,7 +814,8 @@ define([
             nose_name: nose.name,
             nose_price_extra: nose.priceExtra,
             nose_color: nose.color,
-            legs_color: legs.color
+            legs_color: legs.color,
+            legs_name: legs.name
         };
 
         if(glasses){
