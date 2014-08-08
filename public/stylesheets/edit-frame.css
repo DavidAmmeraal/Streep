@@ -9,7 +9,7 @@ body{
     font-family: Allerta, Helvetica, Arial;
     background-color: #f3f1f1;
     overflow: auto;
-    min-height: 600px;
+    min-height: 550px;
 }
 
 .content{
