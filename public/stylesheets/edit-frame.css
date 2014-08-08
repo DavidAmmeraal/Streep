@@ -314,6 +314,9 @@ body{
     height: 40px;
     margin: 5px 5px;
 }
+.column-left #buttons button.active{
+    background-color: #60e5a5;
+}
 
 .column-left #buttons button.exit-preview-mode{
     display: none;

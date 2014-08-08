@@ -123,6 +123,8 @@ function(
     });
 
     $(window).on('click touchstart', function(event){
+        changeButton.removeClass('active');
+        sizeButton.removeClass('active');
         if(frameChooser.$el.is(':visible')){
             var box = frameChooser.getVisibleBox();
             if(!(event.clientX > box.x[0] &&
@@ -156,13 +158,14 @@ function(
     });
 
     changeButton.on('click', function(event){
-        
+        changeButton.addClass('active');
         frameChooser.show();
         sizeChooser.hide();
         event.stopPropagation();
     });
 
     sizeButton.on('click', function(event){
+        sizeButton.addClass('active');
         sizeChooser.show();
         frameChooser.hide();
         event.stopPropagation();
