@@ -198,9 +198,7 @@ define([
             };
             return new Promise(function(resolve){
                 if(self.inPreviewMode){
-                    console.log("IN PREVIEW MODE!!!");
                     self.exitPreviewMode().then(function(){
-                        console.log("EXIT PREVIEW MODE DONE!!!");
                         self.doCommand(command).then(function(data){
                             var img = $('<img src="' + data.img + '" />');
                             self.target.html(img);
