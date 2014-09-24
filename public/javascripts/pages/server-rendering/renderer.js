@@ -209,7 +209,7 @@ define([
                     resolve({
                         'commandID': data.commandID,
                         'img': self.viewer.getScreenshot(),
-                        'indicators': false,
+                        'indicators': self.getIndicators(),
                         'data': resolveData
                     });
                 }
@@ -604,7 +604,7 @@ define([
                 resolve({
                     commandID: data.commandID,
                     img: self.viewer.getScreenshot(),
-                    indicators: false,
+                    indicators: self.getIndicators(),
                     data: {
                         engravePage: {
                             engraved: true
@@ -647,7 +647,7 @@ define([
                 resolve({
                     commandID: data.commandID,
                     img: self.viewer.getScreenshot(),
-                    indicators: false,
+                    indicators: self.getIndicators(),
                     data: {
                         engravePage: {
                             engraved: true

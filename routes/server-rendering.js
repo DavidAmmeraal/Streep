@@ -111,6 +111,7 @@ exports.startSession = function(){
 
         var sessionID;
         driver.getCapabilities().then(function(caps){
+            console.log(caps);
             sessionID = caps.caps_['webdriver.remote.sessionid'];
             openSeleniumSessions.push({'sessionID': sessionID, 'session': driver, 'lastAlive': new Date().getTime()});
         }).then(function(){
