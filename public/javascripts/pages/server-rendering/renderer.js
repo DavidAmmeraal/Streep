@@ -826,22 +826,30 @@ define([
         }
 
         return new Promise(function(resolve, reject){
+        	var focusedAt = self.viewer.lookingAt;
+        	self.viewer.focusTo(self.frame);
+        	
+        	
             $.post('http://localhost:3000/creations/add', {creation: creation}).then(function(data){
                 var objects = self.frame.exportSTL();
                 var creationId = data.creationId;
-
-                $.post('http://localhost:3000/creations/receive-stl/' + creationId, {amount: objects.length}).then(function(){
-                    var i = 1;
-                    for(key in objects){
-                        $.post('http://localhost:3000/creations/receive-stl/' + creationId, {name: key, stl: objects[key]}).then(function(data){
-                            i++;
-                            if(i == objects.length){
-                                checkoutParams.stl_file = creationId + ".stl";
-                                resolve({'commandID': commandID, 'creationID': creationId, 'checkoutParams': checkoutParams});
-                            }
-                        });
-                    }
-                });
+				$.post('http://localhost:3000/screenshot/save', {data: self.viewer.getScreenshot()}).then(function(data){
+					data = JSON.parse(data);
+					checkoutParams.glasses_image = data.screenshot;
+					$.post('http://localhost:3000/creations/receive-stl/' + creationId, {amount: objects.length}).then(function(){
+                    	var i = 1;
+                    	for(key in objects){
+                        	$.post('http://localhost:3000/creations/receive-stl/' + creationId, {name: key, stl: objects[key]}).then(function(data){
+                            	i++;
+                            	if(i == objects.length){
+                               		checkoutParams.stl_file = creationId + ".stl";
+                                	resolve({'commandID': commandID, 'creationID': creationId, 'checkoutParams': checkoutParams});
+                            	}
+                        	});
+                    	}
+                	});
+				})
+                
             });
         });
     };
