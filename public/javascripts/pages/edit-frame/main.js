@@ -123,14 +123,15 @@ function(
     });
 
     $(window).on('click touchstart', function(event){
+    
         changeButton.removeClass('active');
         sizeButton.removeClass('active');
         if(frameChooser.$el.is(':visible')){
             var box = frameChooser.getVisibleBox();
-            if(!(event.clientX > box.x[0] &&
-                event.clientX < box.x[1] &&
-                event.clientY > box.y[0] &&
-                event.clientY < box.y[1]
+            if(!(event.originalEvent.pageX > box.x[0] &&
+                event.originalEvent.pageX < box.x[1] &&
+                event.originalEvent.pageY > box.y[0] &&
+                event.originalEvent.pageY < box.y[1]
             )){
                 frameChooser.hide();
             }
@@ -138,11 +139,11 @@ function(
 
         if(sizeChooser.$el.is(':visible')){
             var box = sizeChooser.getVisibleBox();
-            if(!(event.clientX > box.x[0] &&
-                event.clientX < box.x[1] &&
-                event.clientY > box.y[0] &&
-                event.clientY < box.y[1]
-                )){
+            if(!(event.originalEvent.pageX > box.x[0] &&
+                event.originalEvent.pageX < box.x[1] &&
+                event.originalEvent.pageY > box.y[0] &&
+                event.originalEvent.pageY < box.y[1]
+            )){
                 sizeChooser.hide();
             }
         }
@@ -251,6 +252,9 @@ function(
     var loadFrame = function(){
         $('button.preview-mode').show();
         $('button.exit-preview-mode').hide();
+        changeLeftButton.removeClass('active');
+        changeRightButton.removeClass('active');
+        changeFrontButton.removeClass('active');
         var chosenSize = sizeChooser.getSelectedSize();
         var frameId = sizes.get('frames')[chosenSize];
         frame = new Frame({
@@ -327,11 +331,18 @@ function(
                     serverFocusedOnFront(serverData);
                     break;
                 case "left_leg":
+                	serverFocusedOnLeftLeg();
+                	serverFocusedOnLeg(serverData);
+                	break;
                 case "right_leg":
+                	serverFocusedOnRightLeg();
                     serverFocusedOnLeg(serverData);
                     break;
             }
         }else{
+        	changeFrontButton.removeClass('active');
+        	changeRightButton.removeClass('active');
+        	changeLeftButton.removeClass('active');
             if(comp && comp.parent && !comp.children){
                 var parent = comp.parent;
                 if(comp == parent.currentFront.currentNose){
@@ -345,6 +356,18 @@ function(
         }
 
     };
+    
+    function serverFocusedOnRightLeg(){
+    	changeFrontButton.removeClass('active');
+    	changeLeftButton.removeClass('active');
+    	changeRightButton.addClass('active');
+    }
+    
+    function serverFocusedOnLeftLeg(){
+    	changeFrontButton.removeClass('active');
+    	changeRightButton.removeClass('active');
+    	changeLeftButton.addClass('active');
+    }
 
     function updatePrice(){
         renderer.getPrice().then(function(newPrice){
@@ -440,6 +463,10 @@ function(
     };
 
     function serverFocusedOnFront(data){
+    
+    	changeLeftButton.removeClass('active');
+    	changeRightButton.removeClass('active');
+    	changeFrontButton.addClass('active');
         $('#menu').html('');
 
         var pages = [];
