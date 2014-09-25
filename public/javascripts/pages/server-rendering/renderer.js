@@ -152,7 +152,7 @@ define([
                 resolve({
                     'commandID': data.commandID,
                     'img': self.viewer.getScreenshot(),
-                    'indicators': false,
+                    'indicators': self.getIndicators(),
                     'data': {
                         'glassesPage': {
                             glasses: glasses
@@ -285,7 +285,7 @@ define([
         return Promise.resolve({
             'commandID': data.commandID,
             'img': self.viewer.getScreenshot(),
-            'indicators': false,
+            'indicators': self.getIndicators,
             'data': {
                 'engravePage': {
                     'engraved': false
@@ -365,7 +365,7 @@ define([
                 resolve({
                     'commandID': data.commandID,
                     'img': self.viewer.getScreenshot(),
-                    'indicators': false,
+                    'indicators': self.getIndicators(),
                     'data': {
                         'legPage': {
                             'patterns': patterns
@@ -385,7 +385,7 @@ define([
                resolve({
                    'commandID': data.commandID,
                    'img': self.viewer.getScreenshot(),
-                   'indicators': false,
+                   'indicators': self.getIndicators(),
                    'newNose': newNose
                });
            })
@@ -398,7 +398,7 @@ define([
         return Promise.resolve({
             'commandID': data.commandID,
             'img': self.viewer.getScreenshot(),
-            'indicators': false
+            'indicators': self.getIndicators()
         });
     };
     Renderer.prototype.changeLegsColor = function(data){
@@ -408,7 +408,7 @@ define([
         return Promise.resolve({
             'commandID': data.commandID,
             'img': self.viewer.getScreenshot(),
-            'indicators': false
+            'indicators': self.getIndicators()
         })
     };
     Renderer.prototype._getActualComp = function(comp){
